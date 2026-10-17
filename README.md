@@ -13,6 +13,7 @@ generer_donnees_synthetiques.py   fabrique un jeu de test au bon format
 donnees.py                        chargement, conversion de l'export Qualicharge, agrégation par PDC
 preparer_stations.py              place les stations sur les axes (axe, sens, pk) à partir d'un vrai tracé
 reperer_stations_autoroute.py     repère les stations d'autoroute dans ton référentiel (tracé approché)
+scenarios.py                      scénarios de pénétration VE (charge offerte + Erlang B), voir note_technique.md §7
 donnees_reelles/                  stations.csv (170 stations d'autoroute) et axes_approx.csv
 graphe.py                         graphe routier, temps de parcours, variables de propagation
 gnn.py                            réseau de neurones de graphe spatio-temporel (PyTorch)

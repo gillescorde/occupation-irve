@@ -18,6 +18,7 @@ le long du réseau.
 | Étape 1 : prévision des débits | `entrainer.py` | implémentée, testée sur données synthétiques |
 | Étape 2 : gradient boosting et GNN spatio-temporel | `entrainer.py`, `gnn.py` | implémentée, testée sur données synthétiques |
 | Générateur de données synthétiques | `generer_donnees_synthetiques.py` | implémenté |
+| Scénarios de pénétration VE | `scenarios.py` | implémentée, appliquée à l'occupation réelle |
 | Restitution web (Flask) | | à faire |
 
 **Point important : aucun débit routier réel n'est utilisé à ce jour.** Les débits des compteurs ne
@@ -413,7 +414,70 @@ Le scénario comporte deux axes (A10 sur 560 km et A6 sur 460 km), dans les deux
    historique plus long.
 4. Ces résultats viennent de données synthétiques et ne préjugent pas des performances réelles.
 
-## 7. Limites et suite
+## 7. Scénarios de pénétration des véhicules électriques (`scenarios.py`)
+
+**Objectif.** Simuler l'occupation des aires pour une part de VE dans le trafic $p'$ (par exemple
+10 % en 2030) différente de celle de l'historique, $p_{\text{ref}} \approx 3\,\%$.
+
+**Pourquoi pas une simple variable d'entrée.** Sur l'historique, $p$ est quasi constant. Un modèle
+appris ne peut rien tirer d'une variable sans variation, et un gradient boosting n'extrapole pas
+au-delà des valeurs vues. La pénétration entre donc dans une **structure physique** et non dans
+l'apprentissage.
+
+**Charge offerte.** On note $A(s,t)$ le nombre moyen de véhicules qui voudraient être en charge en
+même temps à la station $s$ (en erlangs). Elle est proportionnelle au flux de VE qui passe :
+
+$$
+A(s,t) = p \cdot Q_s(t) \cdot \beta_s(t) \cdot \bar D
+$$
+
+avec $Q_s$ le flux total, $\beta_s$ la part des VE qui s'arrêtent recharger et $\bar D$ la durée
+moyenne de charge. Pour un scénario, seuls $p$ et éventuellement $\beta$ changent :
+
+$$
+A'(s,t) = A(s,t)\,\frac{p'}{p_{\text{ref}}}\,\kappa
+$$
+
+où $\kappa$ (`--facteur-besoin`) traduit l'évolution du besoin de recharge par VE (moins de 1 si les
+batteries de 2030 sont plus grandes).
+
+**De la charge à l'occupation : Erlang B.** Avec $c$ points de charge, la probabilité que tous soient
+occupés et le taux d'occupation moyen valent :
+
+$$
+B(A, c) = \frac{A^c / c!}{\sum_{k=0}^{c} A^k / k!},
+\qquad
+y = \frac{A\,\bigl(1 - B(A, c)\bigr)}{c}
+$$
+
+$B$ se calcule par la récurrence stable $B_0 = 1$, $B_k = \frac{A B_{k-1}}{k + A B_{k-1}}$.
+La relation $y(A)$ est croissante : on l'inverse par dichotomie pour retrouver $A$ à partir d'une
+occupation observée ou prévue, on applique le scénario, puis on recalcule $y'$ et $B'$. L'occupation
+sature naturellement à 100 %, et $B'$ donne directement la **probabilité de trouver la station pleine**,
+l'indicateur le plus parlant pour un « Bison Futé ». Le nombre de PDC peut aussi être modifié
+(`--pdc-supplementaires`, `--facteur-pdc`) pour tester un plan d'équipement.
+
+**Limite.** Au-delà de 97 % d'occupation, la charge réelle n'est plus observable (les véhicules
+refusés ne sont pas comptés) : elle est plafonnée, ce qui sous-estime les scénarios des stations déjà
+saturées. Erlang B suppose aussi que les véhicules qui trouvent la station pleine repartent ; s'ils
+attendent, un modèle M/M/c avec file (Erlang C) donnerait des temps d'attente.
+
+**Premiers résultats sur l'occupation réelle (150 stations d'autoroute, 9 au 15 juillet 2026).**
+
+| Scénario | Occupation moyenne | Heures rouge ou noir | Probabilité moyenne de station pleine |
+|---|---|---|---|
+| 3 % (référence) | 18,5 % | 3,5 % | 2,1 % |
+| 6 % | 31,2 % | 15,1 % | 6,1 % |
+| 10 % | 42,2 % | 29,3 % | 12,4 % |
+| 15 % | 50,7 % | 41,1 % | 19,3 % |
+| 10 %, +4 PDC par station | 36,1 % | 21,6 % | 6,9 % |
+| 10 %, besoin par VE × 0,7 | 34,5 % | 19,2 % | 7,7 % |
+
+**Évolution prévue.** Quand l'historique long sera disponible, l'étape 2 sera apprise directement
+sur la charge offerte $A$ plutôt que sur $y$. Le modèle prédira alors une grandeur qui se met à
+l'échelle avec $p$, et la conversion par Erlang B se fera en sortie.
+
+## 8. Limites et suite
 
 - **Historique** : les 6 jours de juillet ne permettent pas d'apprendre les effets de jour de la
   semaine et de vacances. Il faut un export plus long de la collecte.

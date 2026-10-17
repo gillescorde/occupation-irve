@@ -509,8 +509,31 @@ donc de l'horizon :
 |---|---|---|
 | Maintenant à +3 h | HERE temps réel sur les tronçons en amont de chaque aire, propagé avec le temps de parcours mesuré (`note_here.md`, section 4) ; compteurs Avatar interurbains | occupation des dernières heures, calendrier |
 | J+1 à J+7 | prévision de l'étape 1 : vitesses typiques HERE (Traffic Patterns), calendrier, couleur Bison Futé, état des derniers jours | occupation décalée d'au moins $H$, calendrier |
+| Au-delà de J+7 (semaines, mois) | prévision de l'étape 1 sans les derniers jours : calendrier, couleur Bison Futé, Traffic Patterns | calendrier ; restitution en médiane et P90 (section 8.3) |
 
 À J+1, la couleur Bison Futé n'est qu'une entrée parmi d'autres.
+
+**Entrées du simulateur une fois appris.** Le graphe, les temps de parcours et la réponse de chaque
+station au trafic sont figés dans les paramètres. Les entrées se réduisent à :
+
+- le calendrier : date, heure, jour de la semaine, fériés et ponts, vacances par zone avec leur
+  début et leur fin (le premier samedi d'août n'est pas un samedi ordinaire) ;
+- la couleur Bison Futé **par sens** (départs, retours) ;
+- le scénario : pénétration VE, PDC par station (section 7) ;
+- à court terme seulement : occupation récente et HERE temps réel.
+
+**Rôle de Traffic Patterns.** Dans sa version standard, Traffic Patterns donne une vitesse typique par
+segment, par jour de la semaine et par quart d'heure **(à vérifier dans le contrat)**. Il ne connaît
+ni les vacances ni les chassés-croisés : c'est une ligne de base « semaine ordinaire ». L'effet des
+vacances vient du calendrier et de Bison Futé, à travers ce que l'étape 1 a appris sur l'historique
+HERE pluriannuel. La prévision dépend donc surtout de cet historique, pas de Traffic Patterns.
+
+**Au-delà de 7 jours.** Rien ne bloque : le calendrier Bison Futé de l'année est publié à l'avance
+(généralement en décembre) et les vacances scolaires sont connues longtemps avant. Le prochain
+chassé-croisé est prévisible des mois à l'avance : calendrier → type de jour → trafic appris par axe →
+occupation. On perd seulement l'information récente (météo, incidents, tendance des derniers jours),
+d'où une restitution en médiane et 90ᵉ centile plutôt qu'en valeur ponctuelle. C'est l'usage visé
+pour le dimensionnement et la préparation des week-ends rouges ou noirs.
 
 ### 8.2 Calendrier et géographie des vacances
 
@@ -543,6 +566,8 @@ Une version agrégée sert de socle, de référence à battre et d'outil de plan
    qui donnent un risque de saturation heure par heure.
 3. **Scénarios** : la loi d'Erlang de la section 7 s'applique aux profils types, ce qui donne des
    cartes 2030 par type de jour.
+4. **Horizon long** : c'est la version utilisée au-delà de J+7. Le type de jour se déduit du seul
+   calendrier (vacances par zone, Bison Futé), donc à n'importe quel horizon.
 
 Il faut quelques semaines par type de jour. Le profil moyen station × jour × heure de la section 5
 en est la version la plus simple.

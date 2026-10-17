@@ -7,7 +7,8 @@ Tout ce qui ne dépend ni de Qualicharge ni de HERE est prêt dans le dépôt
   fériés, ponts et Bison Futé par sens et par zone. 2020 manque.
 - **Stations** : `donnees_reelles/stations.csv`, 514 stations sur 33 axes (193 sur aire, 321 près d'une
   sortie). Carte dans `cartes/axes_stations.png`.
-- **Compteurs Avatar** : `donnees_reelles/debits/`, rattachés au graphe dans `rattachement*/`.
+- **Compteurs Avatar** : `donnees_reelles/debits/`, 1 301 compteurs du 1er mars au 17 octobre 2026,
+  rattachés au graphe dans `rattachement*/`.
 
 ## 1. Qualicharge (le matin)
 
@@ -77,8 +78,6 @@ Tout ce qui ne dépend ni de Qualicharge ni de HERE est prêt dans le dépôt
 
 ## 4. En suspens (pas bloquant)
 
-- **Comptages Avatar de mars à octobre** : la récupération est en cours. Le rattachement sera
-  refait dès qu'ils arrivent.
 - **Tracés OpenStreetMap** : l'accès est bloqué depuis le cloud. On peut le lancer depuis le
   poste du bureau :
   ```bash

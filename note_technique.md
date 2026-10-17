@@ -28,8 +28,8 @@ le long du réseau.
 
 **Point important : la chaîne complète n'a pas encore été apprise sur données réelles.** Elle a été
 validée sur un jeu synthétique qui imite la situation réelle (section 6). Sur les données réelles, on
-dispose de l'occupation du 9 au 15 juillet 2026 seulement et des débits Avatar de mai à juillet
-2026, rattachés au graphe (section 2.3). L'apprentissage réel attend l'historique long d'occupation
+dispose de l'occupation du 9 au 15 juillet 2026 seulement et des débits Avatar du 1er mars au
+17 octobre 2026, rattachés au graphe (section 2.3). L'apprentissage réel attend l'historique long d'occupation
 et les données HERE (section 9).
 
 ## 2. Données
@@ -167,8 +167,9 @@ $$
 
 Le modèle exploite ainsi les **variations** du trafic (1 = trafic habituel du compteur), pas son niveau.
 
-**Données réelles.** 1 184 compteurs Avatar (réseau non concédé, à moins de 5 km des axes), débits
-horaires du 1er mai au 31 juillet 2026. Les heures estimées à plus de 50 % par Avatar sont écartées
+**Données réelles.** 1 301 compteurs Avatar (réseau non concédé, à moins de 5 km des 33 axes),
+débits horaires du 1er mars au 17 octobre 2026 (7,1 M lignes ; 16 à 22 % d'heures estimées selon
+le mois). Rien sur la N24, l'A51, l'A40 et la N85 (points Avatar supprimés). Les heures estimées à plus de 50 % par Avatar sont écartées
 (colonne `part_estimee_pct`). Les compteurs se concentrent aux extrémités urbaines des autoroutes ;
 l'A9 est inexploitable (4 compteurs estimés à plus de 80 %).
 
@@ -179,8 +180,8 @@ l'information apportée en plus de l'heure.
 
 | Compteurs utilisés | Stations reliées | $r$ brute (médiane) | $r$ hors cycle (médiane) |
 |---|---|---|---|
-| Tous (997) | 113 / 149 | 0,55 | 0,07 |
-| Interurbains seulement (96) | 71 / 149 | 0,58 | 0,17 |
+| Tous (1 091) | 113 / 149 | 0,55 | 0,07 |
+| Interurbains seulement (124) | 71 / 149 | 0,58 | 0,18 |
 
 Les compteurs urbains diluent le signal : seuls les compteurs interurbains sont à retenir. Sur
 environ 140 heures par station, ces chiffres restent fragiles.
@@ -621,7 +622,7 @@ reposeront sur le trafic HERE des années précédentes et sur des hypothèses, 
 | 2 | HERE : clé de l'API Traffic Flow | | collecte temps réel, 15 min |
 | fait | Calendrier Bison Futé (couleurs par jour, sens et zone) | 2016-2019, 2021-2026 | `donnees_reelles/calendrier/bison_fute.csv` (2020 manquant) |
 | fait | Vacances scolaires par zone et jours fériés | 2016 à 2026 | `donnees_reelles/calendrier/calendrier.csv`, une ligne par jour |
-| 3 | Débits Avatar | mars à octobre 2026 (aujourd'hui mai à juillet) | compteurs interurbains seulement |
+| fait | Débits Avatar | 1er mars au 17 octobre 2026 | `donnees_reelles/debits/` ; compteurs interurbains seulement |
 | 3 | Tracé exact des axes et échangeurs (OSM) | | `telecharger_osm.py` depuis un poste qui accède à Overpass, puis `traces_osm.py` |
 
 ## 10. Limites et suite

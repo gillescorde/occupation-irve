@@ -7,9 +7,9 @@ Récupérés le 17/10/2026 sur l'API publique d'Avatar (`https://avatar.cerema.f
 | Fichier | Contenu |
 |---|---|
 | `compteurs.csv` | 1 301 compteurs (un par point de comptage et par sens) au format de `irve/README.md` : `compteur_id, lat, lon, axe_rattache, sens, pk_projete, delai_rattachement_min`, plus des colonnes descriptives |
-| `comptages.csv` | 2,84 M lignes horaires du 1/05/2026 00:00 au 31/07/2026 23:00 (heure de Paris, sans fuseau, comme `occupation_bornes.csv`) : `horodatage, compteur_id, debit_vh, vitesse_kmh, part_estimee_pct` |
+| `comptages.csv` | 7,08 M lignes horaires du 1/03/2026 00:00 au 17/10/2026 18:00 (heure de Paris, sans fuseau, comme `occupation_bornes.csv`) : `horodatage, compteur_id, debit_vh, vitesse_kmh, part_estimee_pct` |
 | `brut/` | liste complète des 9 754 points Avatar (json.gz) et les points retenus |
-| `scripts/` | `cand.py` (rattachement aux axes), `dl.py` (téléchargement par lots de 40), `build.py` (mise au format) |
+| `scripts/` | `cand.py` (rattachement aux axes), `dl.py` puis `dl3.py` (téléchargement par lots de 40 ; dl3 pour mars-avril et août-octobre), `build.py` (mise au format) |
 
 ## Choix faits
 
@@ -28,7 +28,7 @@ Avatar ne couvre que le réseau non concédé (DIR, métropoles). Les compteurs 
 - **A7** : 102 compteurs, dont 16 sur la N7 parallèle entre Vienne et Valence (pk 38 à 110) : la meilleure couverture. Rien au sud de Valence.
 - **A9** : 4 compteurs seulement (N109 Juvignac, A75 Béziers), estimés à plus de 80 % : inutilisable en l'état.
 
-Axes ajoutés le 17/10 (Bretagne et Alpes), relancés sur mai à juillet :
+Axes ajoutés le 17/10 (Bretagne et Alpes), téléchargés sur toute la période :
 
 - **Bretagne** : A84 (39 compteurs dont 16 interurbains, la meilleure couverture), N137 (14, mesurés à 100 %), N12 (10), N165 (10, mais estimés à 96 % : peu utilisable). N24 n'a que des points supprimés, donc aucune donnée.
 - **Alpes** : A43 (27, tous à Lyon au départ de l'axe), A41 (9, autour de Grenoble), A48 (8, Grenoble), A49 (2), N90 (8, Albertville-Moûtiers). A51 n'a que des points supprimés ; rien sur A40 ni N85.

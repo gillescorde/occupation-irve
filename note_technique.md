@@ -16,7 +16,9 @@ le long du réseau.
 | Conversion de l'historique Qualicharge | `donnees.py` | implémentée, appliquée aux données réelles |
 | Placement des stations sur les axes | `reperer_stations_autoroute.py`, `preparer_stations.py` | implémentée, appliquée au référentiel réel |
 | Graphe routier et variables de propagation | `graphe.py` | implémentée, testée sur données synthétiques |
-| Rattachement des compteurs Avatar au graphe | `rattacher_compteurs.py` | implémentée, appliquée aux débits réels (mai à juillet 2026) |
+| Rattachement des compteurs Avatar au graphe | `rattacher_compteurs.py` | implémentée, appliquée aux débits réels |
+| Calendrier (vacances, fériés, ponts, Bison Futé) | `calendrier.py`, `bison_fute_pdf.py` | implémenté, table 2016-2026 produite |
+| Tracés OpenStreetMap des axes et échangeurs | `telecharger_osm.py`, `traces_osm.py` | écrits, non exécutés (Overpass inaccessible depuis le cloud) |
 | Client HERE Traffic Flow | `here_flux.py` | implémenté, testé sur une réponse simulée uniquement |
 | Étape 1 : prévision des débits | `entrainer.py` | implémentée, testée sur données synthétiques |
 | Étape 2 : gradient boosting et GNN spatio-temporel | `entrainer.py`, `gnn.py` | implémentée, testée sur données synthétiques |
@@ -88,12 +90,26 @@ Le référentiel Qualicharge (7 388 stations, toutes de 50 kW ou plus) donne les
 de PDC, la puissance et l'opérateur, mais pas l'autoroute. Chaque station reçoit un axe, un sens et
 un point kilométrique $\text{pk}$.
 
-**Axe.** Il est lu dans le nom quand il y figure (« Electra A10 - Aire de Cézac »). Sinon, pour un
-nom d'aire, on prend l'axe le plus proche à moins de 5 km. Les bornes réservées aux poids lourds
-sont écartées.
+**Axes retenus.** 33 axes : les 20 grandes autoroutes de départ en vacances, les voies express
+bretonnes (N12, N24, N137, N165) et l'A84, et les accès aux Alpes (A40, A41, A43, A48, A49, A51,
+N85, N90 précédée de l'A430).
 
-**pk.** Faute de tracé exact (OSM et data.gouv ne sont pas accessibles depuis l'environnement de
-calcul), chaque axe est approché par une ligne brisée passant par des villes étapes, densifiée tous
+**Axe d'une station.** Trois règles, dans l'ordre :
+
+1. l'axe est lu dans le nom quand il y figure (« Electra A10 - Aire de Cézac », « RN165 ») ;
+2. sinon, pour un nom d'aire, l'axe le plus proche à moins de 5 km ;
+3. sinon, une **station de sortie** : au moins 150 kW et 6 PDC, à moins de 2 km du tracé, hors des
+   grandes agglomérations (12 km autour du centre, 24 km pour Paris), où une station rapide sert
+   d'abord la ville. Ce sont les hubs en zone d'activité près des échangeurs (Tesla, Ionity,
+   Electra, Fastned, hypermarchés), souvent moins chers que les aires et seule offre sur les
+   nationales, qui n'ont pas d'aires de service. Elles servent les deux sens (sens 0), sauf si le
+   nom indique un côté.
+
+Les bornes réservées aux poids lourds sont écartées. Avec un tracé OSM, la règle 3 utilisera la
+distance à l'échangeur le plus proche plutôt qu'au tracé (option `--echangeurs`).
+
+**pk.** Faute de tracé exact (Overpass n'est pas accessible depuis l'environnement de calcul),
+chaque axe est approché par une ligne brisée passant par des villes étapes, densifiée tous
 les kilomètres. Le pk d'un point du tracé est la distance cumulée (haversine) depuis la première
 ville. La station est projetée orthogonalement sur le segment le plus proche :
 
@@ -117,14 +133,20 @@ des aires espacées de 20 à 60 km.
 - Sur toutes les stations qui portent à la fois une destination et un suffixe, les deux règles
   donnent le même sens.
 
-**Résultat.** 170 stations d'autoroute sur 20 axes : 119 avec l'axe lu dans le nom et 51 déduites de
-la proximité. Le sens vient de la destination pour 38 d'entre elles, du côté de la chaussée pour 47,
-et reste inconnu pour 85. Dans l'historique de juillet, 150 de ces stations ont des données. Leur
-occupation moyenne horaire culmine à 37 % vers 13 h, contre 22 % pour les autres stations.
+**Résultat.** 514 stations (5 808 PDC) sur 32 des 33 axes (aucune sur l'A48, courte) :
+131 avec l'axe lu dans le nom, 62 aires déduites de la proximité et 321 stations de sortie (Tesla 69,
+Ionity 46, Power Dot 43, Electra 29, TotalEnergies 25...). Le sens vient de la destination pour 38
+stations, du côté de la chaussée pour 75 ; 295 stations de sortie servent les deux sens et 106
+stations d'aire restent de sens inconnu. Dans l'historique de juillet, seules 150 stations d'aire
+ont été converties ; leur occupation moyenne horaire culmine à 37 % vers 13 h, contre 22 % pour les
+autres stations. Carte : `cartes/axes_stations.png`.
 
-**Limite.** Une station d'aire nommée seulement par sa commune ou son opérateur n'est pas détectée.
-`preparer_stations.py` fait la même projection sur un vrai tracé d'autoroute fourni en entrée
-(axe, pk, lat, lon) et retient toute station à moins de 300 m, sans passer par le nom.
+**Limite.** Une station d'aire de moins de 150 kW nommée seulement par sa commune ou son opérateur
+n'est pas détectée, et la règle des 2 km reste approximative avec un tracé à quelques km près.
+`traces_osm.py` construit un tracé OSM lissé (médiane des deux chaussées par tranche de 1 km, pk =
+longueur routière cumulée) et place les échangeurs et les aires OSM ;
+`reperer_stations_autoroute.py --traces axes_osm.csv --echangeurs echangeurs.csv` et
+`rattacher_compteurs.py --traces axes_osm.csv` l'utilisent alors à la place des villes étapes.
 
 ### 2.3 Débits routiers (compteurs Avatar)
 
@@ -165,8 +187,15 @@ environ 140 heures par station, ces chiffres restent fragiles.
 
 ### 2.4 Calendrier
 
-Variables par jour : jour férié, vacances scolaires, deux premiers et deux derniers jours de
-vacances, et la couleur Bison Futé officielle (0 à 3) quand elle est disponible. L'heure et le jour
+`calendrier.py` produit `donnees_reelles/calendrier/calendrier.csv`, une ligne par jour de 2016 à
+2026 :
+
+- vacances scolaires par zone A, B, C (data.gouv.fr), avec le rang du jour dans la période et le
+  nombre de jours restants, pour distinguer départs et retours ;
+- fériés, ponts (vendredi après un jeudi férié, lundi avant un mardi férié), veilles et lendemains ;
+- Bison Futé par sens (départ, retour) : niveau national, niveau de chacune des 6 zones (au moins
+  le national) et maximum, de 0 (vert) à 3 (noir). Extrait des calendriers PDF par
+  `bison_fute_pdf.py` (section 8.2) ; 2016 vient du CSV data.gouv, 2020 manque (laissé vide). L'heure et le jour
 de la semaine sont encodés en sinus et cosinus :
 $\left(\sin\frac{2\pi h}{24}, \cos\frac{2\pi h}{24}, \sin\frac{2\pi j}{7}, \cos\frac{2\pi j}{7}\right)$.
 
@@ -584,16 +613,16 @@ reposeront sur le trafic HERE des années précédentes et sur des hypothèses, 
 
 | Priorité | Donnée | Profondeur | Remarque |
 |---|---|---|---|
-| 1 | Export Qualicharge complet (`charging_station_availability_snapshots`), même format | depuis le début de la collecte (mars 2026) jusqu'à aujourd'hui | au moins les 170 stations d'autoroute ; signaler les arrêts de collecte |
+| 1 | Export Qualicharge complet (`charging_station_availability_snapshots`), même format | depuis le début de la collecte (mars 2026) jusqu'à aujourd'hui | toutes les stations, ou au moins les 514 de `stations.csv` ; signaler les arrêts de collecte |
 | 1 | Référentiel des stations à jour (`charging_stations.csv`) | dernière version | pour les stations ouvertes depuis juillet |
-| 1 | HERE : vitesses historiques par segment, 15 min, avec vitesse fluide et nombre de sondes ou confiance | mars 2026 à aujourd'hui pour l'apprentissage ; 2024-2025 si possible pour l'hiver et les types de jours | classe fonctionnelle 1, 20 axes, deux sens (`note_here.md`, section 2) |
+| 1 | HERE : vitesses historiques par segment, 15 min, avec vitesse fluide et nombre de sondes ou confiance | mars 2026 à aujourd'hui pour l'apprentissage ; 2024-2025 si possible pour l'hiver et les types de jours | classes fonctionnelles 1 et 2 (nationales), 33 axes, deux sens (`note_here.md`, section 2) |
 | 1 | HERE : référentiel des segments (TMC ou links, géométrie) | | pour la projection sur les axes |
 | 2 | HERE : Traffic Patterns (vitesses typiques) | dernière version | entrée de la prévision à J+1 |
 | 2 | HERE : clé de l'API Traffic Flow | | collecte temps réel, 15 min |
 | fait | Calendrier Bison Futé (couleurs par jour, sens et zone) | 2016-2019, 2021-2026 | `donnees_reelles/calendrier/bison_fute.csv` (2020 manquant) |
 | fait | Vacances scolaires par zone et jours fériés | 2016 à 2026 | `donnees_reelles/calendrier/calendrier.csv`, une ligne par jour |
 | 3 | Débits Avatar | mars à octobre 2026 (aujourd'hui mai à juillet) | compteurs interurbains seulement |
-| 3 | Tracé exact des autoroutes (OSM, Route 500) | | améliore la détection des stations et les pk |
+| 3 | Tracé exact des axes et échangeurs (OSM) | | `telecharger_osm.py` depuis un poste qui accède à Overpass, puis `traces_osm.py` |
 
 ## 10. Limites et suite
 
@@ -601,9 +630,11 @@ reposeront sur le trafic HERE des années précédentes et sur des hypothèses, 
   l'occupation, les prévisions d'hiver resteront à prendre avec prudence.
 - **Débits Avatar** : faible information hors cycle journalier ; à confirmer sur l'historique long,
   avec les seuls compteurs interurbains.
-- **Tracé des autoroutes** : le tracé par villes étapes donne des pk à quelques km près et laisse
-  échapper les stations nommées sans référence à l'aire. Un tracé OSM ou Route 500 améliorera
-  la détection et les pk, et permettra un vrai graphe maillé (`aretes.csv`).
+- **Tracé des autoroutes** : le tracé par villes étapes donne des pk à quelques km près. La chaîne
+  OSM est prête (section 2.2) ; elle améliorera les pk et la sélection des stations de sortie, et
+  permettra un vrai graphe maillé (`aretes.csv`).
+- **Stations de sortie** : leur fréquentation mêle trafic local et transit ; le modèle doit
+  l'apprendre station par station, et la sélection est à revoir sur la carte.
 - **Biais d'exposition de l'étape 2** : elle est apprise sur le trafic observé mais utilisée avec le
   trafic prévu. Si l'écart pèse, il faudra l'apprendre sur des prévisions hors échantillon de
   l'étape 1.
@@ -623,6 +654,16 @@ python entrainer.py --donnees donnees_synthetiques --horizon-h 24 --sortie resul
 python reperer_stations_autoroute.py --referentiel charging_stations.csv --sortie donnees_reelles/stations.csv
 python -c "import pandas as pd; from donnees import convertir_snapshots_qualicharge as c; \
 c(pd.read_csv('charging_station_availability_snapshots.csv')).to_csv('occupation_bornes.csv', index=False)"
+# calendrier : couleurs Bison Futé des PDF, puis table journalière
+python bison_fute_pdf.py donnees_reelles/calendrier/brut/bison_fute/*.pdf \
+    --csv-2016 donnees_reelles/calendrier/brut/bison_fute/bison_fute_2016.csv --sortie donnees_reelles/calendrier/bison_fute.csv
+python calendrier.py --vacances donnees_reelles/calendrier/brut/vacances_scolaires_AntoineAugusti.csv \
+    --feries donnees_reelles/calendrier/brut/jours_feries_metropole_2016_2027.csv \
+    --bison-fute donnees_reelles/calendrier/bison_fute.csv --debut 2016-01-01 --fin 2026-12-31 \
+    --sortie donnees_reelles/calendrier/calendrier.csv
+# tracés OSM (depuis un poste qui accède à Overpass)
+python telecharger_osm.py --sortie donnees_reelles/osm/brut
+python traces_osm.py --brut donnees_reelles/osm/brut --sortie donnees_reelles
 # débits Avatar : rattachement au graphe et corrélations
 python rattacher_compteurs.py --donnees donnees_reelles --interurbains-seulement
 # scénario de pénétration VE à 10 %

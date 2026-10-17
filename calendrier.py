@@ -9,7 +9,8 @@ Sources (open data, à télécharger dans donnees_reelles/calendrier/brut/) :
   - fériés   : https://calendrier.api.gouv.fr/jours-feries/metropole.json  ({"AAAA-MM-JJ": "nom"}),
     ou un CSV date,nom
   - Bison Futé : CSV (date, sens, zone, couleur) extrait des calendriers annuels PDF ;
-    sens = depart|retour, zone = 1..6 ou 0 pour « toute la France », couleur = vert|orange|rouge|noir.
+    sens = depart|retour, zone = 1..6 ou 0 pour « toute la France », couleur = vert|orange|rouge|noir
+    (produit par bison_fute_pdf.py).
 
 Usage :
     python calendrier.py --vacances brut/vacances.csv --feries brut/jours_feries.json \\
@@ -60,18 +61,21 @@ def feries(chemin, jours: pd.DatetimeIndex) -> pd.DataFrame:
 
 
 def bison_fute(chemin, jours: pd.DatetimeIndex) -> pd.DataFrame:
-    """Niveau par sens : maximum sur les zones (national), et niveau par zone si fourni."""
+    """Niveau (0 vert .. 3 noir) par sens : national, par zone (au moins le national) et maximum.
+    Les années absentes du fichier (2020) sont laissées vides, pas mises à vert."""
     b = pd.read_csv(chemin, parse_dates=["date"])
     b["niveau"] = b["couleur"].str.lower().map(NIVEAUX_BF)
     out = pd.DataFrame(index=jours)
     for sens in ["depart", "retour"]:
         s = b[b["sens"] == sens]
-        out[f"bf_{sens}"] = s.groupby("date")["niveau"].max().reindex(jours).fillna(0).astype(int)
-        for zone in sorted(s["zone"].unique()):
-            if zone == 0:
-                continue
-            out[f"bf_{sens}_z{zone}"] = (s[s["zone"] == zone].groupby("date")["niveau"].max()
-                                         .reindex(jours).fillna(0).astype(int))
+        niv = lambda d: d.groupby("date")["niveau"].max().reindex(jours).fillna(0)
+        nat = niv(s[s["zone"] == 0])
+        out[f"bf_{sens}"] = nat
+        for zone in range(1, 7):
+            out[f"bf_{sens}_z{zone}"] = np.maximum(nat, niv(s[s["zone"] == zone]))
+        out[f"bf_{sens}_max"] = out[[f"bf_{sens}_z{z}" for z in range(1, 7)]].max(axis=1)
+    couvert = jours.year.isin(b["date"].dt.year.value_counts().loc[lambda v: v > 10].index)
+    out.loc[~couvert] = np.nan
     return out
 
 

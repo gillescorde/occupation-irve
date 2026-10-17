@@ -539,10 +539,14 @@ pour le dimensionnement et la préparation des week-ends rouges ou noirs.
 
 - **Calendrier détaillé** : jour de la semaine, fériés, ponts, et vacances scolaires **par zone**
   (A, B, C), qui ne commencent pas le même jour.
-- **Bison Futé** : la couleur est publiée par jour et par sens (départs, retours), au niveau national
-  avec une distinction pour l'Île-de-France, et des précisions régionales surtout en hiver vers les
-  Alpes **(à vérifier)**. Le temps réel est diffusé au format DATEX II ; l'existence d'une API pour
-  le calendrier des couleurs reste à vérifier.
+- **Bison Futé** : la couleur est publiée par jour et par sens (départs, retours), avec un niveau
+  national et un niveau plus élevé possible pour six zones (1 Île-de-France, 2 Grand-Ouest et Nord,
+  3 Bourgogne et Est, 4 Auvergne-Rhône-Alpes, 5 Sud-Ouest, 6 Arc méditerranéen). Il n'existe pas
+  d'historique en open data, hors 2016 (data.gouv.fr) : `bison_fute_pdf.py` l'extrait des
+  calendriers annuels PDF, en lisant les couleurs dans le rendu de la page. Historique obtenu :
+  2016 à 2019 et 2021 à 2026 (pas de calendrier 2020 trouvé), contrôlé à l'œil sur plusieurs mois
+  d'été. `calendrier.py` en tire, par sens, le niveau national, le niveau de chaque zone et le
+  maximum (0 vert à 3 noir).
 - **Géographie** : Bison Futé étant peu différencié par axe, le modèle doit apprendre où vont les
   vacanciers selon la période (février : A6, A7, A43 vers les Alpes ; été : A7, A9, A10, A63 vers le
   sud). On introduit des variables croisées axe × type de vacances × zone, en plus de l'identifiant
@@ -586,8 +590,8 @@ reposeront sur le trafic HERE des années précédentes et sur des hypothèses, 
 | 1 | HERE : référentiel des segments (TMC ou links, géométrie) | | pour la projection sur les axes |
 | 2 | HERE : Traffic Patterns (vitesses typiques) | dernière version | entrée de la prévision à J+1 |
 | 2 | HERE : clé de l'API Traffic Flow | | collecte temps réel, 15 min |
-| 2 | Calendrier Bison Futé (couleurs par jour et par sens) | 2024 à 2026 | même profondeur que l'historique HERE |
-| 2 | Vacances scolaires par zone et jours fériés | 2024 à 2026 | data.gouv.fr |
+| fait | Calendrier Bison Futé (couleurs par jour, sens et zone) | 2016-2019, 2021-2026 | `donnees_reelles/calendrier/bison_fute.csv` (2020 manquant) |
+| fait | Vacances scolaires par zone et jours fériés | 2016 à 2026 | `donnees_reelles/calendrier/calendrier.csv`, une ligne par jour |
 | 3 | Débits Avatar | mars à octobre 2026 (aujourd'hui mai à juillet) | compteurs interurbains seulement |
 | 3 | Tracé exact des autoroutes (OSM, Route 500) | | améliore la détection des stations et les pk |
 

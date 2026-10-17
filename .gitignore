@@ -9,3 +9,4 @@ resultats/
 here/
 *.joblib
 *.pt
+donnees_reelles/calendrier/brut/bison_fute/*.pdf

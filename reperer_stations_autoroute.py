@@ -222,9 +222,12 @@ def main():
     ap.add_argument("--sortie-axes", default=None, help="écrit aussi le tracé approché (axe, pk, lat, lon)")
     ap.add_argument("--tolerance-axe-nomme-km", type=float, default=15.0)
     ap.add_argument("--tolerance-aire-km", type=float, default=5.0)
+    ap.add_argument("--traces", help="axes_osm.csv (traces_osm.py) à la place des villes étapes")
+    ap.add_argument("--echangeurs", help="echangeurs.csv (traces_osm.py) : stations de sortie près d'un échangeur")
     ap.add_argument("--puissance-min-sortie-kw", type=float, default=150.0)
     ap.add_argument("--pdc-min-sortie", type=int, default=6)
-    ap.add_argument("--tolerance-sortie-km", type=float, default=2.0)
+    ap.add_argument("--tolerance-sortie-km", type=float, default=2.0,
+                    help="distance max au tracé, ou à l'échangeur le plus proche avec --echangeurs")
     ap.add_argument("--rayon-agglo-km", type=float, default=12.0,
                     help="pas de station de sortie si proche du centre d'une grande agglomération (trafic urbain)")
     args = ap.parse_args()
@@ -236,6 +239,13 @@ def main():
         "nb_pdc": ref["station.pdc_count"], "puissance_kw": ref["raw.summary.max_power"],
         "operateur": ref["station.nom_operateur"]})
     traces = {a: trace(a) for a in AXES}
+    if args.traces:  # tracé OSM (traces_osm.py) : pk routiers ; pk des villes étapes reprojetés dessus
+        osm = pd.read_csv(args.traces)
+        for a, tr in osm.groupby("axe"):
+            if a in AXES:
+                tr = tr.sort_values("pk").reset_index(drop=True)
+                traces[a] = (tr, {v: projeter_sur_axe(la, lo, tr)[1] for v, la, lo in AXES[a]})
+    sorties = pd.read_csv(args.echangeurs) if args.echangeurs else None
     if args.sortie_axes:
         pd.concat([t for t, _ in traces.values()]).round(5).to_csv(args.sortie_axes, index=False)
 
@@ -265,7 +275,12 @@ def main():
             # recharge des nationales, sans aires de service, et souvent moins chère que les aires
             for a, (tr, _) in traces.items():
                 d, pk, u = projeter_sur_axe(r.lat, r.lon, tr)
-                if d <= args.tolerance_sortie_km:
+                if sorties is not None:  # échangeurs OSM : distance à la sortie la plus proche de l'axe
+                    e = sorties[sorties["axe"] == a]
+                    d_sortie = haversine(r.lat, r.lon, e["lat"].values, e["lon"].values).min() if len(e) else np.inf
+                    if d_sortie <= args.tolerance_sortie_km:
+                        candidats.append((d, a, pk, u, "sortie_proche_axe"))
+                elif d <= args.tolerance_sortie_km:
                     candidats.append((d, a, pk, u, "sortie_proche_axe"))
         if not candidats:
             continue

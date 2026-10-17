@@ -51,6 +51,7 @@ def main():
                     help="compteur écarté s'il a moins de cette part d'heures mesurées sur la période d'occupation")
     ap.add_argument("--interurbains-seulement", action="store_true",
                     help="ne garder que les compteurs à plus de 30 km des extrémités urbaines des axes")
+    ap.add_argument("--traces", help="axes_osm.csv : recalcule le pk des compteurs sur ce tracé")
     ap.add_argument("--tmax-min", type=float, default=300.0)
     ap.add_argument("--tau0-min", type=float, default=90.0)
     args = ap.parse_args()
@@ -62,6 +63,11 @@ def main():
     occ = pd.read_csv(d / "occupation_bornes.csv", parse_dates=["horodatage"])
     occ["taux"] = (occ["nb_pdc_occupes"] / occ["nb_pdc_statut_connu"].where(occ["nb_pdc_statut_connu"] > 0)).clip(0, 1)
     cpt = pd.read_csv(d / "debits" / "compteurs.csv")
+    if args.traces:  # pk des compteurs recalculés sur le même tracé que les stations
+        from reperer_stations_autoroute import projeter_sur_axe
+        tr = {a: t.sort_values("pk").reset_index(drop=True) for a, t in pd.read_csv(args.traces).groupby("axe")}
+        cpt["pk_projete"] = [round(projeter_sur_axe(r.lat, r.lon, tr[r.axe_rattache])[1], 2)
+                             if r.axe_rattache in tr else r.pk_projete for r in cpt.itertuples()]
     q = pd.read_csv(d / "debits" / "comptages.csv", parse_dates=["horodatage"])
 
     # -------- qualité des comptages : on écarte les heures surtout estimées par Avatar

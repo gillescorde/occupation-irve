@@ -1,25 +1,60 @@
 station_id,nom,lat,lon,axe,sens,pk,nb_pdc,puissance_kw,operateur,distance_axe_approche_km,methode_axe,methode_sens
 FRFASP11568719,Fastned Aire de Vémars Est,49.071747,2.552983,A1,1,24.8,16,300.0,Fastned France,0.4,aire_proche_axe,cote_chaussee
 FRFASP11568718,Fastned Aire de Vémars Ouest,49.073179,2.551434,A1,2,24.9,16,300.0,Fastned France,0.3,aire_proche_axe,cote_chaussee
+FRMILP11437562,Milence Truck Charging Station Saint-Witz,49.088313,2.549234,A1,0,26.6,8,400.0,Milence,0.1,sortie_proche_axe,hors_aire
+FRIOYP13530862,IONITY GmbH IONITY Saint-Witz,49.089443,2.548005,A1,0,26.7,14,350.0,Ionity,0.2,sortie_proche_axe,hors_aire
+FRPD1PKFCWTZ,KFC - Saint-Witz,49.088774,2.556275,A1,0,26.7,6,240.0,Power Dot France,0.4,sortie_proche_axe,hors_aire
+FRELCP13050707,Electra Survilliers - Grand Frais,49.096637,2.531782,A1,0,27.3,6,300.0,Electra,1.5,sortie_proche_axe,hors_aire
+FRTSLP2566,"Senlis, France",49.208434,2.606698,A1,0,40.5,32,150.0,Tesla,1.9,sortie_proche_axe,hors_aire
+FRELCP13010953,Electra Senlis - Intermarché Hyper Senlis,49.222223,2.590281,A1,0,41.8,6,400.0,Electra,0.4,sortie_proche_axe,hors_aire
 FRVIAP102118,ENGIE Vianeo - A1 Ressons Ouest,49.518582,2.719719,A1,0,76.0,18,300.0,ENGIE Vianeo,1.9,nom,inconnu
 FRHPCPNF080294,AIRE DE RESSONS OUEST,49.520236,2.720103,A1,0,76.2,1,50.0,TotalEnergies Marketing France,1.9,aire_proche_axe,inconnu
 FRHPCPNF058967TOTEM,AIRE DE RESSONS EST,49.52435,2.72303,A1,0,76.7,17,300.0,TotalEnergies Marketing France,2.0,aire_proche_axe,inconnu
+FRELCP12953990,Electra Roye - Intermarché,49.706589,2.77541,A1,0,97.5,8,300.0,Electra,1.1,sortie_proche_axe,hors_aire
+FRIOYP13531522,IONITY GmbH IONITY Roye,49.708028,2.774556,A1,0,97.7,8,400.0,Ionity,1.2,sortie_proche_axe,hors_aire
+FRTSLP30379,"Roye, France",49.709465,2.773494,A1,0,97.8,32,250.0,Tesla,1.3,sortie_proche_axe,hors_aire
 FRVIAP103115,ENGIE Vianeo - A1 Coeur des Hauts-de-France Ouest,49.886757,2.838087,A1,2,118.0,20,400.0,ENGIE Vianeo,0.8,nom,cote_chaussee
+FRHPCPNF080346TIERSTOTEMSA,RELAIS DE COEUR DES HAUTS DE FRANCE,49.888161,2.840505,A1,0,118.2,16,300.0,TotalEnergies Marketing France,0.9,sortie_proche_axe,hors_aire
+FRPD1PMATARR,Supermarché Match - Arras,50.277402,2.788903,A1,0,161.4,12,200.0,Power Dot France,0.5,sortie_proche_axe,hors_aire
 FRVIAP102116,ENGIE Vianeo - A1 Phalempin Est,50.529556,3.046385,A1,1,195.2,10,300.0,ENGIE Vianeo,4.3,nom,cote_chaussee
 FRVIAP102117,ENGIE Vianeo - A1 Phalempin Ouest,50.531585,3.046085,A1,2,195.4,10,300.0,ENGIE Vianeo,4.2,nom,cote_chaussee
+FREVCP000798,Carrefour Energies - Les Ulis,48.675233,2.173555,A10,0,20.0,6,300.0,Allego,0.6,sortie_proche_axe,hors_aire
+FRVIAP161005,ENGIE Vianeo - CC les Ulis 2,48.67642,2.168895,A10,0,20.2,18,400.0,ENGIE Vianeo,0.3,sortie_proche_axe,hors_aire
+FRIOYP13530886,IONITY GmbH IONITY Longvilliers,48.565925,1.986062,A10,0,38.3,10,350.0,Ionity,2.0,sortie_proche_axe,hors_aire
 FRBPEP3EA040,FR | BP 3EA040 |  Aire de Saint Arnoult Ouest - A10 - Sens Paris Province - DC #06,48.555516,1.932888,A10,1,42.1,13,600.0,bp pulse,0.5,nom,direction
 FRALLPGO000751,Aire de Boutroux_A10,48.390125,1.890605,A10,0,63.9,10,300.0,Allego,2.3,nom,inconnu
 FRSHEP4696231,Shell AIRE DES PLAINES DE BEAUCE,48.275282,1.855629,A10,0,76.6,1,50.0,Shell Recharge,0.8,aire_proche_axe,inconnu
+FRIOYP13531066,IONITY GmbH IONITY Plaines de Beauce,48.274978,1.856042,A10,0,76.6,10,400.0,Ionity,0.8,sortie_proche_axe,hors_aire
+FRIOYP13531087,IONITY GmbH IONITY Val Neuvy,48.271147,1.856182,A10,0,77.0,10,350.0,Ionity,0.8,sortie_proche_axe,hors_aire
 FRSHEP5099716,Shell AIRE DE VAL-NEUVY,48.270309,1.855274,A10,0,77.1,1,50.0,Shell Recharge,0.9,aire_proche_axe,inconnu
 FRALLPGO000755,Aire de La Dauneuse_A10,48.1088995,1.8519114,A10,0,95.0,9,300.0,Allego,1.9,nom,inconnu
 FRALLPGO000753,Aire de Heron Cendre_A10,48.108181,1.849959,A10,0,95.1,9,300.0,Allego,2.1,nom,inconnu
+FRIOYP13531466,IONITY GmbH IONITY Artenay,48.082701,1.864814,A10,0,98.0,6,400.0,Ionity,1.1,sortie_proche_axe,hors_aire
+FRTSLP33155,"Artenay, France",48.082979,1.864693,A10,0,98.0,32,250.0,Tesla,1.1,sortie_proche_axe,hors_aire
+FRTSLP16732,"Blois, France - Capciné",47.611887,1.339365,A10,0,171.2,16,250.0,Tesla,1.5,sortie_proche_axe,hors_aire
+FRTSLP437327,"Blois, France - Avenue de Châteaudun",47.608743,1.328002,A10,0,172.0,9,250.0,Tesla,1.7,sortie_proche_axe,hors_aire
 FRBPEP3EA036,FR | BP 3EA036 | Auzouer-en-Touraine / Aire de Courte Epee - A10 - Sens Paris Bordeaux - DC #01,47.536843,0.962103,A10,1,200.8,11,600.0,bp pulse,6.2,nom,direction
 FRBPEP3EA039,FR | BP 3EA039 | Auzouer-en-Touraine / Aire de Picardiere - A10 - Sens Bordeaux Paris - DC #01,47.534762,0.962236,A10,2,200.9,11,600.0,bp pulse,6.0,nom,direction
+FRHPCPNF059736TOTEM,RELAIS STE MAURE DE TOURAINE,47.167146,0.630401,A10,0,251.4,8,175.0,TotalEnergies Marketing France,0.4,sortie_proche_axe,hors_aire
+FRIOYP13531172,IONITY GmbH IONITY Fontaine Colette,47.166119,0.631368,A10,0,251.5,8,350.0,Ionity,0.3,sortie_proche_axe,hors_aire
 FRVIAP103111,ENGIE Vianeo - A10 Châtellerault-Antran,46.906859,0.522438,A10,0,281.3,8,300.0,ENGIE Vianeo,3.7,nom,inconnu
+FRATLPFR01069,Atlante - Châtellerault - Optical Center,46.84086,0.54982,A10,0,288.2,8,600.0,Atlante France,0.4,sortie_proche_axe,hors_aire
+FRTSLP28780,"Châtellerault, France",46.836112,0.541874,A10,0,288.8,16,250.0,Tesla,0.9,sortie_proche_axe,hors_aire
+FREVZP083B392DA8A74FAEAC709E0D9C365,"EVzen - Chatellerault, Action Chatellerault",46.826586,0.559059,A10,0,289.6,6,180.0,EVzen,0.6,sortie_proche_axe,hors_aire
+FRIZFPFAST349,IZIVIA FAST - McDonald's - Chatellerault Sud,46.796796,0.528056,A10,0,293.5,10,200.0,IZIVIA,0.1,sortie_proche_axe,hors_aire
 FRBPEP3EA035,FR | BP 3EA035 | Naintre / Aire des Chagnats - A10 - Sens Bordeaux Paris - DC #03,46.794514,0.511441,A10,2,294.4,14,600.0,bp pulse,1.1,nom,direction
 FRBPEP3EA034,FR | BP 3EA034 | Poitiers / Aire de Cent Septiers - A10 - Sens Paris Bordeaux - DC #02,46.610184,0.326023,A10,1,319.3,13,600.0,bp Pulse,2.6,nom,direction
 FRALLPGO000216,Aire de Rouillé Pamproux Nord_A10,46.4531324,-0.0177964,A10,1,352.4,12,300.0,Allego,1.1,nom,cote_chaussee
+FRIOYP13530799,IONITY GmbH IONITY Rouille Sud,46.451625,-0.017597,A10,2,352.5,16,350.0,Ionity,1.2,sortie_proche_axe,cote_chaussee
+FRTSLP34043,"Chauray, France",46.340231,-0.384126,A10,0,383.1,8,250.0,Tesla,0.4,sortie_proche_axe,hors_aire
+FRATLPFR00161,Atlante - Niort - PEUGEOT NIORT,46.3351,-0.41245,A10,0,385.3,8,150.0,Atlante France,0.0,sortie_proche_axe,hors_aire
+FRELCP12953921,Electra Niort - E.Leclerc Centre,46.330655,-0.469154,A10,0,389.0,6,300.0,Electra,1.5,sortie_proche_axe,hors_aire
+FREVCP000136,Carrefour Energies - Niort,46.3179634,-0.4806879,A10,0,390.0,7,300.0,Allego,1.5,sortie_proche_axe,hors_aire
 FRELCP12954258,Electra A10 - Aire de la Benâte (direction Paris),46.010618,-0.539583,A10,2,424.3,9,400.0,Electra,1.0,nom,direction
+FRHPCPNF080362TOTEMTIERSSA,RELAIS DE FENIOUX OUEST,45.894616,-0.604571,A10,1,437.9,12,300.0,TotalEnergies Marketing France,1.3,sortie_proche_axe,cote_chaussee
+FRSHEP5268701,Shell Fenioux Est,45.8923,-0.60405,A10,2,438.2,6,300.0,Shell Recharge,1.2,sortie_proche_axe,cote_chaussee
+FRTSLP28781,"Saintes, France - Cours du Maréchal Leclerc",45.75317,-0.651512,A10,0,454.0,32,250.0,Tesla,1.7,sortie_proche_axe,hors_aire
+FRIOYP13530793,IONITY GmbH IONITY Saint Léger Est,45.610095,-0.598651,A10,2,469.8,6,350.0,Ionity,1.2,sortie_proche_axe,cote_chaussee
 FRATLPFR00309,Atlante - A10 - Aire de service de Saint-Léger Ouest (direction Bordeaux),45.609308,-0.59942,A10,1,469.9,34,300.0,Atlante France,1.1,nom,direction
 FRELCP12954200,Electra A10 - Aire de Saint Palais Est (direction Paris),45.512597,-0.610802,A10,2,480.5,12,400.0,Electra,0.7,nom,direction
 FRELCP12954201,Electra A10 - Aire de Saint Palais Ouest (direction Bordeaux),45.512687,-0.613711,A10,1,480.5,8,400.0,Electra,0.9,nom,direction
@@ -28,7 +63,14 @@ FRELCP12954378,Electra A10 - Aire de Saint Caprais (direction Bordeaux),45.29672
 FREVAP33502A,e-Vadea - Saugon - A10 Terres de l'Estuaire,45.189957,-0.490309,A10,0,517.0,16,300.0,SPIE CityNetworks,5.8,nom,inconnu
 FRELCP12954199,Electra A10 - Aire de Cézac (direction Paris),45.067029,-0.460093,A10,2,530.9,12,400.0,Electra,7.0,nom,direction
 FRATLPFR00307,Atlante - A10 - Aire de service de Meillac (direction Saintes),44.975352,-0.432787,A10,2,541.2,19,300.0,Atlante France,8.3,nom,direction
+FRIOYP13531149,IONITY GmbH IONITY Chartres Gasville,48.468782,1.580008,A11,0,26.6,6,350.0,Ionity,0.6,sortie_proche_axe,hors_aire
+FRIOYP13530727,IONITY GmbH IONITY Chartres Bois Paris,48.467261,1.578674,A11,0,26.8,8,350.0,Ionity,0.5,sortie_proche_axe,hors_aire
+FRTSLP26192,"Chartres, France",48.446612,1.53901,A11,0,30.3,20,250.0,Tesla,0.6,sortie_proche_axe,hors_aire
+FREVCP000178,Carrefour Energies - Chartres,48.4502625,1.5182257,A11,0,31.6,7,300.0,Allego,0.3,sortie_proche_axe,hors_aire
+FRPD1PIBSLCD,Ibis Styles - Chartres,48.427155,1.514001,A11,0,32.8,6,200.0,Power Dot France,2.0,sortie_proche_axe,hors_aire
+FRORVP2801,OREVE - LUISANT,48.4280314,1.4597428,A11,0,36.5,6,400.0,OBORNES,0.7,sortie_proche_axe,hors_aire
 FRBPEP3EA041,FR | BP 3EA041 | Aire de Ver-les-Chartres les Souchets - A11 - Sens Paris Nantes - DC #06,48.372502,1.464896,A11,1,37.7,15,600.0,bp pulse,6.8,nom,direction
+FRHPCPNF059459,RELAIS AMILLY,48.437165,1.424195,A11,0,38.7,7,300.0,TotalEnergies Marketing France,1.0,sortie_proche_axe,hors_aire
 FRBPEP3EA037,FR | BP 3EA037 | Ermenonville-la-Grande / Aire de Dix Sept Setiers - A11 - Sens Nantes Paris - DC #06,48.321503,1.360395,A11,2,46.6,12,600.0,bp Pulse,10.2,nom,direction
 FRVIAP104111,ENGIE Vianeo - A11 Les Manoirs du Perche,48.24037,1.083104,A11,0,68.7,10,300.0,ENGIE Vianeo,13.6,nom,inconnu
 FRVIAP103110,ENGIE Vianeo - A11 Brou-Dampierre,48.239338,1.082592,A11,0,68.8,14,300.0,ENGIE Vianeo,13.7,nom,inconnu
@@ -40,70 +82,249 @@ FRALLPGO000756,Aire de Launay_A11,47.338495,-1.380108,A11,0,294.6,11,300.0,Alleg
 FRALLPGO000752,Aire de Cellier_A11,47.33975,-1.383783,A11,0,294.8,9,300.0,Allego,4.5,nom,inconnu
 FRVIAP102114,ENGIE Vianeo - A13 Morainvilliers Nord,48.941591,1.954211,A13,1,24.5,12,300.0,ENGIE Vianeo,1.5,nom,cote_chaussee
 FRVIAP102115,ENGIE Vianeo - A13 Morainvilliers Sud,48.941982,1.95123,A13,2,24.8,12,300.0,ENGIE Vianeo,1.5,nom,cote_chaussee
+FRATLPFR00705,Atlante - Flins-sur-Seine - Del Arte,48.96843,1.86699,A13,0,31.6,6,600.0,Atlante France,2.0,sortie_proche_axe,hors_aire
+FREVCP000294,Carrefour Energies - Flins sur Seine,48.966258,1.8641815,A13,0,31.7,7,300.0,Allego,1.7,sortie_proche_axe,hors_aire
+FRELCP12953868,Electra Aubergenville - CC Family Village,48.96404,1.859355,A13,0,31.9,9,300.0,Electra,1.3,sortie_proche_axe,hors_aire
+FRHPCPNF059614,RELAIS DE LA MAULDRE,48.961863,1.812266,A13,0,35.0,8,300.0,TotalEnergies Marketing France,0.2,sortie_proche_axe,hors_aire
+FREVCP000156,Carrefour Energies - Limay,48.9904499,1.7537652,A13,0,40.1,7,300.0,Allego,1.2,sortie_proche_axe,hors_aire
+FRELCP13013202,Electra Mantes-la-Ville - Grand Frais,48.978036,1.721598,A13,0,41.8,6,300.0,Electra,0.9,sortie_proche_axe,hors_aire
+FRELCP12954485,Electra Buchelay - Del Arte,48.986597,1.677781,A13,0,45.0,6,300.0,Electra,1.4,sortie_proche_axe,hors_aire
+FRATLPFR00930,Atlante - Buchelay - Fitness Park,48.99064,1.67856,A13,0,45.2,8,300.0,Atlante France,1.0,sortie_proche_axe,hors_aire
+FRTSLP6308,"Buchelay, France",48.988703,1.670878,A13,0,45.6,8,150.0,Tesla,1.5,sortie_proche_axe,hors_aire
 FRFASP11568710,Fastned Aire de Rosny-Sud,48.992331,1.63311,A13,2,48.2,8,300.0,Fastned France,2.4,aire_proche_axe,cote_chaussee
+FREVCP000199,Carrefour Energies - Tourville,49.3290423,1.0976854,A13,0,102.1,6,300.0,Allego,1.5,sortie_proche_axe,hors_aire
+FRHPCPNF080261,RELAIS BOSGOUET NORD,49.361312,0.864688,A13,1,121.6,8,175.0,TotalEnergies Marketing France,1.3,sortie_proche_axe,cote_chaussee
 FRFASP11568743,Fastned Aire de Bosgouet Sud,49.360989,0.861169,A13,2,121.9,8,300.0,Fastned France,1.3,aire_proche_axe,cote_chaussee
+FRTSLP28783,"Bourg-Achard, France",49.359966,0.81766,A13,0,125.0,20,250.0,Tesla,1.7,sortie_proche_axe,hors_aire
 FRVIAP102101,ENGIE Vianeo - A13 Beuzeville Nord,49.324464,0.32767,A13,1,160.7,8,300.0,ENGIE Vianeo,3.2,nom,cote_chaussee
 FRVIAP102102,ENGIE Vianeo - A13 Beuzeville Sud,49.321005,0.320512,A13,2,161.3,8,300.0,ENGIE Vianeo,2.9,nom,cote_chaussee
+FRYAWP90938287,Pont-L'Eveque,49.285706,0.205426,A13,0,170.1,6,300.0,Yaway,0.3,sortie_proche_axe,hors_aire
+FRTSLP1735,"Châteauroux, France",46.862938,1.716345,A20,0,47.9,16,150.0,Tesla,1.5,sortie_proche_axe,hors_aire
+FRIOYP13531052,IONITY GmbH IONITY Châteauroux Nord,46.850918,1.705334,A20,0,49.5,8,350.0,Ionity,1.5,sortie_proche_axe,hors_aire
+FREVZP91F75DF2D6034717ABF09130A45C1,"EVzen - Saint Maur, GEMO St Maur",46.778772,1.644917,A20,0,58.6,6,180.0,EVzen,1.4,sortie_proche_axe,hors_aire
+FRTSLP34053,"Argenton-sur-Creuse, France",46.573166,1.502554,A20,0,83.6,20,250.0,Tesla,1.2,sortie_proche_axe,hors_aire
 FRELCP12954683,Electra Salon-La-Tour - Parcelle A20,45.481249,1.52905,A20,0,213.6,8,300.0,Electra,1.0,nom,inconnu
+FRTSLP33162,"Saint-Pardoux-l'Ortigier, France",45.306378,1.562015,A20,0,233.3,12,250.0,Tesla,1.1,sortie_proche_axe,hors_aire
+FRIOYP13530819,IONITY GmbH IONITY Pech Montat Ouest,45.030881,1.524313,A20,1,264.0,12,350.0,Ionity,1.4,sortie_proche_axe,cote_chaussee
+FRHPCPNF078243TOTEM,RELAIS BOIS DE DOURRE,44.231895,1.529364,A20,0,354.3,8,175.0,TotalEnergies Marketing France,1.1,sortie_proche_axe,hors_aire
+FRIOYP13531424,IONITY GmbH IONITY Caussade,44.149397,1.525147,A20,0,364.0,8,400.0,Ionity,0.0,sortie_proche_axe,hors_aire
+FRMFCPMONTAUBAN,MONTAUBAN,44.05079,1.394737,A20,0,379.1,6,320.0,Plug Inn fast charge,0.2,sortie_proche_axe,hors_aire
+FRPD1PRTPMTB,Retail Park - Montauban,44.039578,1.384623,A20,0,380.5,8,200.0,Power Dot France,0.5,sortie_proche_axe,hors_aire
+FREVZP28EE7D709C7C4189B1B9336CC95C7,"EVzen - Montauban, Litrimarché Montauban",44.037113,1.384592,A20,0,380.7,6,180.0,EVzen,0.7,sortie_proche_axe,hors_aire
+FRTSLP20437,"Montauban - Aussonne, France",44.036554,1.378,A20,0,381.1,16,250.0,Tesla,0.3,sortie_proche_axe,hors_aire
 FRVIAP103109,ENGIE Vianeo - A20 Nauze Vert,43.957677,1.3265,A20,0,384.0,16,300.0,ENGIE Vianeo,7.2,nom,inconnu
+FRATLPFR00351,Atlante - Calais - Kiabi CALAIS,50.936666,1.862931,A26,0,0.0,8,300.0,Atlante France,0.8,sortie_proche_axe,hors_aire
+FRPD1PMATCAL,"Supermarché Match - Calais, Lafayette",50.943705,1.865573,A26,0,0.0,10,300.0,Power Dot France,1.6,sortie_proche_axe,hors_aire
+FRFASP11568867,Fastned Longuenesse,50.740538,2.261122,A26,0,35.2,8,400.0,Fastned France,0.3,sortie_proche_axe,hors_aire
 FRPD1PKARASL,Karcher - Aire-sur-la-Lys,50.661302,2.394852,A26,0,48.1,2,100.0,Power Dot France,0.6,aire_proche_axe,inconnu
 FREVCP000197,Carrefour Energies - Aire-sur-la-Lys,50.6361899,2.4110639,A26,0,50.8,4,150.0,Allego,1.9,aire_proche_axe,inconnu
 FRPLNP12569331,Aire de Souchez - A26,50.404148,2.743435,A26,0,86.4,4,110.0,Plenitude On The Road,2.0,nom,inconnu
 FRFASP11568733,Fastned Aire de Wancourt Est,50.261485,2.864158,A26,2,105.9,8,300.0,Fastned France,0.6,aire_proche_axe,cote_chaussee
 FRSHEP5233160,Shell- France Aire de Rumaucourt HW,50.2274772,3.0643557,A26,0,120.5,5,300.0,Shell Recharge,1.4,aire_proche_axe,inconnu
+FRIOYP13530987,IONITY GmbH IONITY Baralle,50.225478,3.070357,A26,0,121.0,6,350.0,Ionity,1.3,sortie_proche_axe,hors_aire
+FRATLPFR01055,Atlante - Cambrai - Hotel Kyriad Cambrai,50.17645,3.20632,A26,0,132.0,8,300.0,Atlante France,0.0,sortie_proche_axe,hors_aire
+FRPD1PITMSTQ,Intermarché Super - Saint-Quentin,49.851621,3.264099,A26,0,169.1,10,200.0,Power Dot France,1.8,sortie_proche_axe,hors_aire
 FRTSLP3045,"Aire d'Urvillers, France",49.786878,3.335433,A26,0,177.3,16,150.0,Tesla,1.5,aire_proche_axe,inconnu
+FREVCP000161,Carrefour Energies - Laon,49.5487909,3.6135821,A26,0,210.4,7,300.0,Allego,1.2,sortie_proche_axe,hors_aire
 FRVIAP102113,ENGIE Vianeo - A26 Mont de Nizy,49.449858,3.925151,A26,0,233.3,8,300.0,ENGIE Vianeo,9.1,nom,inconnu
 FRVIAP102105,ENGIE Vianeo - A26 Champ Roland,49.445716,3.927966,A26,0,233.8,8,300.0,ENGIE Vianeo,9.0,nom,inconnu
 FRSHEP5869993,Shell- France Aire de Sommesous HW,48.7293536,4.2288233,A26,0,322.7,23,300.0,Shell Recharge,2.4,aire_proche_axe,inconnu
 FRSHEP5233159,Shell- France Aire de Charmont-sous-Barbuise HW,48.411051,4.142706,A26,0,358.5,1,50.0,Shell Recharge,1.1,aire_proche_axe,inconnu
+FRZUNP5733050018450013243,Zunder Kanfen,49.43423982,6.11201622,A31,0,2.4,8,400.0,Zunder,2.0,sortie_proche_axe,hors_aire
+FRLDLPLFR3253EVCP,LFR3253EVCP02,49.41588,6.139335,A31,0,4.9,6,300.0,Lidl France,0.6,sortie_proche_axe,hors_aire
+FRPD1PCORMDL,Carrefour - Mondelange,49.26063,6.176047,A31,0,22.5,10,200.0,Power Dot France,0.4,sortie_proche_axe,hors_aire
+FRPD1PMAVTAL,Marques Avenue - Talange,49.230065,6.18011,A31,0,25.9,16,200.0,Power Dot France,0.7,sortie_proche_axe,hors_aire
 FRVIAP103116,ENGIE Vianeo - A31 Saint-Rémy,49.179797,6.176505,A31,0,31.5,8,300.0,ENGIE Vianeo,0.5,nom,inconnu
 FRPLNP11946038,Aire de Service La Maxe - Autoroute A31,49.151083,6.184735,A31,0,34.7,10,1200.0,Plenitude On The Road,1.1,nom,inconnu
 FRFASP11568739,Fastned Aire de La Maxe,49.150483,6.1847,A31,0,34.8,16,300.0,Fastned France,1.1,aire_proche_axe,inconnu
+FRMILP9141590,Milence Truck Charging Station Gondreville,48.68962,6.01522,A31,0,98.1,8,400.0,Milence,0.6,sortie_proche_axe,hors_aire
+FRIOYP13531289,IONITY GmbH IONITY Dommartin,48.672951,5.925497,A31,0,104.8,14,350.0,Ionity,0.9,sortie_proche_axe,hors_aire
+FRPD1PCORTOL,Carrefour - Toul,48.664235,5.888013,A31,0,109.0,10,180.0,Power Dot France,0.5,sortie_proche_axe,hors_aire
 FRVIAP101112,ENGIE Vianeo - A31 Montigny-le-Roi,47.977038,5.498041,A31,0,190.4,13,300.0,ENGIE Vianeo,5.4,nom,inconnu
 FRVIAP101113,ENGIE Vianeo - A31 Val de Meuse,47.975368,5.498553,A31,0,190.5,13,300.0,ENGIE Vianeo,5.5,nom,inconnu
+FRLDLPLFR3452EVCP,LFR3452EVCP05,47.83696,5.331304,A31,0,209.9,8,400.0,Lidl France,1.0,sortie_proche_axe,hors_aire
 FREVAP21111B,e-Vadea - Brognon - A31 Dijon Spoy (direction Toul),47.425011,5.172468,A31,2,257.1,15,300.0,SPIE CityNetworks,5.4,nom,direction
 FREVAP21111A,e-Vadea - Brognon - A31 Dijon Brognon (direction Beaune),47.421322,5.171659,A31,1,257.5,19,300.0,SPIE CityNetworks,5.5,nom,direction
 FRFASP11568649,Fastned Aire de Gevrey - Chambertin Ouest,47.216809,5.001847,A31,1,283.1,8,300.0,Fastned France,2.1,aire_proche_axe,cote_chaussee
+FRTSLP27742,"Beaune Nord, France",47.0432,4.839921,A31,0,305.7,28,250.0,Tesla,1.1,sortie_proche_axe,hors_aire
+FRPD1PASCCHO,Grand Frais - Choisey,47.062007,5.452517,A36,0,47.5,8,240.0,Power Dot France,1.9,sortie_proche_axe,hors_aire
+FRMFCPDOLE,DOLE,47.111341,5.497932,A36,0,52.7,6,320.0,Plug Inn fast charge,2.0,sortie_proche_axe,hors_aire
 FRVIAP101105,ENGIE Vianeo - A36 Dole Audelange,47.147381,5.580425,A36,0,60.0,9,300.0,ENGIE Vianeo,3.3,nom,inconnu
 FRVIAP101106,ENGIE Vianeo - A36 Dole Romange,47.149066,5.585301,A36,0,60.4,9,300.0,ENGIE Vianeo,3.3,nom,inconnu
 FRECHPCLLNW,Torpes - Parking de l'aire de jeux,47.169445,5.88835,A36,0,82.4,2,60.0,EASYCHARGE,3.4,aire_proche_axe,inconnu
 FREVAP25368B,e-Vadea - Marchaux-Chaudefontaine - A36 Besançon Marchaux,47.327026,6.125201,A36,0,106.0,13,300.0,SPIE CityNetworks,5.3,nom,inconnu
 FREVAP25368A,e-Vadea - Marchaux-Chaudefontaine - A36 Besançon Champoux,47.328903,6.127125,A36,0,106.2,13,300.0,SPIE CityNetworks,5.4,nom,inconnu
 FRFASP11568651,Fastned Aire d’Écot Sud,47.440536,6.728741,A36,1,152.3,8,300.0,Fastned France,4.3,aire_proche_axe,cote_chaussee
+FRTSLP31398,"Montbéliard, France",47.500581,6.812343,A36,0,160.9,28,250.0,Tesla,1.4,sortie_proche_axe,hors_aire
+FRPD1PCORMBL,Carrefour - Montbéliard,47.528783,6.809088,A36,0,162.3,10,200.0,Power Dot France,1.4,sortie_proche_axe,hors_aire
+FRELCP12954364,Electra Montevrain - CC Clos du Chêne,48.856274,2.752609,A4,0,26.2,6,300.0,Electra,2.0,sortie_proche_axe,hors_aire
+FRATLPFR00300,Atlante - Nanteuil-lès-Meaux - GÉMO MEAUX,48.94101,2.87992,A4,0,39.4,8,300.0,Atlante France,0.8,sortie_proche_axe,hors_aire
+FRVIAP122177,ENGIE Vianeo - B&B HOTEL MEAUX,48.957948,2.907694,A4,0,42.2,8,300.0,ENGIE Vianeo,0.3,sortie_proche_axe,hors_aire
 FRFASP11568737,Fastned Aire de Changis sur Marne,48.9646,3.054163,A4,0,52.7,8,300.0,Fastned France,1.7,aire_proche_axe,inconnu
 FRFASP11568738,Fastned Aire de Ussy sur Marne,48.970463,3.063073,A4,0,53.5,8,300.0,Fastned France,1.2,aire_proche_axe,inconnu
+FRATLPFR00279,Atlante - Essômes-sur-Marne - CHAUSSEA,49.03447,3.37929,A4,0,77.6,8,300.0,Atlante France,0.2,sortie_proche_axe,hors_aire
+FRPD1PBBFCHA,Boulangerie Ange - Château-Thierry,49.036584,3.382653,A4,0,77.9,8,160.0,Power Dot France,0.0,sortie_proche_axe,hors_aire
 FRFASP11568713,Fastned Aire de Valmy-Orbeval,49.072318,4.788939,A4,0,188.3,4,300.0,Fastned France,4.0,aire_proche_axe,inconnu
 FRFASP11568714,Fastned Aire de Valmy Le Moulin,49.073637,4.790058,A4,0,188.3,4,300.0,Fastned France,3.8,aire_proche_axe,inconnu
+FRDREP270655545,Avenue de Metz 50,49.148890402,5.400307056,A4,0,233.0,6,300.0,DREAM ENERGY,1.1,sortie_proche_axe,hors_aire
+FRPD1PCORVRD,Carrefour - Verdun,49.142742,5.408307,A4,0,233.6,7,150.0,Power Dot France,1.8,sortie_proche_axe,hors_aire
 FRVIAP102109,ENGIE Vianeo - A4 Longeville Nord,49.132162,6.659289,A4,2,324.5,8,300.0,ENGIE Vianeo,3.4,nom,cote_chaussee
 FRVIAP102110,ENGIE Vianeo - A4 Longeville Sud,49.132738,6.659985,A4,1,324.6,8,300.0,ENGIE Vianeo,3.5,nom,cote_chaussee
+FRPD1PCORAVD,Carrefour - Longeville-lès-Saint-Avold,49.111423,6.694049,A4,0,327.0,10,175.0,Power Dot France,1.3,sortie_proche_axe,hors_aire
+FRTSLP33183,"Phalsbourg, France",48.773088,7.243184,A4,0,381.5,8,250.0,Tesla,0.6,sortie_proche_axe,hors_aire
+FRPD1PMCHSVR,Supermarché Match - Saverne,48.735343,7.365061,A4,0,391.2,8,200.0,Power Dot France,0.6,sortie_proche_axe,hors_aire
 FRVIAP102104,ENGIE Vianeo - A4 Brumath Ouest,48.723811,7.691951,A4,1,412.6,10,300.0,ENGIE Vianeo,11.6,nom,cote_chaussee
 FRVIAP102103,ENGIE Vianeo - A4 Brumath Est,48.721271,7.696511,A4,2,413.0,10,300.0,ENGIE Vianeo,11.6,nom,cote_chaussee
+FRDRVPCRFMKT010001,DRIVECO - Carrefour Market - Saint-Denis-Les-Bourg,46.201299,5.199339,A40,0,26.9,6,150.0,DRIVECO,1.3,sortie_proche_axe,hors_aire
+FREVAP01195A,e-Vadea - Jasseron - A40 Teyssonge,46.205566,5.294519,A40,0,33.8,13,300.0,SPIE CityNetworks,1.3,nom,inconnu
+FRALLPGO000414,Pathé Archamps,46.1389003,6.123249,A40,0,99.5,10,300.0,Allego,1.2,sortie_proche_axe,hors_aire
+FRTSLP2622,"Archamps, France",46.137123,6.123175,A40,0,99.5,16,150.0,Tesla,1.4,sortie_proche_axe,hors_aire
+FRIOYP13531429,IONITY GmbH IONITY Etrembieres,46.179864,6.233669,A40,0,109.0,14,400.0,Ionity,0.4,sortie_proche_axe,hors_aire
+FRTSLP30399,"Annemasse, France",46.194771,6.255439,A40,0,110.0,16,250.0,Tesla,1.8,sortie_proche_axe,hors_aire
+FRIOYP13531167,IONITY GmbH IONITY Bonneville,46.064297,6.411364,A40,0,127.4,8,350.0,Ionity,1.6,sortie_proche_axe,hors_aire
+FRORVP7401,OREVE - BONNEVILLE,46.074542,6.431279,A40,0,128.8,10,400.0,OBORNES,0.2,sortie_proche_axe,hors_aire
+FRTSLP58603,"Scionzier, France",46.070203,6.551086,A40,0,138.0,8,250.0,Tesla,0.8,sortie_proche_axe,hors_aire
+FRTSLP7138,"Sallanches, France",45.952691,6.629194,A40,0,152.9,14,250.0,Tesla,0.3,sortie_proche_axe,hors_aire
+FRELCP12953872,Electra Passy - Decathlon Mountain Store,45.916657,6.691718,A40,0,159.7,7,300.0,Electra,0.3,sortie_proche_axe,hors_aire
+FRFASP11568708,Fastned Aire de Saint-Nazaire les Eymes,45.243957,5.86101,A41,0,9.8,8,300.0,Fastned France,2.0,aire_proche_axe,inconnu
+FRVIAP103104,ENGIE Vianeo - A41 Bois Claret,45.246799,5.86681,A41,0,10.3,8,300.0,ENGIE Vianeo,2.1,nom,inconnu
+FRTSLP1740,"Bernin, France",45.266076,5.87643,A41,0,12.3,16,250.0,Tesla,1.0,sortie_proche_axe,hors_aire
+FRELCP13363515,Electra Crolles - Auchan,45.27074,5.892514,A41,0,13.4,6,300.0,Electra,1.5,sortie_proche_axe,hors_aire
+FRDRVPINVEST2730001,DRIVECO - Chambery - Les Halles Savoyardes,45.591389,5.902944,A41,0,53.3,8,300.0,DRIVECO,1.2,sortie_proche_axe,hors_aire
+FRBPEP3EA046,FR | BP 3EA046 | Chambery / Centre commercial Chamnord - DC #01,45.595003,5.89642,A41,0,53.8,12,500.0,bp pulse,1.7,sortie_proche_axe,hors_aire
+FRPD1PEKSCHA,Ekosport Chambery Landiers (73),45.604337,5.891709,A41,0,54.8,9,150.0,Power Dot France,2.0,sortie_proche_axe,hors_aire
+FRELCP12953942,Electra Drumettaz-Clarafond - E.Leclerc,45.655458,5.912955,A41,0,60.4,13,300.0,Electra,0.0,sortie_proche_axe,hors_aire
+FRIOYP13530895,IONITY GmbH IONITY Mouxy,45.673865,5.929976,A41,0,62.4,6,350.0,Ionity,1.4,sortie_proche_axe,hors_aire
+FRPD1PDMMALB,Domaine de Marlioz - Aix-les-Bains,45.675156,5.909023,A41,0,62.6,6,150.0,Power Dot France,0.2,sortie_proche_axe,hors_aire
+FRFASP11568716,Fastned Aire des Crêts Blancs,45.998903,6.166899,A41,0,107.9,4,300.0,Fastned France,5.0,aire_proche_axe,inconnu
+FRFASP11568717,Fastned Aire de Groisy,45.999881,6.167004,A41,0,108.0,4,300.0,Fastned France,5.0,aire_proche_axe,inconnu
+FRTSLP28456,"Saint-Julien-en-Genevois, France",46.129425,6.088881,A41,0,122.7,20,250.0,Tesla,0.9,sortie_proche_axe,hors_aire
+FRELCP12954696,Electra Mions - Grand Frais,45.680811,4.957273,A43,0,1.3,6,300.0,Electra,1.8,sortie_proche_axe,hors_aire
+FRTSLP1750,"Aire de Saint-Priest, France",45.698042,4.975513,A43,0,1.9,12,150.0,Tesla,0.5,aire_proche_axe,inconnu
+FRTSLP1749,"Aire de Manissieux, France",45.69848,4.977541,A43,0,2.0,12,150.0,Tesla,0.7,aire_proche_axe,inconnu
+FREVZPBCF0ED5D6C12472AB7A483101D55B,"EVzen - Saint Bonnet De Mure, Parc du Chanay",45.701032,5.010256,A43,0,4.3,6,180.0,EVzen,1.9,sortie_proche_axe,hors_aire
+FRBPEP3EA009,FR | BP 3EA009 | The Village Outlet - DC #03,45.625455,5.162362,A43,0,18.4,24,600.0,bp pulse,1.4,sortie_proche_axe,hors_aire
+FRHPCPNF059672TOTEM,RELAIS L'ISLE D'ABEAU NORD,45.613803,5.212535,A43,2,22.5,8,175.0,TotalEnergies Marketing France,1.2,sortie_proche_axe,cote_chaussee
+FRIOYP13531061,IONITY GmbH IONITY l'Isle-d'Abeau,45.611787,5.212795,A43,0,22.6,14,350.0,Ionity,1.4,sortie_proche_axe,hors_aire
+FREVCP000134,Carrefour Energies - Isle d'Abeau,45.6139282,5.2249906,A43,0,23.4,6,300.0,Allego,0.8,sortie_proche_axe,hors_aire
+FRFASP12249018,Fastned Aire de Romagnieu,45.577663,5.630208,A43,0,55.6,8,300.0,Fastned France,0.9,aire_proche_axe,inconnu
+FRVIAP103105,ENGIE Vianeo - A43 Le Guiers,45.578152,5.633879,A43,0,55.9,8,300.0,ENGIE Vianeo,0.9,nom,inconnu
+FREVCP000184,Carrefour Energies - Bassens,45.5736435,5.9443689,A43,0,79.4,7,300.0,Allego,1.5,sortie_proche_axe,hors_aire
+FRTSLP1733,"Barberaz, France",45.560908,5.949771,A43,0,80.6,8,150.0,Tesla,0.6,sortie_proche_axe,hors_aire
+FRTSLP11606,"Aire du Granier, France",45.525196,5.974589,A43,0,84.5,28,250.0,Tesla,1.4,aire_proche_axe,inconnu
+FRTSLP11605,"Aire de l'Abis, France",45.524705,5.976853,A43,0,84.7,29,250.0,Tesla,1.3,aire_proche_axe,inconnu
+FRTSLP438011,"Porte-de-Savoie, France",45.504137,6.037077,A43,0,89.8,19,250.0,Tesla,0.2,sortie_proche_axe,hors_aire
+FRTSLP30242,"Saint-Jean-de-Maurienne, France",45.266392,6.372743,A43,0,142.9,8,250.0,Tesla,0.8,sortie_proche_axe,hors_aire
+FRFASP11568776,Fastned Aire de Saint-Julien-Mont-Denis,45.245848,6.423404,A43,0,147.4,4,300.0,Fastned France,1.7,aire_proche_axe,inconnu
+FRPLNP4118449,"Eni Station - Autoroute de la Maurienne, A43",45.217556,6.463388,A43,0,151.4,6,150.0,Plenitude On The Road,3.6,nom,inconnu
+FRIOYP13531136,IONITY GmbH IONITY Freney,45.196766,6.623059,A43,0,164.0,6,350.0,Ionity,1.6,sortie_proche_axe,hors_aire
+FRIOYP13530969,IONITY GmbH IONITY Ile Rose,45.277,5.623,A49,0,1.2,14,350.0,Ionity,1.6,sortie_proche_axe,hors_aire
+FRVIAP103106,ENGIE Vianeo - A49 Porte de la Drôme,45.075703,5.211201,A49,0,44.8,16,300.0,ENGIE Vianeo,3.3,nom,inconnu
+FRVIAP103107,ENGIE Vianeo - A49 Royan Vercors,45.071773,5.21108,A49,0,45.0,8,300.0,ENGIE Vianeo,3.7,nom,inconnu
+FRATLPFR00302,Atlante - Saint-Paul-lès-Romans - Intersport,45.06065,5.10788,A49,0,52.8,8,300.0,Atlante France,1.1,sortie_proche_axe,hors_aire
+FRTSLP30255,"Bourg-de-Péage, France",45.033274,5.051818,A49,0,58.6,12,250.0,Tesla,1.4,sortie_proche_axe,hors_aire
+FRORVP2602,OREVE - BOURG DE PEAGE,45.0194039,5.0375249,A49,0,60.5,8,400.0,OBORNES,1.6,sortie_proche_axe,hors_aire
+FREBNPBHMGM,ALIXAN - Aire de Bayanne,44.9995,4.99937,A49,0,64.2,2,50.0,EASYCHARGE,0.9,aire_proche_axe,inconnu
+FRATLPFR00907,Atlante - Valence - Chaussea,44.95276,4.93212,A49,0,71.6,8,600.0,Atlante France,0.5,sortie_proche_axe,hors_aire
+FREVZP09703FA9CAA3483A9ADC3F21921A7,"EVzen - Valence, DEVRED1902",44.951303,4.932586,A49,0,71.7,6,180.0,EVzen,0.6,sortie_proche_axe,hors_aire
+FRATLPFR00910,Atlante - Valence - C&A,44.9531,4.92985,A49,0,71.7,8,300.0,Atlante France,0.3,sortie_proche_axe,hors_aire
+FRHPCPNF007357,RELAIS VALENCE DAME BLANCHE,44.940452,4.908895,A49,0,72.5,8,300.0,TotalEnergies Marketing France,1.4,sortie_proche_axe,hors_aire
 FREVAP77384A,e-Vadea - Réau - A5a Plessis Picard,48.601856,2.601411,A5,0,0.0,15,300.0,SPIE CityNetworks,2.8,nom,inconnu
 FRVIAP101107,ENGIE Vianeo - A5b Galande la Mare Laroche,48.610634,2.635366,A5,0,0.0,9,300.0,ENGIE Vianeo,3.6,nom,inconnu
+FRELCP12954824,Electra Cesson - RP Woodshop,48.58599,2.604085,A5,0,0.0,6,300.0,Electra,1.3,sortie_proche_axe,hors_aire
+FRTSLP29873,"Cesson, France",48.584701,2.604331,A5,0,0.0,20,250.0,Tesla,1.3,sortie_proche_axe,hors_aire
+FRFASP11568778,Fastned Vert-Saint-Denis,48.560492,2.634058,A5,0,2.2,8,300.0,Fastned France,1.1,sortie_proche_axe,hors_aire
 FRFASP11568665,Fastned Aire de Jonchets - Les Récompenses,48.4286,2.9315,A5,0,28.5,4,300.0,Fastned France,1.1,aire_proche_axe,inconnu
 FRFASP11568667,Fastned Aire de Jonchets - La Grande Paroisse,48.42598,2.9287,A5,0,28.5,4,300.0,Fastned France,0.7,aire_proche_axe,inconnu
+FRMFCPSENS,SAINT-DENIS-LES-SENS (SENS),48.216791,3.276344,A5,0,63.1,6,320.0,Plug Inn fast charge,1.2,sortie_proche_axe,hors_aire
 FRVIAP101115,ENGIE Vianeo - A5 Villeneuve l'Archevèque,48.243118,3.554935,A5,0,85.5,13,300.0,ENGIE Vianeo,1.0,nom,inconnu
 FRVIAP101116,ENGIE Vianeo - A5 Villeneuve Vauluisant,48.247693,3.555761,A5,0,85.6,13,300.0,ENGIE Vianeo,1.4,nom,inconnu
+FREVCP000186,Carrefour Energies - Saint-André-Les-Vergers,48.282766,4.0546978,A5,0,122.6,7,300.0,Allego,1.5,sortie_proche_axe,hors_aire
+FRPD1PITMTRY,Intermarché - Troyes,48.30126,4.087793,A5,0,125.4,6,160.0,Power Dot France,0.3,sortie_proche_axe,hors_aire
+FRPD1PITMSJV,Intermarché Super - Saint-Julien-les-Villas 1,48.280868,4.096844,A5,0,126.6,6,160.0,Power Dot France,1.7,sortie_proche_axe,hors_aire
+FRTSLP5673,"Saint-Parres-aux-Tertres, France",48.293549,4.13099,A5,0,128.7,36,250.0,Tesla,0.3,sortie_proche_axe,hors_aire
+FRELCP12954663,Electra Troyes Bouranton - BeGreen,48.293613,4.131566,A5,0,128.7,6,300.0,Electra,0.3,sortie_proche_axe,hors_aire
 FRVIAP101104,ENGIE Vianeo - A5 Chateauvillain Val Marnay,48.057405,4.959139,A5,0,194.7,21,300.0,ENGIE Vianeo,9.1,nom,inconnu
 FRVIAP101103,ENGIE Vianeo - A5 Chateauvillain Orges,48.057611,4.96054,A5,0,194.8,21,300.0,ENGIE Vianeo,9.1,nom,inconnu
+FREVAP13015A,e-Vadea - Bouc-Bel-Air - A51 Champouse,43.441128,5.395574,A51,0,0.0,20,300.0,SPIE CityNetworks,7.1,nom,inconnu
+FRVIAP103108,ENGIE Vianeo - A51 Chabauds (Cabriès),43.433844,5.395999,A51,0,0.0,8,300.0,ENGIE Vianeo,7.9,nom,inconnu
+FRTSLP29713,"Manosque, France",43.818865,5.796896,A51,0,50.0,16,250.0,Tesla,1.3,sortie_proche_axe,hors_aire
+FRVIAP104113,ENGIE Vianeo - A51 Aubignosc Ouest,44.133246,5.977708,A51,2,87.0,14,300.0,ENGIE Vianeo,4.7,nom,cote_chaussee
+FRVIAP104112,ENGIE Vianeo - A51 Aubignosc Est,44.133879,5.979748,A51,1,87.1,12,300.0,ENGIE Vianeo,4.8,nom,cote_chaussee
+FRELCP12953974,Electra Évry-Courcouronnes - CC Le Spot Évry,48.630267,2.425962,A6,0,21.6,12,300.0,Electra,1.0,sortie_proche_axe,hors_aire
+FRPD1PACCIBE,Ibis - Evry,48.620658,2.420392,A6,0,22.4,6,160.0,Power Dot France,1.7,sortie_proche_axe,hors_aire
+FRELCP12954279,Electra Evry-Courcouronnes - Novotel,48.616579,2.423247,A6,0,22.9,6,300.0,Electra,1.7,sortie_proche_axe,hors_aire
+FRTSLP29904,"Évry-Courcouronnes, France",48.616299,2.423207,A6,0,22.9,8,250.0,Tesla,1.7,sortie_proche_axe,hors_aire
+FRELCP12954569,Electra Courcouronnes - Del Arte,48.61539,2.42486,A6,0,23.1,6,300.0,Electra,1.6,sortie_proche_axe,hors_aire
+FRPD1PMAVCOR,Marques Avenue - Corbeil Essonnes,48.60818,2.44901,A6,0,24.4,16,200.0,Power Dot France,0.2,sortie_proche_axe,hors_aire
+FRVIAP122017,ENGIE Vianeo - B&B HOTEL CORBEIL-ESSONNES,48.610443,2.460085,A6,0,24.5,8,300.0,ENGIE Vianeo,0.6,sortie_proche_axe,hors_aire
+FRHPCPNF058968TOTEM,RELAIS VILLABE,48.595281,2.443222,A6,0,25.6,8,175.0,TotalEnergies Marketing France,1.1,sortie_proche_axe,hors_aire
+FRVIAP122239,ENGIE Vianeo - B&B HOTEL EVRY-LISSES 2,48.594067,2.438671,A6,0,25.6,8,300.0,ENGIE Vianeo,1.5,sortie_proche_axe,hors_aire
+FRHPCPNF006369TOTEM,RELAIS LES LISSES,48.59459,2.44222,A6,0,25.7,8,175.0,TotalEnergies Marketing France,1.2,sortie_proche_axe,hors_aire
+FRPD1PDUVVLR,Darty - Villabé,48.587914,2.445808,A6,0,26.5,10,200.0,Power Dot France,1.2,sortie_proche_axe,hors_aire
+FREVCP000464,Carrefour Energies - Villabe,48.5852966,2.449712,A6,0,26.8,6,300.0,Allego,1.0,sortie_proche_axe,hors_aire
+FRTSLP407740,"Villabé, France",48.586108,2.450397,A6,0,26.8,8,250.0,Tesla,1.0,sortie_proche_axe,hors_aire
 FRVIAP101101,ENGIE Vianeo - A6 Achères Est,48.361836,2.574533,A6,2,53.3,13,300.0,ENGIE Vianeo,0.9,nom,cote_chaussee
 FRFASP11568681,Fastned Aire d’Achères - La Forêt,48.360859,2.57393,A6,0,53.4,4,300.0,Fastned France,1.0,aire_proche_axe,inconnu
+FRTSLP5362,"Ury, France",48.349478,2.607788,A6,0,55.5,20,150.0,Tesla,0.9,sortie_proche_axe,hors_aire
+FRIOYP13531152,IONITY GmbH IONITY Darvault,48.264407,2.721676,A6,0,68.6,8,350.0,Ionity,0.5,sortie_proche_axe,hors_aire
+FRIOYP13530955,IONITY GmbH IONITY Nemours,48.263874,2.720788,A6,0,68.6,6,350.0,Ionity,0.4,sortie_proche_axe,hors_aire
 FRVIAP101114,ENGIE Vianeo - A6 Venoy Soleil Levant,47.788469,3.673335,A6,0,155.8,17,300.0,ENGIE Vianeo,5.5,nom,inconnu
+FREVZP4BD92DFB0B724181AC7DA552B0DA7,"EVzen - Avallon, Hyper U Avallon",47.496946,3.907799,A6,0,192.3,6,180.0,EVzen,0.3,sortie_proche_axe,hors_aire
 FRBFCPVDOCO,SDEY - SAUVIGNY LE BOIS (89) - Sortie 22 Avallon sur A6,47.508686,3.991514,A6,0,197.5,2,160.0,Citeos Mobilité Electrique Paris - Cogelum IDF,4.7,nom,inconnu
 FREVAP21298A,e-Vadea - Gissey-le-Vieil - A6 Chien Blanc,47.314873,4.495427,A6,0,241.1,15,300.0,SPIE CityNetworks,3.5,nom,inconnu
+FRHPCPNF080339TIERSTOTEM,RELAIS DE CREUX MOREAU,47.113401,4.711425,A6,0,267.9,8,300.0,TotalEnergies Marketing France,0.9,sortie_proche_axe,hors_aire
 FRVIAP101110,ENGIE Vianeo - A6 La Forêt,47.105253,4.714129,A6,0,268.8,11,300.0,ENGIE Vianeo,1.3,nom,inconnu
+FRTSLP1723,"Beaune Centre, France",47.017089,4.836543,A6,0,282.4,24,150.0,Tesla,0.2,sortie_proche_axe,hors_aire
+FRMFCPBEAUNESUD,BEAUNE-SUD,47.014595,4.8177,A6,1,282.5,6,320.0,Plug Inn fast charge,1.7,sortie_proche_axe,cote_chaussee
+FRELCP12953860,Electra Beaune - Greet Hotel,47.009538,4.851826,A6,0,283.3,9,300.0,Electra,0.9,sortie_proche_axe,hors_aire
+FRHPCPNF059042TOTEM,RELAIS BEAUNE TAILLY,46.963869,4.836437,A6,0,288.4,8,175.0,TotalEnergies Marketing France,0.4,sortie_proche_axe,hors_aire
 FRVIAP101102,ENGIE Vianeo - A6 Beaune Merceuil,46.961627,4.838476,A6,0,288.6,17,300.0,ENGIE Vianeo,0.3,nom,inconnu
+FRPVDP6154153126B5D1A1CA0D1A42,Z-E-N Fragnes-La Loyère,46.82474,4.85775,A6,0,303.9,6,200.0,Z-E-N,0.7,sortie_proche_axe,hors_aire
+FRTSLP30249,"Chalon-sur-Saône, France",46.796402,4.835557,A6,0,307.0,28,250.0,Tesla,1.0,sortie_proche_axe,hors_aire
+FRATLPFR01075,Atlante - Chalon-sur-Saône - KFC,46.77541,4.86478,A6,0,309.5,6,600.0,Atlante France,1.0,sortie_proche_axe,hors_aire
+FRBPEP3EA045,FR | BP 3EA045 | Chalon sur Saone / Centre commercial Chalon 2 Sud - DC #02,46.775616,4.864166,A6,1,309.5,6,500.0,bp Pulse,1.0,sortie_proche_axe,cote_chaussee
+FREVCP000433,Carrefour Energies - Chalon Sud,46.7742482,4.859004,A6,1,309.6,6,300.0,Allego,0.6,sortie_proche_axe,cote_chaussee
+FRPD1PASCCHA,Retail Park Les Portes du Sud - Chalon-sur-Saone,46.771985,4.865686,A6,0,309.9,32,240.0,Power Dot France,1.0,sortie_proche_axe,hors_aire
 FRFASP11568663,Fastned Aire de Saint Ambreuil,46.69105,4.844933,A6,0,318.5,8,300.0,Fastned France,2.2,aire_proche_axe,inconnu
+FRTSLP28396,"Tournus, France",46.576511,4.898838,A6,0,331.7,20,250.0,Tesla,0.5,sortie_proche_axe,hors_aire
+FRIOYP13531080,IONITY GmbH IONITY Mâcon Saint-Albain,46.421048,4.865081,A6,0,349.5,14,350.0,Ionity,0.0,sortie_proche_axe,hors_aire
+FRHPCPNF059190TOTEM,RELAIS MACON LA SALLE,46.418606,4.865283,A6,0,349.8,16,175.0,TotalEnergies Marketing France,0.0,sortie_proche_axe,hors_aire
+FRAU1P01150000,Transports Malherbe - Mâcon,46.360127679,4.846671079,A6,0,356.5,8,400.0,AUTORECHARGE SAS,0.0,sortie_proche_axe,hors_aire
+FRTSLP1732,"Mâcon, France",46.346796,4.848905,A6,0,357.9,56,250.0,Tesla,0.5,sortie_proche_axe,hors_aire
+FRPD1PBOUMAC,Boulanger - Mâcon Sud,46.286316,4.809124,A6,0,365.1,8,200.0,Power Dot France,1.0,sortie_proche_axe,hors_aire
+FRPD1PASCCRE,Retail Park des Bouchardes - Crêches-sur-Saone,46.251023,4.79282,A6,0,369.2,38,240.0,Power Dot France,1.3,sortie_proche_axe,hors_aire
 FRFASP11568662,Fastned Aire de Dracé,46.14335,4.76787,A6,0,381.3,8,300.0,Fastned France,0.4,aire_proche_axe,inconnu
+FRIOYP13530847,IONITY GmbH IONITY Taponas,46.134233,4.766923,A6,0,382.3,14,350.0,Ionity,0.2,sortie_proche_axe,hors_aire
+FRELCP12954168,Electra Villefranche-sur-Saône - Carrefour,45.997284,4.73269,A6,0,397.7,8,150.0,Electra,0.8,sortie_proche_axe,hors_aire
+FREVZPEDFA75B9B2624D50A9C00585E2661,"EVzen - Villefranche Sur Saone, La Sauvagère Parking Ouest",45.984285,4.739257,A6,1,399.9,6,180.0,EVzen,1.2,sortie_proche_axe,cote_chaussee
+FRMFCPVILLEFRANCHE,VILLEFRANCHE-SUR-SAONE,45.979564,4.73105,A6,0,400.1,6,320.0,Plug Inn fast charge,0.4,sortie_proche_axe,hors_aire
+FRLDLPLFR3921EVCP,LFR3921EVCP07,45.977554,4.740365,A6,0,400.6,9,360.0,Lidl France,1.0,sortie_proche_axe,hors_aire
+FRPD1PIBSVSS,Ibis - Lyon Villefranche sur Saône,45.97626,4.738509,A6,0,400.7,6,200.0,Power Dot France,0.8,sortie_proche_axe,hors_aire
 FRVIAP103102,ENGIE Vianeo - A6 Les Chères Ouest,45.902756,4.72858,A6,1,408.1,8,300.0,ENGIE Vianeo,2.7,nom,cote_chaussee
 FRVIAP103101,ENGIE Vianeo - A6 Les Chères Est,45.903119,4.729612,A6,2,408.1,8,300.0,ENGIE Vianeo,2.6,nom,cote_chaussee
 FRALLPGO000188,Aire de Toulouse Sud Nord_A61,43.4857878,1.5491152,A61,0,10.5,12,300.0,Allego,2.8,nom,inconnu
 FREVAP31161A,e-Vadea - Deyme - A61 Toulouse Sud,43.482609,1.549728,A61,0,10.8,21,300.0,SPIE CityNetworks,3.0,nom,inconnu
+FRIOYP13531212,IONITY GmbH IONITY Lauragais,43.400273,1.703571,A61,0,26.1,8,350.0,Ionity,0.9,sortie_proche_axe,hors_aire
+FRHPCPNF078569TOTEM,RELAIS PORT LAURAGAIS SUD,43.35267,1.80428,A61,1,35.5,10,175.0,TotalEnergies Marketing France,1.8,sortie_proche_axe,cote_chaussee
 FRVIAP104114,ENGIE Vianeo - A61 Port Lauragais Nord,43.353167,1.808766,A61,2,35.8,16,300.0,ENGIE Vianeo,1.6,nom,cote_chaussee
+FRATLPFR01092,Atlante - Castelnaudary - Intermarché HYPER Castelnaudary et Drive,43.2998,1.95725,A61,0,49.0,8,600.0,Atlante France,1.9,sortie_proche_axe,hors_aire
 FRELCP12953938,Electra A61 - Aire d'Arzens Nord (direction Toulouse),43.219984,2.216763,A61,2,71.8,18,300.0,Electra,2.8,nom,direction
 FRELCP12953935,Electra A61 - Aire d'Arzens Sud (direction Narbonne),43.217186,2.220567,A61,1,72.2,18,300.0,Electra,3.0,nom,direction
+FRPLNP10525774,"445 Rue Gustave Eiffel, 11000 Carcassonne",43.20633,2.303182,A61,0,78.9,6,300.0,Plenitude On The Road,1.7,sortie_proche_axe,hors_aire
+FRTSLP29903,"Carcassonne, France",43.206224,2.310792,A61,0,79.5,30,250.0,Tesla,1.5,sortie_proche_axe,hors_aire
+FRIGFPFRAI70,GRAND FRAIS - CARCASSONNE,43.207377,2.315043,A61,0,79.7,6,150.0,IZIVIA,1.3,sortie_proche_axe,hors_aire
+FRTCBP05801,TotalEnergies - Les Magnolias,43.19321,2.75688,A61,0,115.3,8,200.0,TotalEnergies Charging Services,0.8,sortie_proche_axe,hors_aire
+FRTSLP3019,"Langon, France",44.543278,-0.25271,A62,0,36.8,21,250.0,Tesla,0.9,sortie_proche_axe,hors_aire
+FRELCP13184625,Electra Agen Boé - O'Green,44.178109,0.630612,A62,0,121.0,6,300.0,Electra,1.9,sortie_proche_axe,hors_aire
+FRTSLP30045,"Agen, France",44.177762,0.630269,A62,0,121.0,20,250.0,Tesla,1.9,sortie_proche_axe,hors_aire
+FRPD1PBBFCTC,Atol - Castelculier,44.181688,0.67244,A62,0,123.9,8,160.0,Power Dot France,0.1,sortie_proche_axe,hors_aire
 FRELCP12953937,Electra A62 - Aire de Garonne (direction Bordeaux),44.040485,1.004127,A62,2,154.5,14,300.0,Electra,3.5,nom,direction
 FRELCP12953941,Electra A62 - Aire de Garonne (direction Toulouse),44.040629,1.004787,A62,1,154.5,14,300.0,Electra,3.4,nom,direction
+FRALDPFR00916,Atlante - Montauban - Aldi,44.00948,1.37587,A62,0,183.0,8,300.0,Atlante France,1.9,sortie_proche_axe,hors_aire
+FRPD1PELCMTB,E.Leclerc - Montauban,44.004763,1.355941,A62,0,183.3,16,300.0,Power Dot France,0.2,sortie_proche_axe,hors_aire
+FRPD1PSYUMTB,Carrefour - Montauban,43.988264,1.333266,A62,0,184.8,16,200.0,Power Dot France,1.9,sortie_proche_axe,hors_aire
+FRPD1PMBRMTB,Mr. Bricolage - Montauban,43.987945,1.332604,A62,0,184.8,6,160.0,Power Dot France,1.9,sortie_proche_axe,hors_aire
 FRVIAP104101,ENGIE Vianeo - A62 Frontonnais Nord,43.813026,1.360907,A62,2,204.4,24,300.0,ENGIE Vianeo,2.7,nom,cote_chaussee
 FRVIAP104102,ENGIE Vianeo - A62 Frontonnais Sud,43.811528,1.360365,A62,1,204.5,18,300.0,ENGIE Vianeo,2.8,nom,cote_chaussee
 FRPLNP11910787,"Eni Station - Aire de Thouars, A630",44.786114,-0.594359,A63,0,0.0,6,300.0,Plenitude On The Road,0.8,aire_proche_axe,inconnu
@@ -111,61 +332,184 @@ FRSHEP5233163,Shell Aire de Bordeaux-Cestas Ouest A63,44.7456293,-0.7037549,A63,
 FRSHEP12323924,Shell Aire de Bordeaux-Cestas Est A63,44.743648,-0.7046561,A63,2,7.2,9,300.0,Shell Recharge,5.7,nom,cote_chaussee
 FRZUNP5909246146811129817,Aire de la Porte des Landes - Est,44.36110666,-0.84959085,A63,2,50.7,18,400.0,Zunder,0.2,aire_proche_axe,cote_chaussee
 FRZUNP4029550098338231067,Aire de la Porte des Landes - Ouest,44.36134751,-0.85219497,A63,1,50.8,18,400.0,Zunder,0.0,aire_proche_axe,cote_chaussee
+FRMFCPLABOUHEYRE,LABOUHEYRE,44.211992,-0.920455,A63,0,68.2,6,320.0,Plug Inn fast charge,0.1,sortie_proche_axe,hors_aire
+FRTSLP5675,"Labouheyre, France",44.202887,-0.927221,A63,0,69.4,8,250.0,Tesla,0.2,sortie_proche_axe,hors_aire
 FRZUNP4015250050291921289,Aire de l'Océan Est,43.93737171,-1.08929993,A63,2,101.6,18,400.0,Zunder,0.9,aire_proche_axe,cote_chaussee
 FRZUNP2001223164604952988,Aire de l'Océan Ouest,43.93757808,-1.09276862,A63,1,101.7,18,400.0,Zunder,0.6,aire_proche_axe,cote_chaussee
 FRSHEP4730503,Shell AIRE DE L'OCEAN EST,43.936816,-1.09073,A63,2,101.7,1,50.0,Shell Recharge,0.8,aire_proche_axe,cote_chaussee
+FRTSLP33166,"Castets, France",43.87059,-1.137269,A63,0,109.9,8,250.0,Tesla,0.7,sortie_proche_axe,hors_aire
+FRTSLP1722,"Bayonne, France",43.493819,-1.452564,A63,0,158.9,8,250.0,Tesla,1.0,sortie_proche_axe,hors_aire
+FRELCP13016866,Electra Biarritz - Grand Frais,43.466879,-1.541749,A63,0,166.3,6,300.0,Electra,1.1,sortie_proche_axe,hors_aire
+FRELCP12953893,Electra Sérézin-du-Rhône - BYD,45.635079,4.822159,A7,0,11.5,10,300.0,Electra,1.7,sortie_proche_axe,hors_aire
 FRTDAPVHYGF,Station-service Sérézin-du-Rhône - A7N,45.631192,4.819682,A7,0,11.9,2,50.0,EASYCHARGE,1.9,nom,inconnu
 FRSHEP5242817,Shell Aire de Roussillon,45.406247,4.8160508,A7,0,38.0,12,300.0,Shell Recharge,1.8,aire_proche_axe,inconnu
+FRATLPFR00289,Atlante - Salaise-sur-Sanne - Kiloutou,45.34619,4.80415,A7,0,44.7,8,300.0,Atlante France,1.4,sortie_proche_axe,hors_aire
+FREVCP000220,Carrefour Energies - Salaise,45.3419172,4.8051744,A7,0,45.2,7,300.0,Allego,1.2,sortie_proche_axe,hors_aire
+FRTSLP17346,"Salaise-sur-Sanne, France",45.327236,4.804932,A7,0,46.8,28,250.0,Tesla,1.0,sortie_proche_axe,hors_aire
+FRELCP12954003,Electra Chanas - Intermarché,45.324716,4.808868,A7,0,47.0,6,300.0,Electra,0.6,sortie_proche_axe,hors_aire
+FRIOYP13530870,IONITY GmbH IONITY Saint-Rambert Ouest,45.275563,4.825571,A7,1,52.5,10,400.0,Ionity,0.8,sortie_proche_axe,cote_chaussee
+FRIOYP13530786,IONITY GmbH IONITY Saint-Rambert Est,45.276391,4.828,A7,2,52.5,10,350.0,Ionity,1.0,sortie_proche_axe,cote_chaussee
 FRELCP12954203,Electra A7 - Aire du Bornaron (direction Marseille),45.154707,4.887513,A7,1,66.6,11,400.0,Electra,3.6,nom,direction
 FRELCP12954245,Electra A7 - Aire de la Bouterne (direction Lyon),45.078965,4.87266,A7,2,74.7,13,400.0,Electra,1.2,nom,direction
+FRELCP12953967,Electra Tain-l'Hermitage - Intermarché,45.068712,4.865497,A7,0,75.8,8,300.0,Electra,0.4,sortie_proche_axe,hors_aire
 FRELCP12953940,Electra A7 - Aire Latitude 45 (direction Lyon),45.019158,4.876109,A7,2,81.3,30,300.0,Electra,0.4,nom,direction
+FRHPCPNF080071TOTEM,RELAIS PONT DE L'ISERE,45.018266,4.874241,A7,0,81.4,8,175.0,TotalEnergies Marketing France,0.3,sortie_proche_axe,hors_aire
+FRTSLP1772,"Valence, France",44.91912,4.878087,A7,0,92.7,16,250.0,Tesla,0.6,sortie_proche_axe,hors_aire
+FRFASP12880142,Fastned Valence Sud,44.906437,4.880263,A7,0,94.0,8,400.0,Fastned France,0.1,sortie_proche_axe,hors_aire
+FRTSLP29751,"Valence, France - Chemin de la Sonacotral",44.903761,4.879886,A7,0,94.3,28,250.0,Tesla,0.0,sortie_proche_axe,hors_aire
+FRVIAP122072,ENGIE Vianeo - B&B HOTEL VALENCE SUD,44.900112,4.884469,A7,0,94.6,8,300.0,ENGIE Vianeo,0.4,sortie_proche_axe,hors_aire
+FRALLPGO000342,Drôme Energie Valence Sud,44.9023341,4.8683995,A7,0,94.7,6,300.0,Allego,0.8,sortie_proche_axe,hors_aire
+FRHPCPNF058969TOTEMSA,RELAIS PORTES LES VALENCE EST,44.866331,4.867226,A7,0,98.6,12,175.0,TotalEnergies Marketing France,0.1,sortie_proche_axe,hors_aire
 FRTDAPVIBMH,Station-service de l'aire de Portes-lès-Valence - A7,44.865862,4.864803,A7,0,98.7,2,50.0,EASYCHARGE,0.1,nom,inconnu
 FRTSLP29498,"Aire de Portes-Lès-Valence Ouest, France",44.864843,4.864827,A7,1,98.8,16,250.0,Tesla,0.0,aire_proche_axe,cote_chaussee
 FRALLPGO000426,Aire De Livron_A7,44.786443,4.835428,A7,0,107.8,10,300.0,Allego,0.0,nom,inconnu
 FRFASP11568837,Fastned Aire de Saulce,44.72035,4.787287,A7,0,115.9,17,300.0,Fastned France,1.8,aire_proche_axe,inconnu
+FRTSLP5367,"Montélimar, France",44.676125,4.795673,A7,0,120.5,73,250.0,Tesla,0.1,sortie_proche_axe,hors_aire
+FRELCP12954236,Electra Les Tourrettes - Première Classe Montélimar,44.667163,4.794403,A7,0,121.5,6,300.0,Electra,0.3,sortie_proche_axe,hors_aire
 FRALLPGO000423,Aire de la Coucourde_A7,44.646522,4.79158,A7,0,123.8,10,400.0,Allego,0.7,nom,inconnu
+FRTDAPVDDSZ,MONTELIMAR-ZA Avenue du Meyrol,44.578735,4.744708,A7,0,132.0,6,150.0,EASYCHARGE,0.9,sortie_proche_axe,hors_aire
+FRPD1PCAPMON,Decathlon - Montélimar,44.527221,4.74521,A7,0,137.5,20,300.0,Power Dot France,0.4,sortie_proche_axe,hors_aire
+FRMILP9056973,Milence Truck Charging Station Malataverne,44.46983,4.762781,A7,0,143.9,8,400.0,Milence,1.0,sortie_proche_axe,hors_aire
 FRELCP12954397,Electra A7 - Aire de Tricastin (direction Montélimar),44.326109,4.740065,A7,2,159.9,12,400.0,Electra,0.8,nom,direction
+FRPD1PMBLBLN,Marie Blachère - Bollene,44.325055,4.74187,A7,0,160.0,8,200.0,Power Dot France,0.6,sortie_proche_axe,hors_aire
+FREVCP000124,Carrefour Energies - Orange,44.120124,4.8391306,A7,0,184.2,6,300.0,Allego,1.5,sortie_proche_axe,hors_aire
 FRELCP12954414,Electra A7 - Aire de Orange Le Grès (direction Marseille),44.111227,4.82935,A7,1,184.8,9,400.0,Electra,0.4,nom,direction
 FRALLPGO000430,Aire de Senas Ouest_A7,43.7593303,5.0788949,A7,1,229.4,9,300.0,Allego,1.2,nom,cote_chaussee
+FRTSLP30038,"Sénas, France",43.741538,5.088232,A7,0,231.5,23,250.0,Tesla,1.5,sortie_proche_axe,hors_aire
 FRALLPGO000431,Aire de Lamanon_A7,43.68498,5.096858,A7,0,237.8,13,300.0,Allego,0.8,nom,inconnu
+FRELCP12954213,Electra Salon-de-Provence - Intermarché,43.63566,5.077543,A7,0,242.6,10,300.0,Electra,1.9,sortie_proche_axe,hors_aire
+FRVIAP122062,ENGIE Vianeo - B&B HOTEL SALON DE PROVENCE,43.62839,5.123649,A7,0,244.8,8,300.0,ENGIE Vianeo,0.9,sortie_proche_axe,hors_aire
 FRHPCPNF059189TOTEM,AIRE DE LANCON DE PROVENCE OUEST,43.589684,5.186405,A7,1,251.2,16,300.0,TotalEnergies Marketing France,2.8,aire_proche_axe,cote_chaussee
 FRHPCPNF007052TOTEM,AIRE DE LANCON DE PROVENCE EST,43.589351,5.193534,A7,2,251.5,16,300.0,TotalEnergies Marketing France,3.3,aire_proche_axe,cote_chaussee
 FRELCP12953939,Electra A7 - Aire de Vitrolles Est (direction Orange),43.446899,5.243111,A7,2,267.0,12,300.0,Electra,2.0,nom,direction
+FREVCP000282,Carrefour Energies - Vitrolles,43.432074,5.2622999,A7,0,269.2,6,300.0,Allego,1.6,sortie_proche_axe,hors_aire
+FRTSLP26558,"Les Pennes-Mirabeau, France",43.414915,5.275134,A7,0,271.4,25,250.0,Tesla,1.8,sortie_proche_axe,hors_aire
 FRELCP12953936,Electra A55 - Aire de Gignac Rebuty (direction Martigues),43.392152,5.256257,A7,0,272.7,10,300.0,Electra,4.5,aire_proche_axe,inconnu
 FRVIAP103112,ENGIE Vianeo - A71 La Ferté St-Aubin,47.663705,1.929353,A71,0,20.3,12,300.0,ENGIE Vianeo,4.0,nom,inconnu
 FRBPEP3EA033,FR | BP 3EA033 | Nouan-le-Fuzelier / Aire de la Briganderie - A71 - Sens Bourges Orleans - DC #01,47.546416,2.009837,A71,2,34.3,8,600.0,bp pulse,0.5,nom,direction
 FRBPEP3EA038,FR | BP 3EA038 | Saint-Viâtre /  Aire des Maremberts - A71 - Sens Orleans Bourges - DC #05,47.470652,2.00672,A71,1,42.5,11,600.0,bp Pulse,2.3,nom,direction
+FRTSLP16281,"Vierzon, France",47.245889,2.06989,A71,0,68.1,48,250.0,Tesla,0.2,sortie_proche_axe,hors_aire
 FRALLPGO000758,Aire de Quincy_A71,47.145743,2.184198,A71,0,82.7,11,300.0,Allego,2.4,nom,inconnu
 FRALLPGO000754,Aire de La Chaussee de Cesar_A71,47.144086,2.186913,A71,0,82.9,11,300.0,Allego,2.5,nom,inconnu
 FRZUNP1615743645321921749,Bourges-Marmagne A71 - Marmagne,47.09602136,2.24063927,A71,0,89.2,27,400.0,Zunder,4.9,nom,inconnu
+FRIOYP13531048,IONITY GmbH IONITY Vérités,46.378498,2.586958,A71,0,179.7,6,350.0,Ionity,0.2,sortie_proche_axe,hors_aire
+FRTSLP7139,"Montluçon, France",46.377906,2.587141,A71,0,179.7,8,250.0,Tesla,0.2,sortie_proche_axe,hors_aire
+FRPD1PITMMON,Intermarche - Montluçon,46.331794,2.600812,A71,0,184.8,6,160.0,Power Dot France,0.5,sortie_proche_axe,hors_aire
 FRVIAP101109,ENGIE Vianeo - A71 L'Allier Saulzet,46.357285,2.802515,A71,0,192.1,13,300.0,ENGIE Vianeo,13.4,nom,inconnu
 FRVIAP101108,ENGIE Vianeo - A71 L'Allier Doyet,46.355005,2.802377,A71,0,192.3,13,300.0,ENGIE Vianeo,13.3,nom,inconnu
+FRIOYP13531072,IONITY GmbH IONITY Veyre,45.660128,3.153525,A75,0,14.5,8,350.0,Ionity,0.8,sortie_proche_axe,hors_aire
+FRIOYP13531314,IONITY GmbH IONITY Authezat,45.642186,3.184192,A75,0,17.3,14,350.0,Ionity,0.5,sortie_proche_axe,hors_aire
+FREVCP000333,Carrefour Energies - Issoire,45.5481873,3.2677802,A75,0,29.4,6,300.0,Allego,1.7,sortie_proche_axe,hors_aire
+FRPD1PGDMISS,Le Géant du Meuble - Cavagna Issoire,45.520545,3.259342,A75,0,31.8,11,200.0,Power Dot France,1.0,sortie_proche_axe,hors_aire
 FRTSLP34831,"Aire de Lafayette, France",45.338545,3.27382,A75,0,51.8,22,250.0,Tesla,4.5,aire_proche_axe,inconnu
 FRTDAPVDIGB,Aire de Lafayette Lorlanges - Autoroute A75,45.337793,3.273529,A75,0,51.9,2,50.0,EASYCHARGE,4.5,nom,inconnu
+FRATLPFR01142,Atlante - Saint-Flour - Le Rozier,45.05779,3.10887,A75,0,84.8,10,600.0,Atlante France,0.4,sortie_proche_axe,hors_aire
 FRATLPFR01057,Atlante - Albaret-Sainte-Marie - Aire de la Garde (A75 sortie 32) Kyriad Saint-Chély,44.87036,3.25146,A75,0,108.8,8,300.0,Atlante France,7.2,nom,inconnu
+FRMFCPLACAVALERIE,LA CAVALERIE,44.009083,3.153039,A75,0,208.2,6,320.0,Plug Inn fast charge,1.0,sortie_proche_axe,hors_aire
+FRTSLP33176,"Le Bosc, France",43.68814,3.355094,A75,0,247.2,24,250.0,Tesla,1.5,sortie_proche_axe,hors_aire
 FRSHEP3780497,Shell Aire de la sainte Victoire HW,43.469245,5.6556421,A8,0,17.8,12,300.0,Shell Recharge,2.2,aire_proche_axe,inconnu
 FRTSLP5671,"Aire de Cambarette, France",43.423964,5.99017,A8,0,45.1,20,150.0,Tesla,0.7,aire_proche_axe,inconnu
+FRIOYP13531146,IONITY GmbH IONITY Cambarette Nord,43.423878,5.990385,A8,2,45.2,6,350.0,Ionity,0.7,sortie_proche_axe,cote_chaussee
+FRHPCPNF059599TOTEM,RELAIS TERRASSES DE PROVENCE CENTRE VL,43.421975,5.992246,A8,0,45.4,8,150.0,TotalEnergies Marketing France,0.5,sortie_proche_axe,hors_aire
+FRIOYP13531046,IONITY GmbH IONITY Vidauban Sud,43.413836,6.451011,A8,1,83.2,8,350.0,Ionity,0.5,sortie_proche_axe,cote_chaussee
 FRTSLP5670,"Aire de Vidauban Sud, France",43.413832,6.451177,A8,1,83.3,20,150.0,Tesla,0.5,aire_proche_axe,cote_chaussee
+FRHPCPNF080371TIERSTOTEM,RELAIS VIDAUBAN NORD,43.4155,6.4519,A8,2,83.4,13,300.0,TotalEnergies Marketing France,0.6,sortie_proche_axe,cote_chaussee
+FRTSLP30140,"Mandelieu-la-Napoule, France",43.533651,6.933019,A8,0,125.0,28,250.0,Tesla,1.2,sortie_proche_axe,hors_aire
+FRATLPFR01139,Atlante - Mandelieu-la-Napoule - Besson Chaussures,43.552924,6.946658,A8,0,127.1,8,600.0,Atlante France,0.1,sortie_proche_axe,hors_aire
+FRPD1PASCCAN,Grand Frais - Le Cannet,43.562477,6.965646,A8,0,129.0,8,189.0,Power Dot France,0.2,sortie_proche_axe,hors_aire
+FRTSLP1754,"Mougins, France",43.603928,7.010434,A8,0,134.7,8,150.0,Tesla,1.2,sortie_proche_axe,hors_aire
+FRHPCPNF078564,RELAIS BREGUIERES SUD,43.589282,7.035532,A8,1,135.3,18,300.0,TotalEnergies Marketing France,1.4,sortie_proche_axe,cote_chaussee
+FRIOYP13531178,IONITY GmbH IONITY Bréguières Nord,43.592,7.0365,A8,2,135.5,10,350.0,Ionity,1.2,sortie_proche_axe,cote_chaussee
 FRVIAP103114,ENGIE Vianeo - A8 La Via Julia Augusta,43.754763,7.398143,A8,0,170.3,14,300.0,ENGIE Vianeo,0.2,nom,inconnu
 FREVAP06012A,e-Vadea - Aire de la Riviera Française,43.75359,7.420005,A8,0,171.9,14,300.0,SPIE CityNetworks,0.5,aire_proche_axe,inconnu
+FRECHPCICWW,Liffré - La Reposé,48.201877,-1.526866,A84,0,10.3,8,180.0,EASYCHARGE,0.7,sortie_proche_axe,hors_aire
+FRIOYP13531519,IONITY GmbH IONITY Liffré,48.223333,-1.499991,A84,0,13.3,6,400.0,Ionity,1.4,sortie_proche_axe,hors_aire
+FRHPCPNF078244,RELAIS LE MONT SAINT MICHEL,48.584798,-1.32577,A84,0,63.6,8,175.0,TotalEnergies Marketing France,1.3,sortie_proche_axe,hors_aire
+FREVCP000143,Carrefour Energies - Avranches,48.6542053,-1.3495801,A84,0,71.5,7,300.0,Allego,1.6,sortie_proche_axe,hors_aire
+FRPD1PJARAVR,Jardiland - Avranches,48.655013,-1.350555,A84,0,71.6,6,200.0,Power Dot France,1.6,sortie_proche_axe,hors_aire
+FRTSLP33194,"Villedieu-les-Poêles-Rouffigny, France",48.848308,-1.211783,A84,0,94.4,16,250.0,Tesla,0.8,sortie_proche_axe,hors_aire
+FRIOYP13530985,IONITY GmbH IONITY Vallée de la vire Gouvets,48.908924,-1.102999,A84,0,104.7,8,350.0,Ionity,1.0,sortie_proche_axe,hors_aire
+FRPD1PLCLLBN,E.Leclerc - Libourne,44.928781,-0.240239,A89,0,0.2,8,200.0,Power Dot France,0.9,sortie_proche_axe,hors_aire
 FRFASP11568703,Fastned Aire du Manoire,45.149531,0.800075,A89,0,87.7,8,300.0,Fastned France,3.1,aire_proche_axe,inconnu
+FRIOYP13530824,IONITY GmbH IONITY Pays de Brives Nord,45.161043,1.440653,A89,2,137.8,12,350.0,Ionity,0.9,sortie_proche_axe,cote_chaussee
+FRIOYP13530821,IONITY GmbH IONITY Pays de Brives sud,45.160721,1.440923,A89,1,137.9,12,350.0,Ionity,0.8,sortie_proche_axe,cote_chaussee
+FRVIAP122071,ENGIE Vianeo - B&B HOTEL BRIVE LA GAILLARDE,45.16368,1.481894,A89,0,141.0,8,300.0,ENGIE Vianeo,1.3,sortie_proche_axe,hors_aire
+FRMFCPBRIVE,BRIVE LA GAILLARDE,45.14844,1.480552,A89,0,141.0,6,320.0,Plug Inn fast charge,0.4,sortie_proche_axe,hors_aire
+FRTSLP403604,"Brive-la-Gaillarde, France",45.146874,1.480158,A89,0,141.0,9,250.0,Tesla,0.6,sortie_proche_axe,hors_aire
+FREVCP000252,Carrefour Energies - Brive,45.1454296,1.4816494,A89,0,141.1,7,300.0,Allego,0.7,sortie_proche_axe,hors_aire
+FRTSLP1726,"Ussac, France",45.166556,1.48367,A89,0,141.2,28,250.0,Tesla,1.6,sortie_proche_axe,hors_aire
+FRPD1PINVBRV,Jardiland - Brive,45.166969,1.545291,A89,0,147.0,8,200.0,Power Dot France,0.8,sortie_proche_axe,hors_aire
 FRVIAP104108,ENGIE Vianeo - A89 La Corrèze,45.360006,1.93782,A89,0,184.4,16,300.0,ENGIE Vianeo,0.3,nom,inconnu
+FRATLPFR00322,Atlante - Ussel - Restaurant l'étable,45.517324,2.268711,A89,0,215.6,8,300.0,Atlante France,1.0,sortie_proche_axe,hors_aire
 FRATLPFR00308,Atlante - A89 - Aire de service du Chavanon (accessible dans les 2 sens),45.622961,2.457271,A89,0,234.2,36,300.0,Atlante France,2.3,nom,inconnu
 FRELCP12954424,Electra A9 - Aire d'Estézargues Nord (direction Montpellier),43.965009,4.6383,A9,1,23.6,10,400.0,Electra,2.8,nom,direction
 FRELCP12954426,Electra A9 - Aire d'Estézargues Sud (direction Orange),43.962583,4.636584,A9,2,23.9,8,400.0,Electra,2.9,nom,direction
 FRATLPFR00310,Atlante - A9 - Aire de service de Marguerittes Sud (direction Orange),43.869269,4.439411,A9,2,42.3,33,300.0,Atlante France,1.0,nom,direction
 FRFASP11568705,Fastned Aire d’Ambrussum Nord,43.715255,4.13341,A9,1,72.3,8,300.0,Fastned France,1.0,aire_proche_axe,cote_chaussee
+FRHPCPNF059051TOTEM,RELAIS AMBRUSSUM SUD,43.713306,4.133098,A9,2,72.4,9,150.0,TotalEnergies Marketing France,1.2,sortie_proche_axe,cote_chaussee
 FRALLPGO000427,Aire de Nabrigas_A9,43.6893809,4.0609117,A9,0,78.7,13,300.0,Allego,0.1,nom,inconnu
 FREVAP34095A,e-Vadea - Fabregues - A9 Montpellier Sud,43.546265,3.795622,A9,0,105.4,25,300.0,SPIE CityNetworks,0.4,nom,inconnu
 FRELCP12954427,Electra A9 - Aire de Gigean Nord (direction Béziers),43.493438,3.718711,A9,1,113.9,10,400.0,Electra,1.0,nom,direction
 FRELCP12954387,Electra A9 - Aire de Loupian (direction Montpellier),43.463523,3.630591,A9,2,121.5,15,400.0,Electra,1.1,nom,direction
 FRSHEP5222202,Shell Aire de Béziers-Montblanc SUD,43.3590418,3.345357,A9,2,147.2,13,300.0,Shell Recharge,2.2,aire_proche_axe,cote_chaussee
 FRSHEP5315540,Shell Aire de Béziers-Montblanc NORD,43.3603506,3.3438376,A9,1,147.3,13,300.0,Shell Recharge,2.0,aire_proche_axe,cote_chaussee
+FRPLNP11043688,"ZAE la Ginieisse, Rte de Bessan",43.348093,3.258243,A9,0,154.2,6,300.0,Plenitude On The Road,0.4,sortie_proche_axe,hors_aire
+FRTSLP417275,"Béziers, France - Rue Zenobe Gramme",43.347839,3.255648,A9,0,154.4,9,250.0,Tesla,0.4,sortie_proche_axe,hors_aire
+FRPD1PAUCBEZ,Auchan - Béziers,43.345137,3.24097,A9,0,155.6,10,200.0,Power Dot France,0.2,sortie_proche_axe,hors_aire
 FRALLPGO000424,Aire de Lespignan Nord_A9,43.265294,3.174335,A9,1,165.8,13,300.0,Allego,3.3,nom,cote_chaussee
 FRALLPGO000425,Aire de Lespignan Sud_A9,43.264096,3.174483,A9,2,165.9,12,300.0,Allego,3.4,nom,cote_chaussee
 FRHPCPNF059472TOTEM,AIRE NARBONNE VINASSAN SUD,43.216189,3.092478,A9,2,174.4,8,175.0,TotalEnergies Marketing France,2.4,aire_proche_axe,cote_chaussee
+FRELCP12954016,Electra Narbonne - Hôtel Campanile,43.168787,2.98354,A9,0,184.0,6,300.0,Electra,1.1,sortie_proche_axe,hors_aire
+FRTSLP1757,"Narbonne, France",43.167739,2.986032,A9,0,184.1,26,150.0,Tesla,0.9,sortie_proche_axe,hors_aire
+FRTSLP30985,"Narbonne Sud, France",43.16187,2.982214,A9,0,184.7,28,250.0,Tesla,1.1,sortie_proche_axe,hors_aire
+FRFASP11568888,Fastned Narbonne La Coupe,43.160826,2.982804,A9,0,184.9,8,400.0,Fastned France,1.0,sortie_proche_axe,hors_aire
+FRMFCPNARBONNE,NARBONNE,43.15595,2.983233,A9,0,185.4,6,320.0,Plug Inn fast charge,0.9,sortie_proche_axe,hors_aire
 FRELCP12954400,Electra A9 - Aire de Bages (direction Narbonne),43.113785,2.954277,A9,2,190.4,12,400.0,Electra,2.4,nom,direction
 FRELCP12954401,Electra A9 - Aire de Gasparets (direction Perpignan),43.023681,2.951727,A9,1,200.3,13,400.0,Electra,1.0,nom,direction
+FRHPCPNF080363TIERSTOTEM,RELAIS DE LA PALME EST,42.951091,2.97228,A9,2,208.0,14,300.0,TotalEnergies Marketing France,2.0,sortie_proche_axe,cote_chaussee
 FREVAP11188A,e-Vadea - La Palme - A9 La Palme Ouest,42.949432,2.969035,A9,1,208.2,13,300.0,SPIE CityNetworks,1.8,nom,cote_chaussee
 FRELCP12954206,Electra A9 - Aire de Pia (direction Montpellier),42.753711,2.893251,A9,2,230.7,10,400.0,Electra,0.7,nom,direction
 FRELCP12954207,Electra A9 - Aire de Rivesaltes (direction Perpignan),42.750766,2.89191,A9,1,231.1,10,400.0,Electra,0.8,nom,direction
+FRIOYP13531042,IONITY GmbH IONITY Village Catalan Est,42.578429,2.846994,A9,2,250.6,6,350.0,Ionity,0.2,sortie_proche_axe,cote_chaussee
+FRIOYP13531092,IONITY GmbH IONITY Village Catalan Ouest,42.577784,2.848341,A9,1,250.7,6,350.0,Ionity,0.1,sortie_proche_axe,cote_chaussee
+FRATLPFR01128,Atlante - Saint-Gilles - Carrefour Contact,48.15624,-1.83305,N12,0,6.8,6,600.0,Atlante France,0.7,sortie_proche_axe,hors_aire
+FRSHEP5605635,Shell Aire d'Armor et d'Argoat - St Gilles,48.1660532,-1.8670518,N12,0,9.5,8,300.0,Shell Recharge,0.9,aire_proche_axe,inconnu
+FRIOYP13531038,IONITY GmbH IONITY Saint Brieuc,48.480793,-2.675141,N12,0,81.1,8,350.0,Ionity,1.0,sortie_proche_axe,hors_aire
+FRVIAP122014,ENGIE Vianeo - B&B HOTEL SAINT-BRIEUC,48.491094,-2.720227,N12,0,84.6,8,300.0,ENGIE Vianeo,0.5,sortie_proche_axe,hors_aire
+FRTSLP3078,"Saint-Brieuc, France",48.494194,-2.723318,N12,0,84.9,30,250.0,Tesla,0.2,sortie_proche_axe,hors_aire
+FRTSLP29581,"Morlaix, France",48.57439,-3.85318,N12,0,168.6,8,250.0,Tesla,1.1,sortie_proche_axe,hors_aire
+FREVZPD1F81DDF62024153A4D35C3CB76D9,"EVzen - Saint Martin Des Champs, Conforama St Martin Des Champs",48.569186,-3.851779,N12,0,168.7,6,180.0,EVzen,0.6,sortie_proche_axe,hors_aire
+FRLDLPLFR3881EVCP,LFR3881EVCP07,48.514543,-4.05447,N12,0,184.8,9,350.0,Lidl France,0.9,sortie_proche_axe,hors_aire
+FREVCP000770,Carrefour Energies - Saint-Malo,48.625461,-1.993259,N137,0,0.6,7,300.0,Allego,0.3,sortie_proche_axe,hors_aire
+FRPD1PCORSMA,Carrefour - Saint-Jouan-des-Guérets,48.605498,-1.978407,N137,0,3.1,10,180.0,Power Dot France,0.5,sortie_proche_axe,hors_aire
+FRPD1PITMBDB,Intermarché - Bain-de-Bretagne,47.844228,-1.686289,N137,0,91.8,8,200.0,Power Dot France,0.5,sortie_proche_axe,hors_aire
+FRIZFPFAST274,IZIVIA FAST - McDonald's - Vigneux de Bretagne,47.292966,-1.743651,N165,0,9.7,6,200.0,IZIVIA,1.1,sortie_proche_axe,hors_aire
+FRIOYP13531421,IONITY GmbH IONITY Pontchateau,47.434475,-2.074907,N165,0,39.3,8,400.0,Ionity,1.3,sortie_proche_axe,hors_aire
+FRFASP13606438,Fastned Arzal,47.535156,-2.398468,N165,0,66.0,8,400.0,Fastned France,1.7,sortie_proche_axe,hors_aire
+FRPD1PACCVAN,hotelF1 - Vannes,47.67043,-2.768812,N165,0,97.6,10,200.0,Power Dot France,0.0,sortie_proche_axe,hors_aire
+FRATLPFR00343,Atlante - Vannes - Aubert Vannes,47.66282,-2.78661,N165,0,99.0,6,300.0,Atlante France,0.8,sortie_proche_axe,hors_aire
+FREVCP000196,Carrefour Energies - Vannes,47.6593191,-2.7899388,N165,0,99.2,7,300.0,Allego,1.2,sortie_proche_axe,hors_aire
+FRTSLP29624,"Vannes, France",47.677358,-2.803532,N165,0,100.2,12,250.0,Tesla,0.8,sortie_proche_axe,hors_aire
+FRIOYP13531330,IONITY GmbH IONITY Auray,47.664582,-3.00337,N165,0,114.8,8,400.0,Ionity,1.2,sortie_proche_axe,hors_aire
+FRPD1PDRTAUR,Darty - Auray,47.666613,-3.007568,N165,0,115.2,8,180.0,Power Dot France,1.2,sortie_proche_axe,hors_aire
+FRZUNP5609650024528147024,Restaurant Le Poulvern N165 | Landaul,47.72922487,-3.08779884,N165,0,123.4,8,400.0,Zunder,2.9,nom,inconnu
+FRMFCPLORIENT,CAUDAN (LORIENT),47.784915,-3.331915,N165,0,142.9,6,320.0,Plug Inn fast charge,1.3,sortie_proche_axe,hors_aire
+FRTSLP1728,"Lorient, France",47.787588,-3.330148,N165,0,143.0,16,250.0,Tesla,1.6,sortie_proche_axe,hors_aire
+FRALLPGO000022,Carrefour Lanester,47.7762883,-3.3447835,N165,0,143.2,6,300.0,Allego,0.0,sortie_proche_axe,hors_aire
+FRHPCPNF042589,RELAIS GUIDEL SUD,47.821635,-3.468731,N165,2,153.7,8,300.0,TotalEnergies Marketing France,1.1,sortie_proche_axe,cote_chaussee
+FRATLPFR01096,Atlante - Mellac - Intermarché HYPER Mellac,47.86961,-3.58693,N165,0,164.4,12,600.0,Atlante France,0.8,sortie_proche_axe,hors_aire
+FRATLPFR01070,Atlante - Quimper - Boulangerie Aux 7 Epis Quimper,47.97747,-4.01535,N165,0,198.4,8,300.0,Atlante France,1.5,sortie_proche_axe,hors_aire
+FRFASP11568784,Fastned Quimper,48.012242,-4.075207,N165,0,208.1,8,400.0,Fastned France,1.7,sortie_proche_axe,hors_aire
+FRELCP12954790,Electra Quimper - KFC,48.014663,-4.081685,N165,0,208.4,6,300.0,Electra,1.2,sortie_proche_axe,hors_aire
+FRTSLP33187,"Quimper, France",48.015633,-4.081656,N165,0,208.5,8,250.0,Tesla,1.2,sortie_proche_axe,hors_aire
+FRDREP35223,Rue de la Vall√©e du Cast 35380,48.005733412,-2.091369604,N24,0,27.5,6,320.0,DREAM ENERGY,0.3,sortie_proche_axe,hors_aire
+FREBNPBQCKZ,LA SALLE EN BEAUMONT - RN85,44.8644,5.86115,N85,0,27.5,2,50.0,EASYCHARGE,0.2,nom,inconnu
+FRIOYP13531125,IONITY GmbH IONITY Val Gelon,45.547641,6.156463,N90,0,9.8,8,400.0,Ionity,0.4,sortie_proche_axe,hors_aire
+FRIOYP13530944,IONITY GmbH IONITY Arclusaz,45.548788,6.158265,N90,0,10.0,8,350.0,Ionity,0.3,sortie_proche_axe,hors_aire
+FRTSLP29935,"Albertville, France",45.655436,6.365683,N90,0,30.0,28,250.0,Tesla,0.2,sortie_proche_axe,hors_aire
+FRHPCPNF066231,RELAIS ALBERTVILLE LES CHASSEURS,45.673086,6.391714,N90,0,31.0,8,300.0,TotalEnergies Marketing France,1.9,sortie_proche_axe,hors_aire
+FRELCP12954015,Electra Albertville - Intermarché,45.661593,6.381428,N90,0,31.0,6,300.0,Electra,0.4,sortie_proche_axe,hors_aire
+FRMFCPALBERTVILLE,ALBERTVILLE,45.660944,6.383651,N90,0,31.3,6,320.0,Plug Inn fast charge,0.5,sortie_proche_axe,hors_aire
+FRTSLP7137,"La Léchère-les-Bains, France",45.518886,6.482554,N90,0,48.8,16,150.0,Tesla,1.0,sortie_proche_axe,hors_aire
+FRVIAP149001,ENGIE Vianeo - Parking du Pain de Mai,45.4829,6.5358,N90,0,55.0,8,300.0,ENGIE Vianeo,0.1,sortie_proche_axe,hors_aire
+FRTSLP34049,"Aime-la-Plagne, France",45.553106,6.645588,N90,0,66.5,16,250.0,Tesla,0.5,sortie_proche_axe,hors_aire

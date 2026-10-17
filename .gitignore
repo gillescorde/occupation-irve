@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+# données volumineuses, à régénérer (voir donnees_reelles/debits/README.md)
+donnees_reelles/debits/comptages.csv
+donnees_reelles/debits/brut/
+# sorties régénérables
+donnees_synthetiques/
+resultats/
+here/
+*.joblib
+*.pt

@@ -1,0 +1,171 @@
+station_id,nom,lat,lon,axe,sens,pk,nb_pdc,puissance_kw,operateur,distance_axe_approche_km,methode_axe,methode_sens
+FRFASP11568719,Fastned Aire de Vémars Est,49.071747,2.552983,A1,1,24.8,16,300.0,Fastned France,0.4,aire_proche_axe,cote_chaussee
+FRFASP11568718,Fastned Aire de Vémars Ouest,49.073179,2.551434,A1,2,24.9,16,300.0,Fastned France,0.3,aire_proche_axe,cote_chaussee
+FRVIAP102118,ENGIE Vianeo - A1 Ressons Ouest,49.518582,2.719719,A1,0,76.0,18,300.0,ENGIE Vianeo,1.9,nom,inconnu
+FRHPCPNF080294,AIRE DE RESSONS OUEST,49.520236,2.720103,A1,0,76.2,1,50.0,TotalEnergies Marketing France,1.9,aire_proche_axe,inconnu
+FRHPCPNF058967TOTEM,AIRE DE RESSONS EST,49.52435,2.72303,A1,0,76.7,17,300.0,TotalEnergies Marketing France,2.0,aire_proche_axe,inconnu
+FRVIAP103115,ENGIE Vianeo - A1 Coeur des Hauts-de-France Ouest,49.886757,2.838087,A1,2,118.0,20,400.0,ENGIE Vianeo,0.8,nom,cote_chaussee
+FRVIAP102116,ENGIE Vianeo - A1 Phalempin Est,50.529556,3.046385,A1,1,195.2,10,300.0,ENGIE Vianeo,4.3,nom,cote_chaussee
+FRVIAP102117,ENGIE Vianeo - A1 Phalempin Ouest,50.531585,3.046085,A1,2,195.4,10,300.0,ENGIE Vianeo,4.2,nom,cote_chaussee
+FRBPEP3EA040,FR | BP 3EA040 |  Aire de Saint Arnoult Ouest - A10 - Sens Paris Province - DC #06,48.555516,1.932888,A10,1,42.1,13,600.0,bp pulse,0.5,nom,direction
+FRALLPGO000751,Aire de Boutroux_A10,48.390125,1.890605,A10,0,63.9,10,300.0,Allego,2.3,nom,inconnu
+FRSHEP4696231,Shell AIRE DES PLAINES DE BEAUCE,48.275282,1.855629,A10,0,76.6,1,50.0,Shell Recharge,0.8,aire_proche_axe,inconnu
+FRSHEP5099716,Shell AIRE DE VAL-NEUVY,48.270309,1.855274,A10,0,77.1,1,50.0,Shell Recharge,0.9,aire_proche_axe,inconnu
+FRALLPGO000755,Aire de La Dauneuse_A10,48.1088995,1.8519114,A10,0,95.0,9,300.0,Allego,1.9,nom,inconnu
+FRALLPGO000753,Aire de Heron Cendre_A10,48.108181,1.849959,A10,0,95.1,9,300.0,Allego,2.1,nom,inconnu
+FRBPEP3EA036,FR | BP 3EA036 | Auzouer-en-Touraine / Aire de Courte Epee - A10 - Sens Paris Bordeaux - DC #01,47.536843,0.962103,A10,1,200.8,11,600.0,bp pulse,6.2,nom,direction
+FRBPEP3EA039,FR | BP 3EA039 | Auzouer-en-Touraine / Aire de Picardiere - A10 - Sens Bordeaux Paris - DC #01,47.534762,0.962236,A10,2,200.9,11,600.0,bp pulse,6.0,nom,direction
+FRVIAP103111,ENGIE Vianeo - A10 Châtellerault-Antran,46.906859,0.522438,A10,0,281.3,8,300.0,ENGIE Vianeo,3.7,nom,inconnu
+FRBPEP3EA035,FR | BP 3EA035 | Naintre / Aire des Chagnats - A10 - Sens Bordeaux Paris - DC #03,46.794514,0.511441,A10,2,294.4,14,600.0,bp pulse,1.1,nom,direction
+FRBPEP3EA034,FR | BP 3EA034 | Poitiers / Aire de Cent Septiers - A10 - Sens Paris Bordeaux - DC #02,46.610184,0.326023,A10,1,319.3,13,600.0,bp Pulse,2.6,nom,direction
+FRALLPGO000216,Aire de Rouillé Pamproux Nord_A10,46.4531324,-0.0177964,A10,1,352.4,12,300.0,Allego,1.1,nom,cote_chaussee
+FRELCP12954258,Electra A10 - Aire de la Benâte (direction Paris),46.010618,-0.539583,A10,2,424.3,9,400.0,Electra,1.0,nom,direction
+FRATLPFR00309,Atlante - A10 - Aire de service de Saint-Léger Ouest (direction Bordeaux),45.609308,-0.59942,A10,1,469.9,34,300.0,Atlante France,1.1,nom,direction
+FRELCP12954200,Electra A10 - Aire de Saint Palais Est (direction Paris),45.512597,-0.610802,A10,2,480.5,12,400.0,Electra,0.7,nom,direction
+FRELCP12954201,Electra A10 - Aire de Saint Palais Ouest (direction Bordeaux),45.512687,-0.613711,A10,1,480.5,8,400.0,Electra,0.9,nom,direction
+FRELCP12954376,Electra A10 - Aire de Boisredon (direction Saintes),45.313329,-0.557716,A10,2,502.9,8,400.0,Electra,1.6,nom,direction
+FRELCP12954378,Electra A10 - Aire de Saint Caprais (direction Bordeaux),45.296722,-0.555796,A10,1,504.8,9,400.0,Electra,1.6,nom,direction
+FREVAP33502A,e-Vadea - Saugon - A10 Terres de l'Estuaire,45.189957,-0.490309,A10,0,517.0,16,300.0,SPIE CityNetworks,5.8,nom,inconnu
+FRELCP12954199,Electra A10 - Aire de Cézac (direction Paris),45.067029,-0.460093,A10,2,530.9,12,400.0,Electra,7.0,nom,direction
+FRATLPFR00307,Atlante - A10 - Aire de service de Meillac (direction Saintes),44.975352,-0.432787,A10,2,541.2,19,300.0,Atlante France,8.3,nom,direction
+FRBPEP3EA041,FR | BP 3EA041 | Aire de Ver-les-Chartres les Souchets - A11 - Sens Paris Nantes - DC #06,48.372502,1.464896,A11,1,37.7,15,600.0,bp pulse,6.8,nom,direction
+FRBPEP3EA037,FR | BP 3EA037 | Ermenonville-la-Grande / Aire de Dix Sept Setiers - A11 - Sens Nantes Paris - DC #06,48.321503,1.360395,A11,2,46.6,12,600.0,bp Pulse,10.2,nom,direction
+FRVIAP104111,ENGIE Vianeo - A11 Les Manoirs du Perche,48.24037,1.083104,A11,0,68.7,10,300.0,ENGIE Vianeo,13.6,nom,inconnu
+FRVIAP103110,ENGIE Vianeo - A11 Brou-Dampierre,48.239338,1.082592,A11,0,68.8,14,300.0,ENGIE Vianeo,13.7,nom,inconnu
+FRALLPGO000757,Aire de Le Mans Nord_A11,48.051271,0.173327,A11,1,141.4,13,300.0,Allego,5.7,nom,cote_chaussee
+FRALLPGO000428,Aire de Pirmil Est_A11,47.9122925,-0.0831179,A11,2,166.6,11,300.0,Allego,0.2,nom,cote_chaussee
+FRALLPGO000429,Aire de Pirmil Ouest_A11,47.9111059,-0.086755,A11,1,166.9,11,300.0,Allego,0.2,nom,cote_chaussee
+FRTSLP16456,"Aire des Portes d'Angers, France",47.499063,-0.491233,A11,0,226.4,20,250.0,Tesla,2.9,aire_proche_axe,inconnu
+FRALLPGO000756,Aire de Launay_A11,47.338495,-1.380108,A11,0,294.6,11,300.0,Allego,4.2,nom,inconnu
+FRALLPGO000752,Aire de Cellier_A11,47.33975,-1.383783,A11,0,294.8,9,300.0,Allego,4.5,nom,inconnu
+FRVIAP102114,ENGIE Vianeo - A13 Morainvilliers Nord,48.941591,1.954211,A13,1,24.5,12,300.0,ENGIE Vianeo,1.5,nom,cote_chaussee
+FRVIAP102115,ENGIE Vianeo - A13 Morainvilliers Sud,48.941982,1.95123,A13,2,24.8,12,300.0,ENGIE Vianeo,1.5,nom,cote_chaussee
+FRFASP11568710,Fastned Aire de Rosny-Sud,48.992331,1.63311,A13,2,48.2,8,300.0,Fastned France,2.4,aire_proche_axe,cote_chaussee
+FRFASP11568743,Fastned Aire de Bosgouet Sud,49.360989,0.861169,A13,2,121.9,8,300.0,Fastned France,1.3,aire_proche_axe,cote_chaussee
+FRVIAP102101,ENGIE Vianeo - A13 Beuzeville Nord,49.324464,0.32767,A13,1,160.7,8,300.0,ENGIE Vianeo,3.2,nom,cote_chaussee
+FRVIAP102102,ENGIE Vianeo - A13 Beuzeville Sud,49.321005,0.320512,A13,2,161.3,8,300.0,ENGIE Vianeo,2.9,nom,cote_chaussee
+FRELCP12954683,Electra Salon-La-Tour - Parcelle A20,45.481249,1.52905,A20,0,213.6,8,300.0,Electra,1.0,nom,inconnu
+FRVIAP103109,ENGIE Vianeo - A20 Nauze Vert,43.957677,1.3265,A20,0,384.0,16,300.0,ENGIE Vianeo,7.2,nom,inconnu
+FRPD1PKARASL,Karcher - Aire-sur-la-Lys,50.661302,2.394852,A26,0,48.1,2,100.0,Power Dot France,0.6,aire_proche_axe,inconnu
+FREVCP000197,Carrefour Energies - Aire-sur-la-Lys,50.6361899,2.4110639,A26,0,50.8,4,150.0,Allego,1.9,aire_proche_axe,inconnu
+FRPLNP12569331,Aire de Souchez - A26,50.404148,2.743435,A26,0,86.4,4,110.0,Plenitude On The Road,2.0,nom,inconnu
+FRFASP11568733,Fastned Aire de Wancourt Est,50.261485,2.864158,A26,2,105.9,8,300.0,Fastned France,0.6,aire_proche_axe,cote_chaussee
+FRSHEP5233160,Shell- France Aire de Rumaucourt HW,50.2274772,3.0643557,A26,0,120.5,5,300.0,Shell Recharge,1.4,aire_proche_axe,inconnu
+FRTSLP3045,"Aire d'Urvillers, France",49.786878,3.335433,A26,0,177.3,16,150.0,Tesla,1.5,aire_proche_axe,inconnu
+FRVIAP102113,ENGIE Vianeo - A26 Mont de Nizy,49.449858,3.925151,A26,0,233.3,8,300.0,ENGIE Vianeo,9.1,nom,inconnu
+FRVIAP102105,ENGIE Vianeo - A26 Champ Roland,49.445716,3.927966,A26,0,233.8,8,300.0,ENGIE Vianeo,9.0,nom,inconnu
+FRSHEP5869993,Shell- France Aire de Sommesous HW,48.7293536,4.2288233,A26,0,322.7,23,300.0,Shell Recharge,2.4,aire_proche_axe,inconnu
+FRSHEP5233159,Shell- France Aire de Charmont-sous-Barbuise HW,48.411051,4.142706,A26,0,358.5,1,50.0,Shell Recharge,1.1,aire_proche_axe,inconnu
+FRVIAP103116,ENGIE Vianeo - A31 Saint-Rémy,49.179797,6.176505,A31,0,31.5,8,300.0,ENGIE Vianeo,0.5,nom,inconnu
+FRPLNP11946038,Aire de Service La Maxe - Autoroute A31,49.151083,6.184735,A31,0,34.7,10,1200.0,Plenitude On The Road,1.1,nom,inconnu
+FRFASP11568739,Fastned Aire de La Maxe,49.150483,6.1847,A31,0,34.8,16,300.0,Fastned France,1.1,aire_proche_axe,inconnu
+FRVIAP101112,ENGIE Vianeo - A31 Montigny-le-Roi,47.977038,5.498041,A31,0,190.4,13,300.0,ENGIE Vianeo,5.4,nom,inconnu
+FRVIAP101113,ENGIE Vianeo - A31 Val de Meuse,47.975368,5.498553,A31,0,190.5,13,300.0,ENGIE Vianeo,5.5,nom,inconnu
+FREVAP21111B,e-Vadea - Brognon - A31 Dijon Spoy (direction Toul),47.425011,5.172468,A31,2,257.1,15,300.0,SPIE CityNetworks,5.4,nom,direction
+FREVAP21111A,e-Vadea - Brognon - A31 Dijon Brognon (direction Beaune),47.421322,5.171659,A31,1,257.5,19,300.0,SPIE CityNetworks,5.5,nom,direction
+FRFASP11568649,Fastned Aire de Gevrey - Chambertin Ouest,47.216809,5.001847,A31,1,283.1,8,300.0,Fastned France,2.1,aire_proche_axe,cote_chaussee
+FRVIAP101105,ENGIE Vianeo - A36 Dole Audelange,47.147381,5.580425,A36,0,60.0,9,300.0,ENGIE Vianeo,3.3,nom,inconnu
+FRVIAP101106,ENGIE Vianeo - A36 Dole Romange,47.149066,5.585301,A36,0,60.4,9,300.0,ENGIE Vianeo,3.3,nom,inconnu
+FRECHPCLLNW,Torpes - Parking de l'aire de jeux,47.169445,5.88835,A36,0,82.4,2,60.0,EASYCHARGE,3.4,aire_proche_axe,inconnu
+FREVAP25368B,e-Vadea - Marchaux-Chaudefontaine - A36 Besançon Marchaux,47.327026,6.125201,A36,0,106.0,13,300.0,SPIE CityNetworks,5.3,nom,inconnu
+FREVAP25368A,e-Vadea - Marchaux-Chaudefontaine - A36 Besançon Champoux,47.328903,6.127125,A36,0,106.2,13,300.0,SPIE CityNetworks,5.4,nom,inconnu
+FRFASP11568651,Fastned Aire d’Écot Sud,47.440536,6.728741,A36,1,152.3,8,300.0,Fastned France,4.3,aire_proche_axe,cote_chaussee
+FRFASP11568737,Fastned Aire de Changis sur Marne,48.9646,3.054163,A4,0,52.7,8,300.0,Fastned France,1.7,aire_proche_axe,inconnu
+FRFASP11568738,Fastned Aire de Ussy sur Marne,48.970463,3.063073,A4,0,53.5,8,300.0,Fastned France,1.2,aire_proche_axe,inconnu
+FRFASP11568713,Fastned Aire de Valmy-Orbeval,49.072318,4.788939,A4,0,188.3,4,300.0,Fastned France,4.0,aire_proche_axe,inconnu
+FRFASP11568714,Fastned Aire de Valmy Le Moulin,49.073637,4.790058,A4,0,188.3,4,300.0,Fastned France,3.8,aire_proche_axe,inconnu
+FRVIAP102109,ENGIE Vianeo - A4 Longeville Nord,49.132162,6.659289,A4,2,324.5,8,300.0,ENGIE Vianeo,3.4,nom,cote_chaussee
+FRVIAP102110,ENGIE Vianeo - A4 Longeville Sud,49.132738,6.659985,A4,1,324.6,8,300.0,ENGIE Vianeo,3.5,nom,cote_chaussee
+FRVIAP102104,ENGIE Vianeo - A4 Brumath Ouest,48.723811,7.691951,A4,1,412.6,10,300.0,ENGIE Vianeo,11.6,nom,cote_chaussee
+FRVIAP102103,ENGIE Vianeo - A4 Brumath Est,48.721271,7.696511,A4,2,413.0,10,300.0,ENGIE Vianeo,11.6,nom,cote_chaussee
+FREVAP77384A,e-Vadea - Réau - A5a Plessis Picard,48.601856,2.601411,A5,0,0.0,15,300.0,SPIE CityNetworks,2.8,nom,inconnu
+FRVIAP101107,ENGIE Vianeo - A5b Galande la Mare Laroche,48.610634,2.635366,A5,0,0.0,9,300.0,ENGIE Vianeo,3.6,nom,inconnu
+FRFASP11568665,Fastned Aire de Jonchets - Les Récompenses,48.4286,2.9315,A5,0,28.5,4,300.0,Fastned France,1.1,aire_proche_axe,inconnu
+FRFASP11568667,Fastned Aire de Jonchets - La Grande Paroisse,48.42598,2.9287,A5,0,28.5,4,300.0,Fastned France,0.7,aire_proche_axe,inconnu
+FRVIAP101115,ENGIE Vianeo - A5 Villeneuve l'Archevèque,48.243118,3.554935,A5,0,85.5,13,300.0,ENGIE Vianeo,1.0,nom,inconnu
+FRVIAP101116,ENGIE Vianeo - A5 Villeneuve Vauluisant,48.247693,3.555761,A5,0,85.6,13,300.0,ENGIE Vianeo,1.4,nom,inconnu
+FRVIAP101104,ENGIE Vianeo - A5 Chateauvillain Val Marnay,48.057405,4.959139,A5,0,194.7,21,300.0,ENGIE Vianeo,9.1,nom,inconnu
+FRVIAP101103,ENGIE Vianeo - A5 Chateauvillain Orges,48.057611,4.96054,A5,0,194.8,21,300.0,ENGIE Vianeo,9.1,nom,inconnu
+FRVIAP101101,ENGIE Vianeo - A6 Achères Est,48.361836,2.574533,A6,2,53.3,13,300.0,ENGIE Vianeo,0.9,nom,cote_chaussee
+FRFASP11568681,Fastned Aire d’Achères - La Forêt,48.360859,2.57393,A6,0,53.4,4,300.0,Fastned France,1.0,aire_proche_axe,inconnu
+FRVIAP101114,ENGIE Vianeo - A6 Venoy Soleil Levant,47.788469,3.673335,A6,0,155.8,17,300.0,ENGIE Vianeo,5.5,nom,inconnu
+FRBFCPVDOCO,SDEY - SAUVIGNY LE BOIS (89) - Sortie 22 Avallon sur A6,47.508686,3.991514,A6,0,197.5,2,160.0,Citeos Mobilité Electrique Paris - Cogelum IDF,4.7,nom,inconnu
+FREVAP21298A,e-Vadea - Gissey-le-Vieil - A6 Chien Blanc,47.314873,4.495427,A6,0,241.1,15,300.0,SPIE CityNetworks,3.5,nom,inconnu
+FRVIAP101110,ENGIE Vianeo - A6 La Forêt,47.105253,4.714129,A6,0,268.8,11,300.0,ENGIE Vianeo,1.3,nom,inconnu
+FRVIAP101102,ENGIE Vianeo - A6 Beaune Merceuil,46.961627,4.838476,A6,0,288.6,17,300.0,ENGIE Vianeo,0.3,nom,inconnu
+FRFASP11568663,Fastned Aire de Saint Ambreuil,46.69105,4.844933,A6,0,318.5,8,300.0,Fastned France,2.2,aire_proche_axe,inconnu
+FRFASP11568662,Fastned Aire de Dracé,46.14335,4.76787,A6,0,381.3,8,300.0,Fastned France,0.4,aire_proche_axe,inconnu
+FRVIAP103102,ENGIE Vianeo - A6 Les Chères Ouest,45.902756,4.72858,A6,1,408.1,8,300.0,ENGIE Vianeo,2.7,nom,cote_chaussee
+FRVIAP103101,ENGIE Vianeo - A6 Les Chères Est,45.903119,4.729612,A6,2,408.1,8,300.0,ENGIE Vianeo,2.6,nom,cote_chaussee
+FRALLPGO000188,Aire de Toulouse Sud Nord_A61,43.4857878,1.5491152,A61,0,10.5,12,300.0,Allego,2.8,nom,inconnu
+FREVAP31161A,e-Vadea - Deyme - A61 Toulouse Sud,43.482609,1.549728,A61,0,10.8,21,300.0,SPIE CityNetworks,3.0,nom,inconnu
+FRVIAP104114,ENGIE Vianeo - A61 Port Lauragais Nord,43.353167,1.808766,A61,2,35.8,16,300.0,ENGIE Vianeo,1.6,nom,cote_chaussee
+FRELCP12953938,Electra A61 - Aire d'Arzens Nord (direction Toulouse),43.219984,2.216763,A61,2,71.8,18,300.0,Electra,2.8,nom,direction
+FRELCP12953935,Electra A61 - Aire d'Arzens Sud (direction Narbonne),43.217186,2.220567,A61,1,72.2,18,300.0,Electra,3.0,nom,direction
+FRELCP12953937,Electra A62 - Aire de Garonne (direction Bordeaux),44.040485,1.004127,A62,2,154.5,14,300.0,Electra,3.5,nom,direction
+FRELCP12953941,Electra A62 - Aire de Garonne (direction Toulouse),44.040629,1.004787,A62,1,154.5,14,300.0,Electra,3.4,nom,direction
+FRVIAP104101,ENGIE Vianeo - A62 Frontonnais Nord,43.813026,1.360907,A62,2,204.4,24,300.0,ENGIE Vianeo,2.7,nom,cote_chaussee
+FRVIAP104102,ENGIE Vianeo - A62 Frontonnais Sud,43.811528,1.360365,A62,1,204.5,18,300.0,ENGIE Vianeo,2.8,nom,cote_chaussee
+FRPLNP11910787,"Eni Station - Aire de Thouars, A630",44.786114,-0.594359,A63,0,0.0,6,300.0,Plenitude On The Road,0.8,aire_proche_axe,inconnu
+FRSHEP5233163,Shell Aire de Bordeaux-Cestas Ouest A63,44.7456293,-0.7037549,A63,1,7.0,9,300.0,Shell Recharge,5.7,nom,cote_chaussee
+FRSHEP12323924,Shell Aire de Bordeaux-Cestas Est A63,44.743648,-0.7046561,A63,2,7.2,9,300.0,Shell Recharge,5.7,nom,cote_chaussee
+FRZUNP5909246146811129817,Aire de la Porte des Landes - Est,44.36110666,-0.84959085,A63,2,50.7,18,400.0,Zunder,0.2,aire_proche_axe,cote_chaussee
+FRZUNP4029550098338231067,Aire de la Porte des Landes - Ouest,44.36134751,-0.85219497,A63,1,50.8,18,400.0,Zunder,0.0,aire_proche_axe,cote_chaussee
+FRZUNP4015250050291921289,Aire de l'Océan Est,43.93737171,-1.08929993,A63,2,101.6,18,400.0,Zunder,0.9,aire_proche_axe,cote_chaussee
+FRZUNP2001223164604952988,Aire de l'Océan Ouest,43.93757808,-1.09276862,A63,1,101.7,18,400.0,Zunder,0.6,aire_proche_axe,cote_chaussee
+FRSHEP4730503,Shell AIRE DE L'OCEAN EST,43.936816,-1.09073,A63,2,101.7,1,50.0,Shell Recharge,0.8,aire_proche_axe,cote_chaussee
+FRTDAPVHYGF,Station-service Sérézin-du-Rhône - A7N,45.631192,4.819682,A7,0,11.9,2,50.0,EASYCHARGE,1.9,nom,inconnu
+FRSHEP5242817,Shell Aire de Roussillon,45.406247,4.8160508,A7,0,38.0,12,300.0,Shell Recharge,1.8,aire_proche_axe,inconnu
+FRELCP12954203,Electra A7 - Aire du Bornaron (direction Marseille),45.154707,4.887513,A7,1,66.6,11,400.0,Electra,3.6,nom,direction
+FRELCP12954245,Electra A7 - Aire de la Bouterne (direction Lyon),45.078965,4.87266,A7,2,74.7,13,400.0,Electra,1.2,nom,direction
+FRELCP12953940,Electra A7 - Aire Latitude 45 (direction Lyon),45.019158,4.876109,A7,2,81.3,30,300.0,Electra,0.4,nom,direction
+FRTDAPVIBMH,Station-service de l'aire de Portes-lès-Valence - A7,44.865862,4.864803,A7,0,98.7,2,50.0,EASYCHARGE,0.1,nom,inconnu
+FRTSLP29498,"Aire de Portes-Lès-Valence Ouest, France",44.864843,4.864827,A7,1,98.8,16,250.0,Tesla,0.0,aire_proche_axe,cote_chaussee
+FRALLPGO000426,Aire De Livron_A7,44.786443,4.835428,A7,0,107.8,10,300.0,Allego,0.0,nom,inconnu
+FRFASP11568837,Fastned Aire de Saulce,44.72035,4.787287,A7,0,115.9,17,300.0,Fastned France,1.8,aire_proche_axe,inconnu
+FRALLPGO000423,Aire de la Coucourde_A7,44.646522,4.79158,A7,0,123.8,10,400.0,Allego,0.7,nom,inconnu
+FRELCP12954397,Electra A7 - Aire de Tricastin (direction Montélimar),44.326109,4.740065,A7,2,159.9,12,400.0,Electra,0.8,nom,direction
+FRELCP12954414,Electra A7 - Aire de Orange Le Grès (direction Marseille),44.111227,4.82935,A7,1,184.8,9,400.0,Electra,0.4,nom,direction
+FRALLPGO000430,Aire de Senas Ouest_A7,43.7593303,5.0788949,A7,1,229.4,9,300.0,Allego,1.2,nom,cote_chaussee
+FRALLPGO000431,Aire de Lamanon_A7,43.68498,5.096858,A7,0,237.8,13,300.0,Allego,0.8,nom,inconnu
+FRHPCPNF059189TOTEM,AIRE DE LANCON DE PROVENCE OUEST,43.589684,5.186405,A7,1,251.2,16,300.0,TotalEnergies Marketing France,2.8,aire_proche_axe,cote_chaussee
+FRHPCPNF007052TOTEM,AIRE DE LANCON DE PROVENCE EST,43.589351,5.193534,A7,2,251.5,16,300.0,TotalEnergies Marketing France,3.3,aire_proche_axe,cote_chaussee
+FRELCP12953939,Electra A7 - Aire de Vitrolles Est (direction Orange),43.446899,5.243111,A7,2,267.0,12,300.0,Electra,2.0,nom,direction
+FRELCP12953936,Electra A55 - Aire de Gignac Rebuty (direction Martigues),43.392152,5.256257,A7,0,272.7,10,300.0,Electra,4.5,aire_proche_axe,inconnu
+FRVIAP103112,ENGIE Vianeo - A71 La Ferté St-Aubin,47.663705,1.929353,A71,0,20.3,12,300.0,ENGIE Vianeo,4.0,nom,inconnu
+FRBPEP3EA033,FR | BP 3EA033 | Nouan-le-Fuzelier / Aire de la Briganderie - A71 - Sens Bourges Orleans - DC #01,47.546416,2.009837,A71,2,34.3,8,600.0,bp pulse,0.5,nom,direction
+FRBPEP3EA038,FR | BP 3EA038 | Saint-Viâtre /  Aire des Maremberts - A71 - Sens Orleans Bourges - DC #05,47.470652,2.00672,A71,1,42.5,11,600.0,bp Pulse,2.3,nom,direction
+FRALLPGO000758,Aire de Quincy_A71,47.145743,2.184198,A71,0,82.7,11,300.0,Allego,2.4,nom,inconnu
+FRALLPGO000754,Aire de La Chaussee de Cesar_A71,47.144086,2.186913,A71,0,82.9,11,300.0,Allego,2.5,nom,inconnu
+FRZUNP1615743645321921749,Bourges-Marmagne A71 - Marmagne,47.09602136,2.24063927,A71,0,89.2,27,400.0,Zunder,4.9,nom,inconnu
+FRVIAP101109,ENGIE Vianeo - A71 L'Allier Saulzet,46.357285,2.802515,A71,0,192.1,13,300.0,ENGIE Vianeo,13.4,nom,inconnu
+FRVIAP101108,ENGIE Vianeo - A71 L'Allier Doyet,46.355005,2.802377,A71,0,192.3,13,300.0,ENGIE Vianeo,13.3,nom,inconnu
+FRTSLP34831,"Aire de Lafayette, France",45.338545,3.27382,A75,0,51.8,22,250.0,Tesla,4.5,aire_proche_axe,inconnu
+FRTDAPVDIGB,Aire de Lafayette Lorlanges - Autoroute A75,45.337793,3.273529,A75,0,51.9,2,50.0,EASYCHARGE,4.5,nom,inconnu
+FRATLPFR01057,Atlante - Albaret-Sainte-Marie - Aire de la Garde (A75 sortie 32) Kyriad Saint-Chély,44.87036,3.25146,A75,0,108.8,8,300.0,Atlante France,7.2,nom,inconnu
+FRSHEP3780497,Shell Aire de la sainte Victoire HW,43.469245,5.6556421,A8,0,17.8,12,300.0,Shell Recharge,2.2,aire_proche_axe,inconnu
+FRTSLP5671,"Aire de Cambarette, France",43.423964,5.99017,A8,0,45.1,20,150.0,Tesla,0.7,aire_proche_axe,inconnu
+FRTSLP5670,"Aire de Vidauban Sud, France",43.413832,6.451177,A8,1,83.3,20,150.0,Tesla,0.5,aire_proche_axe,cote_chaussee
+FRVIAP103114,ENGIE Vianeo - A8 La Via Julia Augusta,43.754763,7.398143,A8,0,170.3,14,300.0,ENGIE Vianeo,0.2,nom,inconnu
+FREVAP06012A,e-Vadea - Aire de la Riviera Française,43.75359,7.420005,A8,0,171.9,14,300.0,SPIE CityNetworks,0.5,aire_proche_axe,inconnu
+FRFASP11568703,Fastned Aire du Manoire,45.149531,0.800075,A89,0,87.7,8,300.0,Fastned France,3.1,aire_proche_axe,inconnu
+FRVIAP104108,ENGIE Vianeo - A89 La Corrèze,45.360006,1.93782,A89,0,184.4,16,300.0,ENGIE Vianeo,0.3,nom,inconnu
+FRATLPFR00308,Atlante - A89 - Aire de service du Chavanon (accessible dans les 2 sens),45.622961,2.457271,A89,0,234.2,36,300.0,Atlante France,2.3,nom,inconnu
+FRELCP12954424,Electra A9 - Aire d'Estézargues Nord (direction Montpellier),43.965009,4.6383,A9,1,23.6,10,400.0,Electra,2.8,nom,direction
+FRELCP12954426,Electra A9 - Aire d'Estézargues Sud (direction Orange),43.962583,4.636584,A9,2,23.9,8,400.0,Electra,2.9,nom,direction
+FRATLPFR00310,Atlante - A9 - Aire de service de Marguerittes Sud (direction Orange),43.869269,4.439411,A9,2,42.3,33,300.0,Atlante France,1.0,nom,direction
+FRFASP11568705,Fastned Aire d’Ambrussum Nord,43.715255,4.13341,A9,1,72.3,8,300.0,Fastned France,1.0,aire_proche_axe,cote_chaussee
+FRALLPGO000427,Aire de Nabrigas_A9,43.6893809,4.0609117,A9,0,78.7,13,300.0,Allego,0.1,nom,inconnu
+FREVAP34095A,e-Vadea - Fabregues - A9 Montpellier Sud,43.546265,3.795622,A9,0,105.4,25,300.0,SPIE CityNetworks,0.4,nom,inconnu
+FRELCP12954427,Electra A9 - Aire de Gigean Nord (direction Béziers),43.493438,3.718711,A9,1,113.9,10,400.0,Electra,1.0,nom,direction
+FRELCP12954387,Electra A9 - Aire de Loupian (direction Montpellier),43.463523,3.630591,A9,2,121.5,15,400.0,Electra,1.1,nom,direction
+FRSHEP5222202,Shell Aire de Béziers-Montblanc SUD,43.3590418,3.345357,A9,2,147.2,13,300.0,Shell Recharge,2.2,aire_proche_axe,cote_chaussee
+FRSHEP5315540,Shell Aire de Béziers-Montblanc NORD,43.3603506,3.3438376,A9,1,147.3,13,300.0,Shell Recharge,2.0,aire_proche_axe,cote_chaussee
+FRALLPGO000424,Aire de Lespignan Nord_A9,43.265294,3.174335,A9,1,165.8,13,300.0,Allego,3.3,nom,cote_chaussee
+FRALLPGO000425,Aire de Lespignan Sud_A9,43.264096,3.174483,A9,2,165.9,12,300.0,Allego,3.4,nom,cote_chaussee
+FRHPCPNF059472TOTEM,AIRE NARBONNE VINASSAN SUD,43.216189,3.092478,A9,2,174.4,8,175.0,TotalEnergies Marketing France,2.4,aire_proche_axe,cote_chaussee
+FRELCP12954400,Electra A9 - Aire de Bages (direction Narbonne),43.113785,2.954277,A9,2,190.4,12,400.0,Electra,2.4,nom,direction
+FRELCP12954401,Electra A9 - Aire de Gasparets (direction Perpignan),43.023681,2.951727,A9,1,200.3,13,400.0,Electra,1.0,nom,direction
+FREVAP11188A,e-Vadea - La Palme - A9 La Palme Ouest,42.949432,2.969035,A9,1,208.2,13,300.0,SPIE CityNetworks,1.8,nom,cote_chaussee
+FRELCP12954206,Electra A9 - Aire de Pia (direction Montpellier),42.753711,2.893251,A9,2,230.7,10,400.0,Electra,0.7,nom,direction
+FRELCP12954207,Electra A9 - Aire de Rivesaltes (direction Perpignan),42.750766,2.89191,A9,1,231.1,10,400.0,Electra,0.8,nom,direction

@@ -1,6 +1,7 @@
 # Prévision de l'occupation des bornes de recharge sur autoroute : note technique
 
-*Projet « Occupation IRVE », état au 17 octobre 2026. Code : dossier `irve/`.*
+*Projet « Occupation IRVE », état au 17 octobre 2026. Code : dépôt `gillescorde/occupation-irve`.
+Note complémentaire sur les données HERE : `note_here.md`.*
 
 ## 1. Objet et état d'avancement
 
@@ -15,17 +16,19 @@ le long du réseau.
 | Conversion de l'historique Qualicharge | `donnees.py` | implémentée, appliquée aux données réelles |
 | Placement des stations sur les axes | `reperer_stations_autoroute.py`, `preparer_stations.py` | implémentée, appliquée au référentiel réel |
 | Graphe routier et variables de propagation | `graphe.py` | implémentée, testée sur données synthétiques |
+| Rattachement des compteurs Avatar au graphe | `rattacher_compteurs.py` | implémentée, appliquée aux débits réels (mai à juillet 2026) |
+| Client HERE Traffic Flow | `here_flux.py` | implémenté, testé sur une réponse simulée uniquement |
 | Étape 1 : prévision des débits | `entrainer.py` | implémentée, testée sur données synthétiques |
 | Étape 2 : gradient boosting et GNN spatio-temporel | `entrainer.py`, `gnn.py` | implémentée, testée sur données synthétiques |
 | Générateur de données synthétiques | `generer_donnees_synthetiques.py` | implémenté |
 | Scénarios de pénétration VE | `scenarios.py` | implémentée, appliquée à l'occupation réelle |
 | Restitution web (Flask) | | à faire |
 
-**Point important : aucun débit routier réel n'est utilisé à ce jour.** Les débits des compteurs ne
-sont pas encore collectés. Toute la chaîne trafic → occupation a été validée sur un jeu synthétique
-qui imite la situation réelle : trafic autoroutier non mesuré, compteurs sur des routes parallèles
-ou des pénétrantes, retards de propagation. Le format attendu pour les vrais débits est décrit en
-section 2.3.
+**Point important : la chaîne complète n'a pas encore été apprise sur données réelles.** Elle a été
+validée sur un jeu synthétique qui imite la situation réelle (section 6). Sur les données réelles, on
+dispose de l'occupation du 9 au 15 juillet 2026 seulement et des débits Avatar de mai à juillet
+2026, rattachés au graphe (section 2.3). L'apprentissage réel attend l'historique long d'occupation
+et les données HERE (section 9).
 
 ## 2. Données
 
@@ -123,7 +126,7 @@ occupation moyenne horaire culmine à 37 % vers 13 h, contre 22 % pour les autre
 `preparer_stations.py` fait la même projection sur un vrai tracé d'autoroute fourni en entrée
 (axe, pk, lat, lon) et retient toute station à moins de 300 m, sans passer par le nom.
 
-### 2.3 Débits routiers (à collecter)
+### 2.3 Débits routiers (compteurs Avatar)
 
 Format attendu : `comptages.csv` (horodatage, compteur_id, débit en véh/h) et `compteurs.csv`
 (compteur_id, coordonnées, axe de rattachement, sens, pk projeté, délai de rattachement en minutes).
@@ -141,6 +144,24 @@ $$
 $$
 
 Le modèle exploite ainsi les **variations** du trafic (1 = trafic habituel du compteur), pas son niveau.
+
+**Données réelles.** 1 184 compteurs Avatar (réseau non concédé, à moins de 5 km des axes), débits
+horaires du 1er mai au 31 juillet 2026. Les heures estimées à plus de 50 % par Avatar sont écartées
+(colonne `part_estimee_pct`). Les compteurs se concentrent aux extrémités urbaines des autoroutes ;
+l'A9 est inexploitable (4 compteurs estimés à plus de 80 %).
+
+**Rattachement et premier test** (`rattacher_compteurs.py`, semaine du 9 au 15 juillet) : on mesure
+la corrélation entre le trafic amont propagé $x^{(0)}_s$ et l'occupation, brute puis après avoir
+retiré à chaque série sa moyenne par heure de la journée (« hors cycle »), qui seule mesure
+l'information apportée en plus de l'heure.
+
+| Compteurs utilisés | Stations reliées | $r$ brute (médiane) | $r$ hors cycle (médiane) |
+|---|---|---|---|
+| Tous (997) | 113 / 149 | 0,55 | 0,07 |
+| Interurbains seulement (96) | 71 / 149 | 0,58 | 0,17 |
+
+Les compteurs urbains diluent le signal : seuls les compteurs interurbains sont à retenir. Sur
+environ 140 heures par station, ces chiffres restent fragiles.
 
 ### 2.4 Calendrier
 
@@ -477,12 +498,80 @@ attendent, un modèle M/M/c avec file (Erlang C) donnerait des temps d'attente.
 sur la charge offerte $A$ plutôt que sur $y$. Le modèle prédira alors une grandeur qui se met à
 l'échelle avec $p$, et la conversion par Erlang B se fera en sortie.
 
-## 8. Limites et suite
+## 8. La prévision en production
 
-- **Historique** : les 6 jours de juillet ne permettent pas d'apprendre les effets de jour de la
-  semaine et de vacances. Il faut un export plus long de la collecte.
-- **Débits routiers** : à collecter (compteurs Avatar), puis à rattacher au graphe
-  (`compteurs.csv`) et à aligner sur la même période que l'occupation.
+### 8.1 Deux horizons, deux sources de trafic
+
+L'API HERE Traffic Flow donne l'état **actuel** du trafic, pas une prévision. Les entrées dépendent
+donc de l'horizon :
+
+| Horizon | Trafic utilisé | Autres entrées |
+|---|---|---|
+| Maintenant à +3 h | HERE temps réel sur les tronçons en amont de chaque aire, propagé avec le temps de parcours mesuré (`note_here.md`, section 4) ; compteurs Avatar interurbains | occupation des dernières heures, calendrier |
+| J+1 à J+7 | prévision de l'étape 1 : vitesses typiques HERE (Traffic Patterns), calendrier, couleur Bison Futé, état des derniers jours | occupation décalée d'au moins $H$, calendrier |
+
+À J+1, la couleur Bison Futé n'est qu'une entrée parmi d'autres.
+
+### 8.2 Calendrier et géographie des vacances
+
+- **Calendrier détaillé** : jour de la semaine, fériés, ponts, et vacances scolaires **par zone**
+  (A, B, C), qui ne commencent pas le même jour.
+- **Bison Futé** : la couleur est publiée par jour et par sens (départs, retours), au niveau national
+  avec une distinction pour l'Île-de-France, et des précisions régionales surtout en hiver vers les
+  Alpes **(à vérifier)**. Le temps réel est diffusé au format DATEX II ; l'existence d'une API pour
+  le calendrier des couleurs reste à vérifier.
+- **Géographie** : Bison Futé étant peu différencié par axe, le modèle doit apprendre où vont les
+  vacanciers selon la période (février : A6, A7, A43 vers les Alpes ; été : A7, A9, A10, A63 vers le
+  sud). On introduit des variables croisées axe × type de vacances × zone, en plus de l'identifiant
+  de station. Chaque type de vacances doit apparaître au moins une fois dans l'historique : l'historique
+  HERE pluriannuel compense pour la partie trafic.
+
+### 8.3 Version macro : journées types
+
+Une version agrégée sert de socle, de référence à battre et d'outil de planification :
+
+1. **Typologie des jours** : semaine ordinaire, vendredi de départ, samedi rouge ou noir, dimanche de
+   retour, férié, vacances ou non (par zone). Définie d'abord par le calendrier et Bison Futé, puis
+   affinée par regroupement (k-moyennes) des profils journaliers de trafic HERE.
+2. **Profils par station et par type de jour** : pour chaque heure $h$, la médiane et le
+   90ᵉ centile de l'occupation,
+   $$
+   \hat y_{s,\theta}(h) = \operatorname{médiane}\left\{ y(s, t) : \theta(t) = \theta,\ h(t) = h \right\},
+   \qquad
+   \hat y^{90}_{s,\theta}(h) = Q_{0,9}\left\{ \cdots \right\}
+   $$
+   qui donnent un risque de saturation heure par heure.
+3. **Scénarios** : la loi d'Erlang de la section 7 s'applique aux profils types, ce qui donne des
+   cartes 2030 par type de jour.
+
+Il faut quelques semaines par type de jour. Le profil moyen station × jour × heure de la section 5
+en est la version la plus simple.
+
+## 9. Données à réunir pour l'apprentissage réel
+
+L'occupation n'existe que depuis mars 2026 environ : de mars à octobre, on couvre Pâques, les ponts
+de mai, l'été et le début de la Toussaint, mais **pas les vacances d'hiver**. Les profils d'hiver
+reposeront sur le trafic HERE des années précédentes et sur des hypothèses, à signaler comme tels.
+
+| Priorité | Donnée | Profondeur | Remarque |
+|---|---|---|---|
+| 1 | Export Qualicharge complet (`charging_station_availability_snapshots`), même format | depuis le début de la collecte (mars 2026) jusqu'à aujourd'hui | au moins les 170 stations d'autoroute ; signaler les arrêts de collecte |
+| 1 | Référentiel des stations à jour (`charging_stations.csv`) | dernière version | pour les stations ouvertes depuis juillet |
+| 1 | HERE : vitesses historiques par segment, 15 min, avec vitesse fluide et nombre de sondes ou confiance | mars 2026 à aujourd'hui pour l'apprentissage ; 2024-2025 si possible pour l'hiver et les types de jours | classe fonctionnelle 1, 20 axes, deux sens (`note_here.md`, section 2) |
+| 1 | HERE : référentiel des segments (TMC ou links, géométrie) | | pour la projection sur les axes |
+| 2 | HERE : Traffic Patterns (vitesses typiques) | dernière version | entrée de la prévision à J+1 |
+| 2 | HERE : clé de l'API Traffic Flow | | collecte temps réel, 15 min |
+| 2 | Calendrier Bison Futé (couleurs par jour et par sens) | 2024 à 2026 | même profondeur que l'historique HERE |
+| 2 | Vacances scolaires par zone et jours fériés | 2024 à 2026 | data.gouv.fr |
+| 3 | Débits Avatar | mars à octobre 2026 (aujourd'hui mai à juillet) | compteurs interurbains seulement |
+| 3 | Tracé exact des autoroutes (OSM, Route 500) | | améliore la détection des stations et les pk |
+
+## 10. Limites et suite
+
+- **Historique** : il faut l'export long de la collecte (section 9) ; sans vacances d'hiver dans
+  l'occupation, les prévisions d'hiver resteront à prendre avec prudence.
+- **Débits Avatar** : faible information hors cycle journalier ; à confirmer sur l'historique long,
+  avec les seuls compteurs interurbains.
 - **Tracé des autoroutes** : le tracé par villes étapes donne des pk à quelques km près et laisse
   échapper les stations nommées sans référence à l'aire. Un tracé OSM ou Route 500 améliorera
   la détection et les pk, et permettra un vrai graphe maillé (`aretes.csv`).
@@ -491,8 +580,8 @@ l'échelle avec $p$, et la conversion par Erlang B se fera en sortie.
   l'étape 1.
 - **Validation** : avec une seule saison estivale, une validation croisée par blocs de semaines sera
   plus fiable qu'un découpage unique.
-- **Restitution** : l'interface Flask lira `predictions_test.csv`, puis les prévisions de production
-  (station, heure, taux prévu, couleur).
+- **Restitution** : l'interface Flask lira les prévisions (station, heure, taux prévu, couleur,
+  probabilité de station pleine) et les profils de journées types.
 
 ## Annexe : commandes
 
@@ -505,4 +594,8 @@ python entrainer.py --donnees donnees_synthetiques --horizon-h 24 --sortie resul
 python reperer_stations_autoroute.py --referentiel charging_stations.csv --sortie donnees_reelles/stations.csv
 python -c "import pandas as pd; from donnees import convertir_snapshots_qualicharge as c; \
 c(pd.read_csv('charging_station_availability_snapshots.csv')).to_csv('occupation_bornes.csv', index=False)"
+# débits Avatar : rattachement au graphe et corrélations
+python rattacher_compteurs.py --donnees donnees_reelles --interurbains-seulement
+# scénario de pénétration VE à 10 %
+python scenarios.py --occupation donnees_reelles/occupation_bornes.csv --penetration 0.10 --sortie scenario_10pc.csv
 ```

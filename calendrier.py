@@ -6,7 +6,8 @@ données horaires sur la date.
 Sources (open data, à télécharger dans donnees_reelles/calendrier/brut/) :
   - vacances : https://www.data.gouv.fr/datasets/vacances-scolaires-par-zones  (CSV : date,
     vacances_zone_a, vacances_zone_b, vacances_zone_c, nom_vacances ; depuis 1995)
-  - fériés   : https://calendrier.api.gouv.fr/jours-feries/metropole.json  ({"AAAA-MM-JJ": "nom"})
+  - fériés   : https://calendrier.api.gouv.fr/jours-feries/metropole.json  ({"AAAA-MM-JJ": "nom"}),
+    ou un CSV date,nom
   - Bison Futé : CSV (date, sens, zone, couleur) extrait des calendriers annuels PDF ;
     sens = depart|retour, zone = 1..6 ou 0 pour « toute la France », couleur = vert|orange|rouge|noir.
 
@@ -43,7 +44,10 @@ def vacances(chemin, jours: pd.DatetimeIndex) -> pd.DataFrame:
 
 
 def feries(chemin, jours: pd.DatetimeIndex) -> pd.DataFrame:
-    f = pd.to_datetime(list(json.load(open(chemin, encoding="utf-8")).keys()))
+    if str(chemin).endswith(".json"):
+        f = pd.to_datetime(list(json.load(open(chemin, encoding="utf-8")).keys()))
+    else:  # CSV date,nom
+        f = pd.to_datetime(pd.read_csv(chemin)["date"])
     out = pd.DataFrame(index=jours)
     out["ferie"] = jours.isin(f).astype(int)
     dow = jours.dayofweek

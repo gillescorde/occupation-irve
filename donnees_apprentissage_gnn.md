@@ -24,8 +24,11 @@ chaque arête relie un nœud à son voisin en aval, avec la distance en km. À c
 - le **calendrier** : heure, jour de la semaine, vacances par zone avec le rang dans la période, fériés et
   ponts, et les couleurs Bison Futé par sens et par zone.
 
-Il en sort le taux d'occupation de chaque station. Lundi, les tronçons HERE viendront s'ajouter aux
-compteurs Avatar, ou les remplacer, comme nœuds de trafic.
+Il en sort le taux d'occupation de chaque station. Le script d'apprentissage accepte déjà les
+tronçons HERE de 10 km comme nœuds de trafic (`entrainer.py --trafic here | here+avatar | avatar`) :
+il ne manque que les données. Sur un HERE simulé, HERE seul fait mieux qu'Avatar et HERE + Avatar
+n'apporte rien de plus ; ce sera à vérifier sur les vraies données. Avatar servira au moins à caler
+l'indice de volume HERE en véhicules par heure.
 
 ## 1. Les stations et les axes
 
@@ -88,8 +91,10 @@ journée, que le calendrier donne déjà. C'est le point à revérifier lundi su
 - **344 stations sans historique** (321 de sortie, 23 sur aire) : elles ne seront dans l'apprentissage
   qu'avec l'export complet.
 - **Un seul été** dans les données : la validation se fera par blocs de semaines, pas sur un seul découpage.
-- **Avatar apporte peu hors cycle** (r = 0,18) et ne couvre pas quatre axes. HERE pourrait devenir la source
+- **Avatar apporte peu hors cycle** (r = 0,18) et ne couvre pas quatre axes. HERE devrait devenir la source
   de trafic principale.
+- **Temps d'apprentissage** : à l'échelle réelle (514 stations, environ 1 400 tronçons HERE), une époque
+  du GNN prend 4,6 min sur un CPU 4 cœurs, soit environ une heure ; quelques minutes sur GPU.
 - **Les stations de sortie** restent à relire sur la carte, pour écarter celles qui servent surtout le trafic
   local.
 
@@ -97,4 +102,5 @@ journée, que le calendrier donne déjà. C'est le point à revérifier lundi su
 
 - **Qualicharge** : l'occupation de mars à octobre pour les 514 stations, c'est-à-dire la vraie cible.
 - **HERE** : les vitesses et la congestion par tronçon de 10 km sur les 33 axes, avec l'historique et Traffic
-  Patterns pour l'étape 1.
+  Patterns pour l'étape 1. Il restera un petit script pour mettre l'extraction au format de
+  `here_flux.py` (`donnees_reelles/here/here_troncons.csv`).

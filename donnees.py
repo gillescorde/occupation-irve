@@ -4,9 +4,10 @@ Chargement et mise en forme des données d'entrée.
 Schéma attendu (voir README.md, section 1) :
   occupation_bornes.csv  horodatage, station_id, nb_pdc, nb_pdc_occupes, nb_pdc_hors_service
   stations.csv           station_id, lat, lon, axe, sens, pk, nb_pdc, puissance_kw
-  comptages.csv          horodatage, compteur_id, debit_vh
+  comptages.csv          horodatage, compteur_id, debit_vh                 (Avatar)
+  here/here_troncons.csv horodatage, axe, sens, troncon_pk, congestion, jam_factor, [indice_volume]  (HERE, here_flux.py)
   compteurs.csv          compteur_id, lat, lon, axe_rattache, sens, pk_projete, delai_rattachement_min
-  calendrier.csv         date, ferie, vacances, debut_vacances, fin_vacances, [bison_fute_couleur]
+  calendrier.csv         date + variables numériques du jour (calendrier.py : vac_a.., ferie, pont, bf_depart..)
   aretes.csv (option.)   source, cible, temps_min   -> sinon construit automatiquement (graphe.py)
 """
 from dataclasses import dataclass
@@ -16,13 +17,19 @@ import numpy as np
 import pandas as pd
 
 
+# variables de trafic exprimées en volume : normalisées par la moyenne du nœud (1 = trafic moyen) ;
+# les autres (congestion, jam factor) sont déjà sans unité, entre 0 et 1
+VARIABLES_VOLUME = ("debit", "volume_here")
+
+
 @dataclass
 class Donnees:
     index: pd.DatetimeIndex      # pas de temps réguliers
     stations: pd.DataFrame       # une ligne par station (ordre = colonnes de `occ`)
-    compteurs: pd.DataFrame      # une ligne par compteur (ordre = colonnes de `debit`)
+    compteurs: pd.DataFrame      # une ligne par nœud de trafic, compteur Avatar ou tronçon HERE (colonne `source`)
     occ: np.ndarray              # [T, S] taux d'occupation (0..1), NaN si inconnu
-    debit: np.ndarray            # [T, C] débit véh/h, NaN si trou de mesure
+    trafic: np.ndarray           # [T, C, V] variables de trafic par nœud, NaN si absente ou trou de mesure
+    variables_trafic: list       # noms des V variables : debit (Avatar), congestion, jam_factor, volume_here (HERE)
     calendrier: pd.DataFrame     # une ligne par pas de temps, variables calendaires
     aretes: pd.DataFrame | None  # graphe fourni par l'utilisateur, sinon None
 
@@ -114,17 +121,78 @@ def convertir_snapshots_qualicharge(snap: pd.DataFrame, pas="1h", periode_collec
     return out
 
 
-def charger(dossier: str | Path, pas="1h") -> Donnees:
+def _trouver(d: Path, *candidats):
+    """Premier fichier existant : la disposition du jeu synthétique (tout à la racine) ou celle de
+    donnees_reelles/ (debits/, calendrier/)."""
+    for c in candidats:
+        if (d / c).exists():
+            return d / c
+    raise FileNotFoundError(f"aucun de {candidats} dans {d}")
+
+
+def charger_avatar(d: Path, pas, fichier_compteurs=None):
+    """Compteurs Avatar : une variable `debit` (véh/h)."""
+    compteurs = pd.read_csv(fichier_compteurs or _trouver(d, "compteurs.csv", "debits/compteurs.csv"))
+    cpt = pd.read_csv(_trouver(d, "comptages.csv", "debits/comptages.csv"),
+                      usecols=["horodatage", "compteur_id", "debit_vh"], parse_dates=["horodatage"])
+    cpt = cpt[cpt["compteur_id"].isin(compteurs["compteur_id"])]
+    cpt["horodatage"] = cpt["horodatage"].dt.floor(pas)
+    m = cpt.pivot_table(index="horodatage", columns="compteur_id", values="debit_vh", aggfunc="mean")
+    compteurs = compteurs[compteurs["compteur_id"].isin(m.columns)].reset_index(drop=True)
+    noeuds = pd.DataFrame({"compteur_id": compteurs["compteur_id"], "axe_rattache": compteurs["axe_rattache"],
+                           "sens": compteurs["sens"], "pk_projete": compteurs["pk_projete"],
+                           "delai_rattachement_min": compteurs.get("delai_rattachement_min", 10.0),
+                           "source": "avatar"})
+    return noeuds, {"debit": m[noeuds["compteur_id"]]}
+
+
+def charger_here(chemin, pas, longueur_troncon_km=10.0):
+    """
+    Tronçons HERE au format de `here_flux.py` (here_troncons.csv) : horodatage, axe, sens, troncon_pk,
+    vitesse_kmh, vitesse_fluide_kmh, congestion, jam_factor, confiance, et en option `indice_volume`
+    ou `nb_sondes` (historique HERE : nombre de véhicules sondes, indice relatif de volume).
+    Chaque tronçon (axe, sens, tranche de 10 km) devient un nœud de trafic posé sur l'axe, au milieu
+    de sa tranche, sans délai de rattachement. Les relevés (toutes les 5 à 15 min) sont moyennés au pas.
+    """
+    h = pd.read_csv(chemin, parse_dates=["horodatage"])
+    h["noeud"] = "HERE_" + h["axe"] + "_" + h["sens"].astype(int).astype(str) + "_" + h["troncon_pk"].astype(int).astype(str)
+    h["horodatage"] = h["horodatage"].dt.floor(pas)
+    h["jam_factor"] = h["jam_factor"] / 10  # 0..10 chez HERE
+    vol = next((c for c in ("indice_volume", "nb_sondes") if c in h), None)
+    if vol:
+        h["volume_here"] = h[vol]
+    variables = ["congestion", "jam_factor"] + (["volume_here"] if vol else [])
+    mats = {v: h.pivot_table(index="horodatage", columns="noeud", values=v, aggfunc="mean") for v in variables}
+    t = h.drop_duplicates("noeud").set_index("noeud").loc[mats["congestion"].columns]
+    noeuds = pd.DataFrame({"compteur_id": t.index, "axe_rattache": t["axe"].values, "sens": t["sens"].astype(int).values,
+                           "pk_projete": t["troncon_pk"].values + longueur_troncon_km / 2,
+                           "delai_rattachement_min": 0.0, "source": "here"})
+    return noeuds, {v: m[noeuds["compteur_id"]] for v, m in mats.items()}
+
+
+def charger(dossier: str | Path, pas="1h", trafic="avatar", here=None, fichier_compteurs=None) -> Donnees:
+    """trafic : "avatar", "here" ou "here+avatar" ; here : chemin de here_troncons.csv
+    (par défaut <dossier>/here/here_troncons.csv) ; fichier_compteurs : liste de compteurs à garder
+    (par ex. rattachement_interurbains/compteurs_retenus.csv)."""
     d = Path(dossier)
     stations = pd.read_csv(d / "stations.csv")
-    compteurs = pd.read_csv(d / "compteurs.csv")
     occ = pd.read_csv(d / "occupation_bornes.csv", parse_dates=["horodatage"])
-    cpt = pd.read_csv(d / "comptages.csv", parse_dates=["horodatage"])
-    cal = pd.read_csv(d / "calendrier.csv", parse_dates=["date"])
+    cal = pd.read_csv(_trouver(d, "calendrier.csv", "calendrier/calendrier.csv"), parse_dates=["date"])
     aretes = pd.read_csv(d / "aretes.csv") if (d / "aretes.csv").exists() else None
 
-    debut = max(occ["horodatage"].min(), cpt["horodatage"].min()).floor(pas)
-    fin = min(occ["horodatage"].max(), cpt["horodatage"].max()).floor(pas)
+    sources = []
+    if "here" in trafic:
+        sources.append(charger_here(here or d / "here" / "here_troncons.csv", pas))
+    if "avatar" in trafic:
+        sources.append(charger_avatar(d, pas, fichier_compteurs))
+    if not sources:
+        raise ValueError(f"trafic inconnu : {trafic}")
+    noeuds = pd.concat([n for n, _ in sources], ignore_index=True)
+    debut_t = max(min(m.index.min() for m in mats.values()) for _, mats in sources)
+    fin_t = min(max(m.index.max() for m in mats.values()) for _, mats in sources)
+
+    debut = max(occ["horodatage"].min(), debut_t).floor(pas)
+    fin = min(occ["horodatage"].max(), fin_t).floor(pas)
     index = pd.date_range(debut, fin, freq=pas)
 
     if "nb_pdc_statut_connu" in occ:  # format Qualicharge : les PDC à l'état inconnu sont exclus
@@ -134,22 +202,26 @@ def charger(dossier: str | Path, pas="1h") -> Donnees:
         occ["taux"] = (occ["nb_pdc_occupes"] / dispo).clip(0, 1)
     occ["horodatage"] = occ["horodatage"].dt.floor(pas)
     m_occ = occ.pivot_table(index="horodatage", columns="station_id", values="taux", aggfunc="mean").reindex(index)
-    cpt["horodatage"] = cpt["horodatage"].dt.floor(pas)
-    m_deb = cpt.pivot_table(index="horodatage", columns="compteur_id", values="debit_vh", aggfunc="mean").reindex(index)
-
     stations = stations[stations["station_id"].isin(m_occ.columns)].reset_index(drop=True)
-    compteurs = compteurs[compteurs["compteur_id"].isin(m_deb.columns)].reset_index(drop=True)
     m_occ = m_occ[stations["station_id"]]
-    m_deb = m_deb[compteurs["compteur_id"]]
+
+    # [T, C, V] : un nœud Avatar n'a que `debit`, un tronçon HERE n'a que ses variables ; le reste est NaN
+    variables = list(dict.fromkeys(v for _, mats in sources for v in mats))
+    tr = np.full((len(index), len(noeuds), len(variables)), np.nan, dtype=np.float32)
+    col = 0
+    for n, mats in sources:
+        for v, m in mats.items():
+            tr[:, col:col + len(n), variables.index(v)] = m.reindex(index).values
+        col += len(n)
 
     calj = cal.set_index("date").reindex(index.normalize()).fillna(0)
     calj.index = index
     calj["heure"] = index.hour + index.minute / 60
     calj["jour_semaine"] = index.dayofweek
     calj["mois"] = index.month
-    if "bison_fute_couleur" not in calj:
-        calj["bison_fute_couleur"] = 0
 
-    print(f"Données : {len(index)} pas de {pas}, {len(stations)} stations, {len(compteurs)} compteurs, "
-          f"occupation manquante {np.isnan(m_occ.values).mean():.1%}, débit manquant {np.isnan(m_deb.values).mean():.1%}")
-    return Donnees(index, stations, compteurs, m_occ.values.astype(float), m_deb.values.astype(float), calj, aretes)
+    manque = {v: f"{np.isnan(tr[..., k]).mean():.1%}" for k, v in enumerate(variables)}
+    print(f"Données : {len(index)} pas de {pas}, {len(stations)} stations, {len(noeuds)} nœuds de trafic "
+          f"({noeuds['source'].value_counts().to_dict()}), occupation manquante {np.isnan(m_occ.values).mean():.1%}, "
+          f"trafic manquant {manque}")
+    return Donnees(index, stations, noeuds, m_occ.values.astype(float), tr, variables, calj, aretes)

@@ -20,8 +20,8 @@ le long du réseau.
 | Calendrier (vacances, fériés, ponts, Bison Futé) | `calendrier.py`, `bison_fute_pdf.py` | implémenté, table 2016-2026 produite |
 | Tracés OpenStreetMap des axes et échangeurs | `telecharger_osm.py`, `traces_osm.py` | écrits, non exécutés (Overpass inaccessible depuis le cloud) |
 | Client HERE Traffic Flow | `here_flux.py` | implémenté, testé sur une réponse simulée uniquement |
-| Étape 1 : prévision des débits | `entrainer.py` | implémentée, testée sur données synthétiques |
-| Étape 2 : gradient boosting et GNN spatio-temporel | `entrainer.py`, `gnn.py` | implémentée, testée sur données synthétiques |
+| Étape 1 : prévision du trafic (Avatar et/ou HERE) | `entrainer.py` | implémentée, testée sur données synthétiques, dont un HERE simulé |
+| Étape 2 : gradient boosting et GNN spatio-temporel | `entrainer.py`, `gnn.py` | implémentée, testée sur données synthétiques ; GNN mesuré à l'échelle réelle (section 4.5) |
 | Générateur de données synthétiques | `generer_donnees_synthetiques.py` | implémenté |
 | Scénarios de pénétration VE | `scenarios.py` | implémentée, appliquée à l'occupation réelle |
 | Restitution web (Flask) | | à faire |
@@ -204,12 +204,14 @@ $\left(\sin\frac{2\pi h}{24}, \cos\frac{2\pi h}{24}, \sin\frac{2\pi j}{7}, \cos\
 
 ### 3.1 Nœuds et arêtes
 
-Les nœuds sont les $S$ stations puis les $C$ compteurs, soit $N = S + C$. Les arêtes sont orientées
-dans le sens de circulation :
+Les nœuds sont les $S$ stations puis les $C$ nœuds de trafic (compteurs Avatar et/ou tronçons HERE de
+10 km), soit $N = S + C$. Les arêtes sont orientées dans le sens de circulation :
 
-- sur chaque couple (axe, sens), chaque station est reliée à la suivante, les stations étant
-  triées par pk croissant en sens 1 et décroissant en sens 2 ;
-- chaque compteur est relié à la première station en aval de son point de rattachement ;
+- sur chaque couple (axe, sens), les stations et les tronçons HERE forment une chaîne, chacun relié
+  au suivant, triés par pk croissant en sens 1 et décroissant en sens 2. Un tronçon HERE est sur
+  l'autoroute : il est donc aussi bien en amont qu'en aval des stations voisines ;
+- chaque compteur Avatar, posé sur une route parallèle ou une entrée, est relié au premier nœud de la
+  chaîne en aval de son point de rattachement ;
 - une station de sens inconnu est insérée dans les deux sens.
 
 Le poids d'une arête est un temps de parcours en minutes, avec $v = 110$ km/h :
@@ -324,7 +326,36 @@ Le modèle est un `HistGradientBoostingRegressor` (600 itérations, pas 0,05, 31
 régularisation $L_2$ = 1, arrêt anticipé), dont la sortie est bornée à $[0, 1]$. Les valeurs
 manquantes sont gérées nativement, ce qui couvre les stations sans compteur amont.
 
-### 4.5 Étape 2b : GNN spatio-temporel (`gnn.py`)
+### 4.5 Source du trafic : HERE, Avatar ou les deux (`--trafic`)
+
+`entrainer.py --trafic here | here+avatar | avatar` choisit les nœuds de trafic. Par défaut (`auto`),
+c'est HERE si `here/here_troncons.csv` existe, sinon Avatar.
+
+| Source | Nœud | Variables par nœud | Normalisation |
+|---|---|---|---|
+| Avatar | compteur, rattaché à l'axe | `debit` (véh/h) | multiple du débit moyen du compteur |
+| HERE | tronçon de 10 km (axe, sens), au format de `here_flux.py` | `congestion` $= 1 - v/v_{	ext{fluide}}$, `jam_factor` / 10, `volume_here` si l'historique fournit un indice de volume (`indice_volume` ou `nb_sondes`) | volume : multiple de la moyenne du tronçon ; les autres sont entre 0 et 1 |
+
+Chaque variable a son modèle d'étape 1, appris sur les seuls nœuds qui la portent. À l'étape 2, le
+gradient boosting reçoit pour chaque variable le trafic amont propagé (section 4.3) et la valeur
+du nœud **le plus proche en aval** : un bouchon juste après une aire pousse à s'y arrêter, ce
+qu'aucun compteur Avatar ne voit. Le GNN reçoit les variables brutes de chaque nœud, avec un
+indicateur de type (station, compteur, tronçon).
+
+Le mode `here+avatar` sert à mesurer ce qu'Avatar ajoute à HERE. S'il n'améliore pas l'erreur,
+Avatar ne sert plus qu'à caler l'indice de volume HERE en véhicules par heure.
+
+Pour tenir à l'échelle réelle (514 stations et un millier de tronçons), les matrices amont et aval
+du GNN sont creuses, la matrice adaptative n'est gardée que sous 1 000 nœuds, le calendrier est
+passé une fois par pas de temps au lieu d'être recopié sur chaque nœud, et l'apprentissage passe
+sur GPU s'il y en a un. L'étape 1 est apprise sur un tirage d'au plus 3 millions de lignes.
+
+Temps mesuré à l'échelle réelle (514 stations, 1 400 tronçons, mars à octobre au pas horaire, CPU
+4 cœurs) : **4,6 min par époque** du GNN, soit environ une heure pour une quinzaine d'époques avant
+l'arrêt anticipé. Le tenseur des variables par nœud pèse 0,6 Go. Sur GPU, l'apprentissage tient
+en quelques minutes. Le gradient boosting reste beaucoup plus rapide.
+
+### 4.6 Étape 2b : GNN spatio-temporel (`gnn.py`)
 
 L'architecture s'inspire de STGCN et de Graph WaveNet. Ici, la propagation est apprise au lieu
 d'être calculée à la main.
@@ -440,26 +471,44 @@ Le scénario comporte deux axes (A10 sur 560 km et A6 sur 460 km), dans les deux
   $\rho_s = 1 - e^{-1{,}3\,\lambda_s/n_s}$, et l'occupation observée est la moyenne de 4 tirages
   binomiaux $\mathcal B(n_s - n^{\text{hs}}_s, \rho_s)$, avec des pannes aléatoires.
 
-### 6.2 Résultats (horizon 24 h, test sur août)
+### 6.2 Résultats (horizon 24 h, test sur août, trafic HERE)
 
 | Modèle | MAE (points) | RMSE (points) | Couleur exacte | Rappel alertes | Précision alertes |
 |---|---|---|---|---|---|
-| Profil moyen station × jour × heure | 10,4 | 13,7 | 73 % | 18 % | 96 % |
-| Gradient boosting sans trafic | 7,3 | 9,5 | 82 % | 64 % | 75 % |
-| Gradient boosting, trafic observé | 6,2 | 8,2 | 85 % | 67 % | 84 % |
-| Gradient boosting, trafic prévu | 7,3 | 9,7 | 81 % | 73 % | 68 % |
-| GNN, trafic observé | 6,1 | 8,1 | 85 % | 72 % | 79 % |
-| GNN, trafic prévu | 7,4 | 9,9 | 81 % | 80 % | 63 % |
+| Profil moyen station × jour × heure | 11,3 | 14,7 | 69 % | 26 % | 95 % |
+| Gradient boosting sans trafic | 7,7 | 10,2 | 79 % | 71 % | 80 % |
+| Gradient boosting, trafic observé | 6,2 | 8,2 | 84 % | 77 % | 85 % |
+| Gradient boosting, trafic prévu | 7,4 | 9,9 | 80 % | 81 % | 73 % |
+| GNN, trafic observé | 6,0 | 8,1 | 84 % | 79 % | 86 % |
+| GNN, trafic prévu | 7,2 | 9,7 | 81 % | 80 % | 75 % |
+
+Le générateur produit aussi des tronçons HERE de 10 km sur l'autoroute : la congestion ne réagit
+qu'au-delà de 70 % de la capacité, et l'indice de volume suit le flux avec un bruit de comptage. Les
+compteurs Avatar, eux, ne voient qu'une fraction bruitée du flux, mêlée de trafic local. Le tableau
+compare les trois sources de trafic (`--trafic`), MAE en points :
+
+| Modèle | Avatar | HERE | HERE + Avatar |
+|---|---|---|---|
+| Gradient boosting sans trafic | 7,7 | 7,7 | 7,7 |
+| Gradient boosting, trafic observé | 6,5 | **6,2** | **6,2** |
+| Gradient boosting, trafic prévu | 7,4 | 7,4 | 7,4 |
+| GNN, trafic observé | 6,4 | **6,0** | 6,1 |
+| GNN, trafic prévu | 7,3 | 7,2 | 7,4 |
+
+Avec le trafic observé, HERE fait mieux qu'Avatar (6,0 à 6,2 points contre 6,4 à 6,5), et ajouter
+Avatar à HERE n'apporte rien. C'est attendu sur ce jeu, où les compteurs ne voient qu'une partie du
+flux que HERE mesure directement. Il faudra le vérifier sur les vraies données. Avec le trafic
+prévu, les trois sources se valent, pour la raison donnée au point 2 ci-dessous.
 
 ### 6.3 Interprétation
 
-1. **Le trafic apporte de l'information quand il est connu** : 6,2 points contre 7,3 sans trafic.
+1. **Le trafic apporte de l'information quand il est connu** : 6,2 points contre 7,7 sans trafic.
    C'est le cas de l'estimation en temps réel ou à très court terme (1 à 3 h) à partir des compteurs.
 2. **À J+1, ce gain disparaît si l'étape 1 ne s'appuie que sur le calendrier**, information que
    l'étape 2 possède déjà. La chaîne en deux étapes n'a d'intérêt à J+1 que si la prévision de
    trafic apporte autre chose : prévision Bison Futé officielle, événements, météo.
-3. **GNN et gradient boosting font jeu égal** sur ce réseau de 44 nœuds. Le GNN détecte un peu mieux
-   les saturations, au prix de plus de fausses alertes. Avec peu d'historique et quelques dizaines de
+3. **GNN et gradient boosting font jeu égal** sur ce réseau de 236 nœuds. Le GNN a un
+   léger avantage (0,1 à 0,2 point). Avec peu d'historique et quelques dizaines de
    stations, le gradient boosting avec variables de graphe est recommandé en premier : il est plus
    simple, explicable et robuste. Le GNN deviendra intéressant avec un réseau plus dense et un
    historique plus long.
@@ -650,7 +699,11 @@ reposeront sur le trafic HERE des années précédentes et sur des hypothèses, 
 pip install -r requirements.txt
 # données synthétiques et apprentissage
 python generer_donnees_synthetiques.py --sortie donnees_synthetiques
-python entrainer.py --donnees donnees_synthetiques --horizon-h 24 --sortie resultats
+python entrainer.py --donnees donnees_synthetiques --horizon-h 24 --sortie resultats   # --trafic here|here+avatar|avatar
+# apprentissage réel, une fois here/here_troncons.csv et l'occupation complète en place
+python entrainer.py --donnees donnees_reelles --trafic here --sortie resultats_here
+python entrainer.py --donnees donnees_reelles --trafic here+avatar \
+    --compteurs donnees_reelles/rattachement_interurbains/compteurs_retenus.csv --sortie resultats_here_avatar
 # données réelles : placement des stations, puis conversion de l'historique
 python reperer_stations_autoroute.py --referentiel charging_stations.csv --sortie donnees_reelles/stations.csv
 python -c "import pandas as pd; from donnees import convertir_snapshots_qualicharge as c; \

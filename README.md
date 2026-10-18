@@ -188,7 +188,7 @@ Un plongement appris par nœud capte enfin les spécificités de chaque station 
 ## 3. La chaîne d'apprentissage (`entrainer.py`)
 
 ```
-calendrier + historique compteurs ──► ÉTAPE 1 : prévision du débit aux compteurs à H (gradient boosting)
+calendrier + historique trafic ────► ÉTAPE 1 : prévision du trafic (HERE et/ou Avatar) à H (gradient boosting)
                                                    │
 graphe (temps de parcours) ───────────────────────┤
 occupation connue il y a ≥ H ─────────────────────┤
@@ -210,6 +210,9 @@ Points de méthode :
   était parfaite) et avec le trafic *prévu* par l'étape 1 (ce qu'on aura en production).
 - **Deux références** pour juger honnêtement : le profil moyen station × jour × heure, et un
   gradient boosting sans aucune variable de trafic.
+- **Source du trafic** (`--trafic`) : tronçons HERE de 10 km (congestion, jam factor, indice de
+  volume s'il existe), compteurs Avatar, ou les deux pour mesurer ce qu'Avatar ajoute. Par défaut,
+  HERE si `here/here_troncons.csv` existe. Détail dans `note_technique.md`, section 4.5.
 - L'étape 2 est apprise sur le trafic observé. Si l'écart observé/prévu pèse trop en production, on
   peut l'apprendre sur des prévisions hors échantillon de l'étape 1.
 
@@ -219,7 +222,7 @@ Points de méthode :
 pip install -r requirements.txt
 python generer_donnees_synthetiques.py --sortie donnees_synthetiques
 python entrainer.py --donnees donnees_synthetiques --horizon-h 24 --sortie resultats
-#   options : --pas 30min, --horizon-h 168, --sans-gnn, --epochs 20
+#   options : --trafic here|here+avatar|avatar, --pas 30min, --horizon-h 168, --sans-gnn, --epochs 20
 ```
 
 Environ 3 minutes sur CPU pour 32 stations, 12 compteurs et 6 mois horaires. Les sorties dans
@@ -227,29 +230,32 @@ Environ 3 minutes sur CPU pour 32 stations, 12 compteurs et 6 mois horaires. Les
 couleur : c'est ce que lira l'interface), `modeles_hgb.joblib`, `modele_gnn.pt`, `config.json` et
 `aretes_utilisees.csv` (le graphe effectivement utilisé, à vérifier sur une carte).
 
-## 5. Résultats sur le jeu synthétique (J+1, test = août)
+## 5. Résultats sur le jeu synthétique (J+1, test = août, trafic HERE)
 
 | Modèle | Erreur moyenne (points) | Couleur exacte | Alertes rouge/noir détectées | Alertes justes |
 |---|---|---|---|---|
-| Profil moyen station × jour × heure | 10,4 | 73 % | 18 % | 96 % |
-| Gradient boosting sans trafic | 7,3 | 82 % | 64 % | 75 % |
-| Gradient boosting, trafic observé | 6,2 | 85 % | 67 % | 84 % |
-| Gradient boosting, trafic prévu | 7,3 | 81 % | 73 % | 68 % |
-| GNN, trafic observé | 6,1 | 85 % | 72 % | 79 % |
-| GNN, trafic prévu | 7,4 | 81 % | 80 % | 63 % |
+| Profil moyen station × jour × heure | 11,3 | 69 % | 26 % | 95 % |
+| Gradient boosting sans trafic | 7,7 | 79 % | 71 % | 80 % |
+| Gradient boosting, trafic observé | 6,2 | 84 % | 77 % | 85 % |
+| Gradient boosting, trafic prévu | 7,4 | 80 % | 81 % | 73 % |
+| GNN, trafic observé | 6,0 | 84 % | 79 % | 86 % |
+| GNN, trafic prévu | 7,2 | 81 % | 80 % | 75 % |
 
 Ce que ça montre, avec la prudence qu'impose un jeu synthétique :
 
-1. **Le trafic aide vraiment quand il est connu** (6,2 contre 7,3 points). C'est le cas d'usage
+1. **Le trafic aide vraiment quand il est connu** (6,2 contre 7,7 points). C'est le cas d'usage
    « estimer maintenant » ou « dans 1 à 3 h » à partir des compteurs temps réel.
 2. **À J+1, le gain disparaît si la prévision de trafic ne contient que le calendrier** : l'étape 2
    le sait déjà. La chaîne en deux étapes ne vaut que si l'étape 1 apporte une information en plus :
    prévision Bison Futé officielle, événements, météo. C'est le point le plus important pour la suite.
-3. **GNN et gradient boosting font jeu égal** sur ce petit réseau. Le GNN détecte un peu mieux les
-   saturations, au prix de plus de fausses alertes. Avec 6 mois et quelques dizaines de stations,
+3. **GNN et gradient boosting font jeu égal** sur ce petit réseau. Le GNN a un léger avantage
+   (0,1 à 0,2 point). Avec 6 mois et quelques dizaines de stations,
    je commencerais par le gradient boosting (plus simple, explicable, robuste) et je garderais le
    GNN pour quand le réseau couvert grandira.
-4. **6 mois, c'est court** : le test d'août n'a vu qu'un été partiel en apprentissage. Avec une
+4. **HERE plutôt qu'Avatar** : le jeu synthétique contient aussi des tronçons HERE. Avec le trafic
+   observé, HERE donne 6,0 à 6,2 points contre 6,4 à 6,5 avec Avatar, et HERE + Avatar ne fait pas
+   mieux que HERE seul (`note_technique.md`, section 6.2).
+5. **6 mois, c'est court** : le test d'août n'a vu qu'un été partiel en apprentissage. Avec une
    seule saison estivale, la validation croisée par blocs de semaines sera plus fiable qu'un seul
    découpage.
 

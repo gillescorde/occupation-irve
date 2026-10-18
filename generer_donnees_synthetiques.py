@@ -7,6 +7,9 @@ Le scénario imite la réalité visée :
   - le trafic AUTOROUTIER n'est pas mesuré (comme en vrai) : il n'existe que comme variable cachée ;
   - quelques compteurs type Avatar sur des routes nationales parallèles ou en entrée d'axe,
     qui voient une fraction bruitée du flux autoroutier ;
+  - des tronçons HERE de 10 km SUR l'autoroute (format de here_flux.py) : congestion et jam factor,
+    qui ne réagissent qu'au-delà de 70 % de la capacité, et un indice de volume (véhicules sondes),
+    proportionnel au flux mais bruité ;
   - des stations de recharge sur les aires, dont l'occupation dépend du flux qui passe devant
     elles, avec le retard de propagation (une vague de départs parisienne arrive à pk 300
     environ 3 h plus tard) ;
@@ -118,7 +121,7 @@ def main():
     cal = calendrier(index)
     T = len(index)
 
-    stations, compteurs, occ_rows, cpt_rows = [], [], [], []
+    stations, compteurs, occ_rows, cpt_rows, here_rows = [], [], [], [], []
     for axe, (L, _, _) in AXES.items():
         for sens in (1, 2):
             demande = profil_demande(index, cal, sens, rng)
@@ -171,12 +174,31 @@ def main():
                 mes = np.where(manquant, np.nan, np.round(mes))
                 cpt_rows.append(pd.DataFrame({"horodatage": index, "compteur_id": cid, "debit_vh": mes}))
 
+            # Tronçons HERE de 10 km : vitesse et congestion (seuil de capacité), indice de volume (sondes)
+            capacite = 4200.0
+            for pk0 in np.arange(0, L - 5, 10.0):
+                F = np.maximum(flux_latent(pk0 + 5), 0)
+                charge = F / capacite
+                cong = np.clip(1.6 * (charge - 0.7), 0, 0.85) ** 1.3 + np.abs(rng.normal(0, 0.02, T))
+                cong = np.clip(cong, 0, 0.9)
+                vf = 125.0
+                here_rows.append(pd.DataFrame({
+                    "horodatage": index, "axe": axe, "sens": sens, "troncon_pk": pk0, "longueur_couverte_km": 10.0,
+                    "nb_segments": 8, "vitesse_kmh": np.round(vf * (1 - cong), 1), "vitesse_fluide_kmh": vf,
+                    "congestion": np.round(cong, 3), "temps_parcours_min": np.round(600 / (vf * (1 - cong)), 2),
+                    "jam_factor": np.round(np.clip(10 * cong / 0.9 + rng.normal(0, 0.2, T), 0, 10), 2),
+                    "confiance": np.round(rng.uniform(0.7, 1.0, T), 2),
+                    "indice_volume": rng.poisson(F * 0.02)}))
+
     pd.DataFrame(stations).to_csv(out / "stations.csv", index=False)
+    (out / "here").mkdir(exist_ok=True)
+    pd.concat(here_rows).to_csv(out / "here" / "here_troncons.csv", index=False)
     pd.DataFrame(compteurs).to_csv(out / "compteurs.csv", index=False)
     pd.concat(occ_rows).to_csv(out / "occupation_bornes.csv", index=False)
     pd.concat(cpt_rows).to_csv(out / "comptages.csv", index=False)
     cal.to_csv(out / "calendrier.csv", index=False)
-    print(f"Écrit dans {out}/ : {len(stations)} stations, {len(compteurs)} compteurs, {T} pas de temps")
+    print(f"Écrit dans {out}/ : {len(stations)} stations, {len(compteurs)} compteurs, "
+          f"{sum(len(h) for h in here_rows) // T} tronçons HERE, {T} pas de temps")
 
 
 if __name__ == "__main__":

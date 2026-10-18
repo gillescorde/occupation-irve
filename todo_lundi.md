@@ -62,9 +62,11 @@ Tout ce qui ne dépend ni de Qualicharge ni de HERE est prêt dans le dépôt
 4. **Démarrer la collecte temps réel**. Mettre la clé dans la variable d'environnement `HERE_API_KEY`,
    jamais dans le code. Lancer ensuite `here_flux.py` toutes les 15 min en tâche planifiée, pour
    constituer l'historique de production.
-5. **Adapter `entrainer.py`**, qui attend aujourd'hui des débits de compteurs : ajouter les tronçons HERE
-   comme nœuds de trafic, avec la congestion et l'indice de volume, et brancher `calendrier.csv`.
-   C'est le plus gros morceau de code de la semaine.
+5. **Écrire `donnees_reelles/here/here_troncons.csv`** à partir de l'historique, au format de
+   `here_flux.py` : horodatage, axe, sens, troncon_pk, vitesse_kmh, vitesse_fluide_kmh, congestion,
+   jam_factor, et `indice_volume` (ou `nb_sondes`) si HERE le fournit. `entrainer.py` est déjà prêt
+   (`--trafic here | here+avatar | avatar`) et testé sur un HERE simulé : il ne restera qu'un script de
+   conversion, à écrire quand on verra le format exact de l'extraction.
 
 ## 3. Premier apprentissage réel (à partir de mardi)
 
@@ -72,6 +74,8 @@ Tout ce qui ne dépend ni de Qualicharge ni de HERE est prêt dans le dépôt
    Futé et de Traffic Patterns.
 2. Faire l'étape 2 en gradient boosting d'abord, puis le GNN, sur le taux d'occupation, avec une
    **validation par blocs de semaines** : un seul été dans les données, donc pas de découpage unique.
+   Lancer deux fois, `--trafic here` puis `--trafic here+avatar` : si Avatar n'améliore pas l'erreur,
+   il ne sert plus qu'à caler l'indice de volume HERE.
 3. Construire les **journées types**, avec une médiane et un P90 par station et par type de jour : c'est la
    référence à battre et l'outil de planification.
 4. Rejouer les scénarios de pénétration (`scenarios.py`) sur l'historique long.

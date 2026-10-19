@@ -9,6 +9,7 @@ resultats/
 here/
 *.joblib
 *.pt
+resultats_reels/calcule_complet.csv.xz
 donnees_reelles/calendrier/brut/bison_fute/*.pdf
 # environnement Python local
 .venv/

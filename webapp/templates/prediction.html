@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bison Futé des bornes — Prédiction</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.6.0/dist/maplibre-gl.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #map { position: absolute; inset: 0; }
+
+  .panel {
+    position: absolute; background: rgba(255,255,255,0.96); border-radius: 10px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.18); padding: 14px 16px; z-index: 2;
+  }
+  #panel-filtres { top: 14px; left: 14px; width: 300px; max-height: calc(100vh - 28px); overflow-y: auto; }
+  #panel-station { top: 14px; right: 14px; width: 360px; }
+
+  h1 { font-size: 14px; font-weight: 700; margin: 0 0 4px; color: #0b0b0b; }
+  h2 { font-size: 12.5px; font-weight: 600; margin: 0 0 4px; color: #0b0b0b; }
+  .lien-retour { font-size: 11.5px; color: #2a78d6; text-decoration: none; }
+  .lien-retour:hover { text-decoration: underline; }
+
+  .avertissement {
+    background: #fdf3e4; border: 1px solid #eda100; border-radius: 8px; padding: 8px 10px;
+    font-size: 11px; color: #6b4a00; line-height: 1.5; margin: 10px 0;
+  }
+
+  #calendrier-entete { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  #calendrier-entete button {
+    border: none; background: #eef0f3; border-radius: 6px; width: 26px; height: 26px; cursor: pointer;
+    font-size: 13px;
+  }
+  #calendrier-mois { font-size: 12.5px; font-weight: 600; text-transform: capitalize; }
+
+  .cal-grille { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-entete-jour { font-size: 10px; text-align: center; color: #898781; padding-bottom: 2px; }
+  .jour-cellule {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 11.5px; border-radius: 5px; background: #f4f4f2; color: #0b0b0b; cursor: pointer;
+  }
+  .jour-cellule.sans-donnees { background: transparent; color: #c3c2b7; cursor: default; }
+  .jour-cellule.selectionne { outline: 2px solid #2a78d6; outline-offset: 1px; font-weight: 700; }
+
+  .config-scenario { margin-top: 12px; border-top: 1px solid #e1e0d9; padding-top: 10px; }
+  .ligne-niveau { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .ligne-niveau label { font-size: 11.5px; color: #52514e; flex: none; width: 120px; }
+  .ligne-niveau select { flex: 1; font-size: 12px; padding: 4px 5px; border-radius: 6px; border: 1px solid #c3c2b7; }
+  .reel-du-jour { font-size: 10.5px; color: #898781; margin-left: 4px; }
+
+  #bouton-calculer {
+    width: 100%; margin-top: 8px; padding: 8px; border: none; border-radius: 7px;
+    background: #2a78d6; color: #fff; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  }
+  #bouton-calculer:disabled { background: #c3c2b7; cursor: default; }
+  #etat-calcul { font-size: 11px; color: #898781; margin-top: 6px; min-height: 14px; }
+
+  #legende-carte {
+    bottom: 14px; left: 14px; font-size: 11px; color: #52514e; display: none; width: 160px;
+  }
+  #legende-carte .barre {
+    width: 160px; height: 10px; border-radius: 5px; margin: 4px 0;
+    background: linear-gradient(to right, #cde2fb, #e87ba4, #7a1f45);
+  }
+  #legende-carte .bornes { display: flex; justify-content: space-between; font-size: 10px; }
+
+  #legende-zones {
+    bottom: 14px; left: 192px; font-size: 10.5px; color: #52514e; display: none; max-width: 190px;
+  }
+  #legende-zones .titre { font-weight: 600; color: #0b0b0b; margin-bottom: 4px; }
+  #legende-zones .ligne-zone { display: flex; align-items: center; gap: 6px; margin: 2px 0; }
+  #legende-zones .puce-zone { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+  #legende-zones .note { font-style: italic; color: #898781; margin-top: 4px; font-size: 9.5px; }
+
+  #station-info { font-size: 12.5px; color: #52514e; margin-bottom: 10px; line-height: 1.5; }
+  #station-info b { color: #0b0b0b; }
+  #chart-wrap { height: 220px; }
+  #chart-vide { font-size: 12px; color: #898781; text-align: center; padding: 40px 0; }
+
+  .maplibregl-popup-content { font-size: 12px; padding: 6px 10px; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div class="panel" id="panel-filtres">
+  <h1>Volet prédiction — scénario Bison Futé</h1>
+  <a class="lien-retour" href="/">← Retour à la carte</a>
+
+  <div class="avertissement">
+    Simule une couleur Bison Futé hypothétique sur un jour <b>déjà survenu</b>. Le trafic et
+    l'occupation passée restent les vraies valeurs observées ce jour-là ; seule l'entrée Bison
+    Futé change. Impossible de prédire un jour futur (ex. 1ᵉʳ novembre) : il manque l'historique
+    réel (débit, occupation) dont le modèle a besoin.
+  </div>
+
+  <h2>Date (historique, avec assez d'historique)</h2>
+  <div id="calendrier-entete">
+    <button id="mois-precedent" type="button">‹</button>
+    <span id="calendrier-mois"></span>
+    <button id="mois-suivant" type="button">›</button>
+  </div>
+  <div class="cal-grille" id="cal-entete-jours"></div>
+  <div class="cal-grille" id="calendrier"></div>
+
+  <div class="config-scenario">
+    <h2>Scénario Bison Futé</h2>
+    <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:#52514e; margin-bottom:8px;">
+      <input type="checkbox" id="differencier-toggle">
+      Différencier par zone
+    </label>
+
+    <div id="niveau-national" class="ligne-niveau">
+      <label>France entière</label>
+      <select class="select-niveau" data-zone="national"></select>
+    </div>
+
+    <div id="niveaux-zones" style="display:none"></div>
+
+    <div class="ligne-niveau" style="margin-top:8px;">
+      <label>Pénétration VE</label>
+      <input type="number" id="penetration-input" min="0.1" max="100" step="0.1" style="flex:1; font-size:12px; padding:4px 5px; border-radius:6px; border:1px solid #c3c2b7;">
+      <span style="font-size:11.5px; color:#52514e;">%</span>
+    </div>
+    <div id="penetration-note" class="reel-du-jour" style="margin-left:0;"></div>
+
+    <button id="bouton-calculer" type="button" disabled>Choisissez une date</button>
+    <div id="etat-calcul"></div>
+  </div>
+</div>
+
+<div class="panel" id="legende-carte">
+  <div>Occupation moyenne du scénario (ce jour)</div>
+  <div class="barre"></div>
+  <div class="bornes"><span>0 %</span><span>100 %</span></div>
+</div>
+
+<div class="panel" id="legende-zones"></div>
+
+<div class="panel" id="panel-station">
+  <h2>Station</h2>
+  <div id="station-info">Cliquez une station sur la carte.</div>
+  <div id="chart-wrap">
+    <div id="chart-vide">Choisissez une date, configurez le scénario, cliquez « Calculer », puis une station.</div>
+    <canvas id="chart" style="display:none"></canvas>
+  </div>
+</div>
+
+<script type="module">
+import * as maplibregl from "https://unpkg.com/maplibre-gl@6.6.0/dist/maplibre-gl.mjs";
+
+const NIVEAUX = [["0", "Vert"], ["1", "Orange"], ["2", "Rouge"], ["3", "Noir"]];
+const ZONE_HEX = { 1: "#2a78d6", 2: "#eb6834", 3: "#1baf7a", 4: "#eda100", 5: "#e87ba4", 6: "#6250d6" };
+const ZONE_NOM = {
+  1: "Île-de-France", 2: "Grand-Ouest et Nord", 3: "Bourgogne et Est",
+  4: "Auvergne-Rhône-Alpes", 5: "Sud-Ouest", 6: "Arc méditerranéen",
+};
+const MOIS_FR = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const JOURS_FR = ["L","M","M","J","V","S","D"];
+
+let calendrierParDate = {};
+let moisAffiche = new Date(2026, 8, 1);
+let selectedStationId = null;
+let selectedDate = null;
+let zonesGeoData = null;
+let chart = null;
+let dernierResultat = null; // {heures, par_station}
+
+const map = new maplibregl.Map({
+  container: "map",
+  style: "https://tiles.openfreemap.org/styles/bright",
+  center: [2.5, 46.5],
+  zoom: 5.3,
+});
+map.addControl(new maplibregl.NavigationControl(), "bottom-right");
+
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function remplirSelectsNiveaux() {
+  for (const sel of document.querySelectorAll(".select-niveau")) {
+    sel.innerHTML = NIVEAUX.map(([v, nom]) => `<option value="${v}">${nom}</option>`).join("");
+  }
+  const zonesDiv = document.getElementById("niveaux-zones");
+  for (let z = 1; z <= 6; z++) {
+    const ligne = document.createElement("div");
+    ligne.className = "ligne-niveau";
+    ligne.innerHTML = `<label><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${ZONE_HEX[z]};margin-right:5px;"></span>Zone ${z}</label>
+      <select class="select-niveau" data-zone="${z}">${NIVEAUX.map(([v, nom]) => `<option value="${v}">${nom}</option>`).join("")}</select>
+      <span class="reel-du-jour" data-reel-zone="${z}"></span>`;
+    zonesDiv.appendChild(ligne);
+  }
+}
+
+document.getElementById("differencier-toggle").addEventListener("change", (e) => {
+  document.getElementById("niveau-national").style.display = e.target.checked ? "none" : "flex";
+  document.getElementById("niveaux-zones").style.display = e.target.checked ? "block" : "none";
+});
+
+let penetrationRef = 0.03;
+
+map.on("load", async () => {
+  const [axesGeo, stationsGeo, calendrier, zonesGeo, config] = await Promise.all([
+    fetch("/api/axes").then(r => r.json()),
+    fetch("/api/stations").then(r => r.json()),
+    fetch("/api/calendrier").then(r => r.json()),
+    fetch("/api/zones").then(r => r.json()),
+    fetch("/api/config").then(r => r.json()),
+  ]);
+
+  penetrationRef = config.penetration_ref;
+  const penInput = document.getElementById("penetration-input");
+  penInput.value = (penetrationRef * 100).toFixed(1);
+  document.getElementById("penetration-note").textContent =
+    `Référence historique (quasi constante) : ${(penetrationRef * 100).toFixed(1)} %. Au-delà, l'occupation est redérivée par la théorie des files d'attente (Erlang B), pas par le GNN.`;
+
+  map.addSource("zones", { type: "geojson", data: zonesGeo, promoteId: "code_region" });
+  map.addLayer({
+    id: "zones-fill", type: "fill", source: "zones",
+    paint: {
+      "fill-color": ["match", ["get", "zone_bf"],
+        1, ZONE_HEX[1], 2, ZONE_HEX[2], 3, ZONE_HEX[3], 4, ZONE_HEX[4], 5, ZONE_HEX[5], 6, ZONE_HEX[6],
+        "#c3c2b7"],
+      "fill-opacity": 0.16,
+    },
+  });
+  map.addLayer({
+    id: "zones-ligne", type: "line", source: "zones",
+    paint: { "line-color": "#ffffff", "line-width": 1 },
+  });
+  map.addLayer({
+    id: "zones-label", type: "symbol", source: "zones",
+    layout: { "text-field": ["get", "zone_bf"], "text-size": 16, "text-font": ["Noto Sans Bold"] },
+    paint: { "text-color": "#0b0b0b", "text-halo-color": "#ffffff", "text-halo-width": 1.5 },
+  });
+
+  map.addSource("axes", { type: "geojson", data: axesGeo });
+  map.addLayer({
+    id: "axes-layer", type: "line", source: "axes",
+    paint: { "line-color": "#52514e", "line-width": 1.5 },
+  });
+
+  map.addSource("stations", { type: "geojson", data: stationsGeo, promoteId: "station_id" });
+  map.addLayer({
+    id: "stations-layer", type: "circle", source: "stations",
+    paint: {
+      "circle-radius": ["case", ["boolean", ["feature-state", "selected"], false], 8, 5],
+      "circle-color": [
+        "case",
+        ["boolean", ["feature-state", "selected"], false], "#2a78d6",
+        ["<", ["coalesce", ["feature-state", "taux_scenario"], -1], 0], "#9aa0a6",
+        ["interpolate", ["linear"], ["feature-state", "taux_scenario"],
+          0, "#cde2fb", 0.5, "#e87ba4", 1, "#7a1f45"],
+      ],
+      "circle-stroke-width": 1.5, "circle-stroke-color": "#ffffff",
+    },
+  });
+
+  map.on("click", "stations-layer", (e) => selectStation(e.features[0]));
+  map.on("mouseenter", "stations-layer", () => { map.getCanvas().style.cursor = "pointer"; });
+  map.on("mouseleave", "stations-layer", () => { map.getCanvas().style.cursor = ""; });
+
+  const stationPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
+  map.on("mousemove", "stations-layer", (e) => {
+    const p = e.features[0].properties;
+    stationPopup.setLngLat(e.lngLat).setHTML(`<b>${escapeHtml(p.nom)}</b><br>${escapeHtml(p.axe)} · pk ${p.pk}`).addTo(map);
+  });
+  map.on("mouseleave", "stations-layer", () => stationPopup.remove());
+
+  zonesGeoData = zonesGeo;
+  buildLegendeZones();
+  calendrierParDate = Object.fromEntries(calendrier.map(j => [j.date, j]));
+  remplirSelectsNiveaux();
+
+  document.getElementById("mois-precedent").addEventListener("click", () => changerMois(-1));
+  document.getElementById("mois-suivant").addEventListener("click", () => changerMois(1));
+  document.getElementById("bouton-calculer").addEventListener("click", calculerScenario);
+
+  buildEnteteJours();
+  renderMonth();
+});
+
+function buildEnteteJours() {
+  const el = document.getElementById("cal-entete-jours");
+  el.innerHTML = "";
+  for (const j of JOURS_FR) {
+    const d = document.createElement("div");
+    d.className = "cal-entete-jour";
+    d.textContent = j;
+    el.appendChild(d);
+  }
+}
+
+function buildLegendeZones() {
+  const el = document.getElementById("legende-zones");
+  el.innerHTML = '<div class="titre">Zones Bison Futé (approx.)</div>';
+  for (let z = 1; z <= 6; z++) {
+    const ligne = document.createElement("div");
+    ligne.className = "ligne-zone";
+    ligne.innerHTML = `<span class="puce-zone" style="background:${ZONE_HEX[z]}"></span>${z} — ${escapeHtml(ZONE_NOM[z])}`;
+    el.appendChild(ligne);
+  }
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "Contours approchés par région administrative.";
+  el.appendChild(note);
+  el.style.display = "block";
+}
+
+function changerMois(delta) {
+  moisAffiche = new Date(moisAffiche.getFullYear(), moisAffiche.getMonth() + delta, 1);
+  renderMonth();
+}
+
+function renderMonth() {
+  const grid = document.getElementById("calendrier");
+  grid.innerHTML = "";
+  const annee = moisAffiche.getFullYear(), mois = moisAffiche.getMonth();
+  document.getElementById("calendrier-mois").textContent = `${MOIS_FR[mois]} ${annee}`;
+
+  const premierJour = new Date(annee, mois, 1);
+  const decalage = (premierJour.getDay() + 6) % 7;
+  const nbJours = new Date(annee, mois + 1, 0).getDate();
+
+  for (let i = 0; i < decalage; i++) grid.appendChild(document.createElement("div"));
+
+  for (let j = 1; j <= nbJours; j++) {
+    const dateStr = `${annee}-${String(mois + 1).padStart(2, "0")}-${String(j).padStart(2, "0")}`;
+    const jour = calendrierParDate[dateStr];
+    const cell = document.createElement("div");
+    cell.className = "jour-cellule";
+    cell.textContent = j;
+
+    if (!jour || !jour.a_du_calcul) {
+      cell.classList.add("sans-donnees");
+    } else {
+      if (dateStr === selectedDate) cell.classList.add("selectionne");
+      cell.addEventListener("click", () => {
+        selectedDate = dateStr;
+        renderMonth();
+        preremplirNiveauxReels(jour);
+        document.getElementById("bouton-calculer").disabled = false;
+        document.getElementById("bouton-calculer").textContent = "Calculer le scénario";
+      });
+    }
+    grid.appendChild(cell);
+  }
+}
+
+function preremplirNiveauxReels(jour) {
+  document.querySelector('.select-niveau[data-zone="national"]').value = Math.round(Math.max(jour.bf_depart ?? 0, jour.bf_retour ?? 0));
+  for (let z = 1; z <= 6; z++) {
+    const niveau = Math.round(Math.max(jour[`bf_depart_z${z}`] ?? 0, jour[`bf_retour_z${z}`] ?? 0));
+    document.querySelector(`.select-niveau[data-zone="${z}"]`).value = niveau;
+    document.querySelector(`[data-reel-zone="${z}"]`).textContent = `(réel : ${NIVEAUX[niveau][1].toLowerCase()})`;
+  }
+}
+
+async function calculerScenario() {
+  if (!selectedDate) return;
+  const differencier = document.getElementById("differencier-toggle").checked;
+  const niveaux = {};
+  if (differencier) {
+    for (let z = 1; z <= 6; z++) {
+      niveaux[z] = parseInt(document.querySelector(`.select-niveau[data-zone="${z}"]`).value, 10);
+    }
+  } else {
+    const n = parseInt(document.querySelector('.select-niveau[data-zone="national"]').value, 10);
+    for (let z = 1; z <= 6; z++) niveaux[z] = n;
+  }
+
+  const etat = document.getElementById("etat-calcul");
+  etat.textContent = "Calcul en cours (inférence GNN sur ce jour)...";
+  document.getElementById("bouton-calculer").disabled = true;
+
+  const penetration = parseFloat(document.getElementById("penetration-input").value) / 100;
+
+  const r = await fetch("/api/scenario", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ date: selectedDate, niveaux, penetration }),
+  });
+  document.getElementById("bouton-calculer").disabled = false;
+  if (!r.ok) {
+    etat.textContent = "Erreur : " + (await r.text());
+    return;
+  }
+  dernierResultat = await r.json();
+  etat.textContent = `Scénario calculé pour le ${selectedDate} (pénétration VE ${(penetration * 100).toFixed(1)} %).`;
+
+  map.removeFeatureState({ source: "stations" }, "taux_scenario");
+  for (const [sid, v] of Object.entries(dernierResultat.par_station)) {
+    const moy = moyenneNonNulle(v.scenario_pdc.map((pdc, h) => pdc === null ? null : pdc / v.nb_pdc));
+    if (moy !== null) map.setFeatureState({ source: "stations", id: sid }, { taux_scenario: moy });
+  }
+  document.getElementById("legende-carte").style.display = "block";
+
+  if (selectedStationId) afficherCourbeStation();
+}
+
+function moyenneNonNulle(arr) {
+  const v = arr.filter(x => x !== null && x !== undefined);
+  return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+}
+
+function selectStation(feature) {
+  if (selectedStationId !== null) {
+    map.setFeatureState({ source: "stations", id: selectedStationId }, { selected: false });
+  }
+  selectedStationId = feature.properties.station_id;
+  map.setFeatureState({ source: "stations", id: selectedStationId }, { selected: true });
+  document.getElementById("station-info").innerHTML =
+    `<b>${escapeHtml(feature.properties.nom)}</b><br>${escapeHtml(feature.properties.axe)} · pk ${feature.properties.pk} · ${feature.properties.nb_pdc} PDC`;
+  if (dernierResultat) afficherCourbeStation();
+}
+
+function afficherCourbeStation() {
+  const data = dernierResultat.par_station[selectedStationId];
+  if (!data) return;
+
+  document.getElementById("chart-vide").style.display = "none";
+  const canvas = document.getElementById("chart");
+  canvas.style.display = "block";
+  if (chart) chart.destroy();
+
+  chart = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: dernierResultat.heures.map(h => h + "h"),
+      datasets: [
+        { label: "Réel (ce jour-là)", data: data.reel_pdc, borderColor: "#2a78d6", backgroundColor: "#2a78d6",
+          borderWidth: 2, pointRadius: 3, spanGaps: false, tension: 0.2 },
+        { label: "Scénario", data: data.scenario_pdc, borderColor: "#e87ba4", backgroundColor: "#e87ba4",
+          borderWidth: 2, pointRadius: 3, spanGaps: false, tension: 0.2, borderDash: [5, 3] },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      plugins: { legend: { display: true, position: "top" } },
+      scales: {
+        x: { title: { display: true, text: "Heure" } },
+        y: { min: 0, max: data.nb_pdc, title: { display: true, text: "Nombre de PDC occupés" } },
+      },
+    },
+  });
+}
+</script>
+</body>
+</html>

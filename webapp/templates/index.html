@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bison Futé des bornes</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.6.0/dist/maplibre-gl.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #map { position: absolute; inset: 0; }
+
+  .panel {
+    position: absolute; background: rgba(255,255,255,0.96); border-radius: 10px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.18); padding: 14px 16px; z-index: 2;
+  }
+  #panel-filtres { top: 14px; left: 14px; width: 300px; max-height: calc(100vh - 28px); overflow-y: auto; }
+  #panel-station { top: 14px; right: 14px; width: 360px; }
+
+  h1 { font-size: 14px; font-weight: 700; margin: 0 0 10px; color: #0b0b0b; }
+  h2 { font-size: 12.5px; font-weight: 600; margin: 0 0 4px; color: #0b0b0b; }
+
+  .filtre-ligne { display: flex; gap: 8px; margin-bottom: 10px; }
+  select {
+    flex: 1; font-size: 12.5px; padding: 5px 6px; border-radius: 6px; border: 1px solid #c3c2b7;
+    background: #fff;
+  }
+
+  #calendrier-entete { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  #calendrier-entete button {
+    border: none; background: #eef0f3; border-radius: 6px; width: 26px; height: 26px; cursor: pointer;
+    font-size: 13px;
+  }
+  #calendrier-mois { font-size: 12.5px; font-weight: 600; text-transform: capitalize; }
+
+  .cal-grille { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-entete-jour { font-size: 10px; text-align: center; color: #898781; padding-bottom: 2px; }
+  .jour-cellule {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-size: 11.5px; border-radius: 5px; background: #f4f4f2; color: #0b0b0b; cursor: pointer;
+    position: relative;
+  }
+  .jour-cellule.weekend { background: #e9e9e5; }
+  .jour-cellule.vacances { background: #fdf3e4; }
+  .jour-cellule.weekend.vacances { background: #f7ead0; }
+  .jour-cellule.sans-donnees { background: transparent; color: #c3c2b7; cursor: default; }
+  .jour-cellule.selectionne { outline: 2px solid #2a78d6; outline-offset: 1px; font-weight: 700; }
+
+  .legende { font-size: 10.5px; color: #52514e; margin-top: 8px; line-height: 1.6; }
+  .legende span { display: inline-flex; align-items: center; gap: 4px; margin-right: 10px; }
+  .puce { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
+
+  #legende-carte {
+    bottom: 14px; left: 14px; font-size: 11px; color: #52514e; display: none;
+  }
+  #legende-carte .barre {
+    width: 160px; height: 10px; border-radius: 5px; margin: 4px 0;
+    background: linear-gradient(to right, #cde2fb, #3987e5, #0d366b);
+  }
+  #legende-carte .bornes { display: flex; justify-content: space-between; font-size: 10px; }
+
+  #legende-zones {
+    bottom: 14px; left: 192px; font-size: 10.5px; color: #52514e; display: none;
+    max-width: 190px;
+  }
+  #legende-zones .titre { font-weight: 600; color: #0b0b0b; margin-bottom: 4px; }
+  #legende-zones .ligne-zone { display: flex; align-items: center; gap: 6px; margin: 2px 0; }
+  #legende-zones .puce-zone { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+  #legende-zones .note { font-style: italic; color: #898781; margin-top: 4px; font-size: 9.5px; }
+
+  #station-info { font-size: 12.5px; color: #52514e; margin-bottom: 10px; line-height: 1.5; }
+  #station-info b { color: #0b0b0b; }
+  #chart-wrap { height: 220px; }
+  #chart-vide { font-size: 12px; color: #898781; text-align: center; padding: 40px 0; }
+
+  .maplibregl-popup-content { font-size: 12px; padding: 6px 10px; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div class="panel" id="panel-filtres">
+  <h1>Bison Futé des bornes</h1>
+  <a href="/prediction" style="font-size:11.5px; color:#2a78d6; text-decoration:none; display:block; margin-bottom:10px;">Volet prédiction (scénario what-if) →</a>
+
+  <h2>Filtrer le calendrier</h2>
+  <div class="filtre-ligne">
+    <select id="zone-select">
+      <option value="national">National</option>
+      <option value="1">Zone 1 — Île-de-France</option>
+      <option value="2">Zone 2 — Grand-Ouest et Nord</option>
+      <option value="3">Zone 3 — Bourgogne et Est</option>
+      <option value="4">Zone 4 — Auvergne-Rhône-Alpes</option>
+      <option value="5">Zone 5 — Sud-Ouest</option>
+      <option value="6">Zone 6 — Arc méditerranéen</option>
+    </select>
+    <select id="couleur-select">
+      <option value="">Toutes couleurs</option>
+      <option value="vert">Vert</option>
+      <option value="orange">Orange</option>
+      <option value="rouge">Rouge</option>
+      <option value="noir">Noir</option>
+    </select>
+  </div>
+  <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:#52514e; margin-bottom:10px;">
+    <input type="checkbox" id="zones-toggle" checked>
+    Afficher les zones Bison Futé sur la carte (approx. par région)
+  </label>
+
+  <h2>Date</h2>
+  <div id="calendrier-entete">
+    <button id="mois-precedent" type="button">‹</button>
+    <span id="calendrier-mois"></span>
+    <button id="mois-suivant" type="button">›</button>
+  </div>
+  <div class="cal-grille" id="cal-entete-jours"></div>
+  <div class="cal-grille" id="calendrier"></div>
+
+  <div class="legende">
+    <span><span class="puce" style="background:#e9e9e5"></span>Week-end</span>
+    <span><span class="puce" style="background:#fdf3e4"></span>Vacances</span>
+    <span><span class="puce" style="background:#f4f4f2;border:1px solid #c3c2b7"></span>Jour normal</span>
+  </div>
+</div>
+
+<div class="panel" id="legende-carte">
+  <div>Occupation moyenne du jour sélectionné</div>
+  <div class="barre"></div>
+  <div class="bornes"><span>0 %</span><span>100 %</span></div>
+</div>
+
+<div class="panel" id="legende-zones"></div>
+
+<div class="panel" id="panel-station">
+  <h2>Station</h2>
+  <div id="station-info">Cliquez une station sur la carte.</div>
+  <div id="chart-wrap">
+    <div id="chart-vide">Sélectionnez une date et une station pour voir la courbe d'occupation.</div>
+    <canvas id="chart" style="display:none"></canvas>
+  </div>
+</div>
+
+<script type="module">
+import * as maplibregl from "https://unpkg.com/maplibre-gl@6.6.0/dist/maplibre-gl.mjs";
+
+const COULEUR_BF_HEX = { vert: "#2e7d32", orange: "#f57c00", rouge: "#d32f2f", noir: "#212121" };
+const NIVEAU_BF = { vert: 0, orange: 1, rouge: 2, noir: 3 };
+// couleurs d'identité des zones (pas les couleurs Bison Futé, pour éviter toute confusion) ;
+// vert et rouge volontairement évités ici car déjà pris par le sens Bison Futé sur la même page
+const ZONE_HEX = { 1: "#2a78d6", 2: "#eb6834", 3: "#1baf7a", 4: "#eda100", 5: "#e87ba4", 6: "#6250d6" };
+const ZONE_NOM = {
+  1: "Île-de-France", 2: "Grand-Ouest et Nord", 3: "Bourgogne et Est",
+  4: "Auvergne-Rhône-Alpes", 5: "Sud-Ouest", 6: "Arc méditerranéen",
+};
+const MOIS_FR = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const JOURS_FR = ["L","M","M","J","V","S","D"];
+
+let calendrierParDate = {};
+let moisAffiche = new Date(2026, 8, 1); // septembre 2026
+let selectedStationId = null;
+let selectedDate = null;
+let chart = null;
+let zonesGeoData = null;
+let zonesEnSurbrillance = [];
+
+const map = new maplibregl.Map({
+  container: "map",
+  style: "https://tiles.openfreemap.org/styles/bright",
+  center: [2.5, 46.5],
+  zoom: 5.3,
+});
+
+map.addControl(new maplibregl.NavigationControl(), "bottom-right");
+
+map.on("load", async () => {
+  const [axesGeo, stationsGeo, calendrier, zonesGeo] = await Promise.all([
+    fetch("/api/axes").then(r => r.json()),
+    fetch("/api/stations").then(r => r.json()),
+    fetch("/api/calendrier").then(r => r.json()),
+    fetch("/api/zones").then(r => r.json()),
+  ]);
+
+  map.addSource("zones", { type: "geojson", data: zonesGeo, promoteId: "code_region" });
+  map.addLayer({
+    id: "zones-fill", type: "fill", source: "zones",
+    paint: {
+      "fill-color": ["match", ["get", "zone_bf"],
+        1, ZONE_HEX[1], 2, ZONE_HEX[2], 3, ZONE_HEX[3], 4, ZONE_HEX[4], 5, ZONE_HEX[5], 6, ZONE_HEX[6],
+        "#c3c2b7"],
+      "fill-opacity": ["case", ["boolean", ["feature-state", "zone-active"], false], 0.38, 0.16],
+    },
+  });
+  map.addLayer({
+    id: "zones-ligne", type: "line", source: "zones",
+    paint: {
+      "line-color": "#ffffff",
+      "line-width": ["case", ["boolean", ["feature-state", "zone-active"], false], 2.5, 1],
+    },
+  });
+  map.addLayer({
+    id: "zones-label", type: "symbol", source: "zones",
+    layout: { "text-field": ["get", "zone_bf"], "text-size": 16, "text-font": ["Noto Sans Bold"] },
+    paint: { "text-color": "#0b0b0b", "text-halo-color": "#ffffff", "text-halo-width": 1.5 },
+  });
+
+  const zonesPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
+  map.on("mousemove", "zones-fill", (e) => {
+    const p = e.features[0].properties;
+    zonesPopup.setLngLat(e.lngLat)
+      .setHTML(`<b>Zone ${p.zone_bf}</b> — ${escapeHtml(p.nom_zone_bf)}<br><span style="color:#898781">${escapeHtml(p.nom_region)} (approx.)</span>`)
+      .addTo(map);
+  });
+  map.on("mouseleave", "zones-fill", () => zonesPopup.remove());
+
+  zonesGeoData = zonesGeo;
+  buildLegendeZones();
+  surbrillanceZoneSelectionnee();
+  document.getElementById("zone-select").addEventListener("change", surbrillanceZoneSelectionnee);
+  document.getElementById("zones-toggle").addEventListener("change", (e) => {
+    const vis = e.target.checked ? "visible" : "none";
+    for (const id of ["zones-fill", "zones-ligne", "zones-label"]) map.setLayoutProperty(id, "visibility", vis);
+    document.getElementById("legende-zones").style.display = e.target.checked ? "block" : "none";
+  });
+
+  map.addSource("axes", { type: "geojson", data: axesGeo });
+  map.addLayer({
+    id: "axes-layer", type: "line", source: "axes",
+    paint: { "line-color": "#52514e", "line-width": 1.5 },
+  });
+
+  map.addSource("stations", { type: "geojson", data: stationsGeo, promoteId: "station_id" });
+  map.addLayer({
+    id: "stations-layer", type: "circle", source: "stations",
+    paint: {
+      "circle-radius": ["case", ["boolean", ["feature-state", "selected"], false], 8, 5],
+      "circle-color": [
+        "case",
+        ["boolean", ["feature-state", "selected"], false], "#e34948",
+        ["<", ["coalesce", ["feature-state", "taux_jour"], -1], 0], "#2a78d6",
+        ["interpolate", ["linear"], ["feature-state", "taux_jour"],
+          0, "#cde2fb", 0.5, "#3987e5", 1, "#0d366b"],
+      ],
+      "circle-stroke-width": 1.5,
+      "circle-stroke-color": "#ffffff",
+    },
+  });
+
+  map.on("click", "stations-layer", (e) => selectStation(e.features[0]));
+  map.on("mouseenter", "stations-layer", () => { map.getCanvas().style.cursor = "pointer"; });
+  map.on("mouseleave", "stations-layer", () => { map.getCanvas().style.cursor = ""; });
+
+  const axePopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
+  map.on("mousemove", "axes-layer", (e) => {
+    const nom = e.features[0].properties.axe;
+    axePopup.setLngLat(e.lngLat).setHTML(`<b>${escapeHtml(nom)}</b>`).addTo(map);
+  });
+  map.on("mouseleave", "axes-layer", () => axePopup.remove());
+
+  const stationPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
+  map.on("mousemove", "stations-layer", (e) => {
+    const p = e.features[0].properties;
+    stationPopup.setLngLat(e.lngLat)
+      .setHTML(`<b>${escapeHtml(p.nom)}</b><br>${escapeHtml(p.axe)} · pk ${p.pk}`)
+      .addTo(map);
+  });
+  map.on("mouseleave", "stations-layer", () => stationPopup.remove());
+
+  calendrierParDate = Object.fromEntries(calendrier.map(j => [j.date, j]));
+  document.getElementById("zone-select").addEventListener("change", renderMonth);
+  document.getElementById("couleur-select").addEventListener("change", renderMonth);
+  document.getElementById("mois-precedent").addEventListener("click", () => changerMois(-1));
+  document.getElementById("mois-suivant").addEventListener("click", () => changerMois(1));
+
+  buildEnteteJours();
+  renderMonth();
+});
+
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function buildEnteteJours() {
+  const el = document.getElementById("cal-entete-jours");
+  el.innerHTML = "";
+  for (const j of JOURS_FR) {
+    const d = document.createElement("div");
+    d.className = "cal-entete-jour";
+    d.textContent = j;
+    el.appendChild(d);
+  }
+}
+
+function buildLegendeZones() {
+  const el = document.getElementById("legende-zones");
+  el.innerHTML = '<div class="titre">Zones Bison Futé (approx.)</div>';
+  for (let z = 1; z <= 6; z++) {
+    const ligne = document.createElement("div");
+    ligne.className = "ligne-zone";
+    ligne.innerHTML = `<span class="puce-zone" style="background:${ZONE_HEX[z]}"></span>${z} — ${escapeHtml(ZONE_NOM[z])}`;
+    el.appendChild(ligne);
+  }
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "Contours approchés par région administrative, pas la table officielle.";
+  el.appendChild(note);
+  el.style.display = "block";
+}
+
+function surbrillanceZoneSelectionnee() {
+  for (const code of zonesEnSurbrillance) {
+    map.setFeatureState({ source: "zones", id: code }, { "zone-active": false });
+  }
+  zonesEnSurbrillance = [];
+  const val = document.getElementById("zone-select").value;
+  if (val === "national" || !zonesGeoData) return;
+  const zoneNum = parseInt(val, 10);
+  for (const f of zonesGeoData.features) {
+    if (f.properties.zone_bf === zoneNum) {
+      map.setFeatureState({ source: "zones", id: f.properties.code_region }, { "zone-active": true });
+      zonesEnSurbrillance.push(f.properties.code_region);
+    }
+  }
+}
+
+function changerMois(delta) {
+  moisAffiche = new Date(moisAffiche.getFullYear(), moisAffiche.getMonth() + delta, 1);
+  renderMonth();
+}
+
+function niveauJour(jour, zone) {
+  const dCol = zone === "national" ? "bf_depart" : `bf_depart_z${zone}`;
+  const rCol = zone === "national" ? "bf_retour" : `bf_retour_z${zone}`;
+  const d = jour[dCol], r = jour[rCol];
+  if (d === null && r === null) return null; // année sans données Bison Futé (ex. 2020)
+  return Math.max(d ?? -1, r ?? -1);
+}
+
+function selectStation(feature) {
+  if (selectedStationId !== null) {
+    map.setFeatureState({ source: "stations", id: selectedStationId }, { selected: false });
+  }
+  selectedStationId = feature.properties.station_id;
+  map.setFeatureState({ source: "stations", id: selectedStationId }, { selected: true });
+  document.getElementById("station-info").innerHTML =
+    `<b>${escapeHtml(feature.properties.nom)}</b><br>${escapeHtml(feature.properties.axe)} · pk ${feature.properties.pk} · ${feature.properties.nb_pdc} PDC`
+    + (selectedDate ? "" : "<br><em>Choisissez une date dans le calendrier.</em>");
+  if (selectedDate) loadOccupation();
+}
+
+function renderMonth() {
+  const zone = document.getElementById("zone-select").value;
+  const couleurVoulue = document.getElementById("couleur-select").value;
+  const grid = document.getElementById("calendrier");
+  grid.innerHTML = "";
+
+  const annee = moisAffiche.getFullYear(), mois = moisAffiche.getMonth();
+  document.getElementById("calendrier-mois").textContent = `${MOIS_FR[mois]} ${annee}`;
+
+  const premierJour = new Date(annee, mois, 1);
+  const decalage = (premierJour.getDay() + 6) % 7; // lundi = 0
+  const nbJours = new Date(annee, mois + 1, 0).getDate();
+
+  for (let i = 0; i < decalage; i++) {
+    const vide = document.createElement("div");
+    grid.appendChild(vide);
+  }
+
+  for (let j = 1; j <= nbJours; j++) {
+    const dateStr = `${annee}-${String(mois + 1).padStart(2, "0")}-${String(j).padStart(2, "0")}`;
+    const jour = calendrierParDate[dateStr];
+    const cell = document.createElement("div");
+    cell.className = "jour-cellule";
+    cell.textContent = j;
+
+    if (!jour || !jour.a_des_donnees) {
+      cell.classList.add("sans-donnees");
+    } else {
+      if (jour.jour_semaine >= 5) cell.classList.add("weekend");
+      if (jour.vac_a || jour.vac_b || jour.vac_c) {
+        cell.classList.add("vacances");
+        cell.title = jour.nom_vacances || "Vacances scolaires";
+      }
+      const niveau = niveauJour(jour, zone);
+      if (couleurVoulue && niveau === NIVEAU_BF[couleurVoulue]) {
+        cell.style.boxShadow = `0 0 0 3px ${COULEUR_BF_HEX[couleurVoulue]}`;
+      }
+      if (dateStr === selectedDate) cell.classList.add("selectionne");
+      cell.addEventListener("click", () => {
+        selectedDate = dateStr;
+        renderMonth();
+        colorerCarteParJour(selectedDate);
+        if (selectedStationId) loadOccupation();
+      });
+    }
+    grid.appendChild(cell);
+  }
+}
+
+async function colorerCarteParJour(date) {
+  const r = await fetch(`/api/occupation_jour?date=${encodeURIComponent(date)}`);
+  if (!r.ok) return;
+  const moyennes = await r.json();
+  map.removeFeatureState({ source: "stations" }, "taux_jour");
+  for (const [sid, v] of Object.entries(moyennes)) {
+    map.setFeatureState({ source: "stations", id: sid }, { taux_jour: v });
+  }
+  document.getElementById("legende-carte").style.display = "block";
+}
+
+async function loadOccupation() {
+  const r = await fetch(`/api/occupation/${encodeURIComponent(selectedStationId)}?date=${selectedDate}`);
+  if (!r.ok) return;
+  const data = await r.json();
+
+  document.getElementById("chart-vide").style.display = "none";
+  const canvas = document.getElementById("chart");
+  canvas.style.display = "block";
+
+  if (chart) chart.destroy();
+  const datasets = [
+    {
+      label: "Mesuré", data: data.mesure_pdc, borderColor: "#2a78d6", backgroundColor: "#2a78d6",
+      borderWidth: 2, pointRadius: 3, spanGaps: false, tension: 0.2,
+    },
+    {
+      label: "Calculé (GNN)", data: data.calcule_pdc, borderColor: "#e87ba4", backgroundColor: "#e87ba4",
+      borderWidth: 2, pointRadius: 3, spanGaps: false, tension: 0.2, borderDash: [5, 3],
+    },
+  ];
+
+  chart = new Chart(canvas, {
+    type: "line",
+    data: { labels: data.heures.map(h => h + "h"), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      plugins: { legend: { display: true, position: "top" } },
+      scales: {
+        x: { title: { display: true, text: "Heure" } },
+        y: { min: 0, max: data.nb_pdc, title: { display: true, text: "Nombre de PDC occupés" } },
+      },
+    },
+  });
+}
+</script>
+</body>
+</html>

@@ -28,6 +28,23 @@
     font-size: 11px; color: #6b4a00; line-height: 1.5; margin: 10px 0;
   }
 
+  #mode-tabs { display: flex; gap: 4px; margin: 10px 0; background: #eef0f3; border-radius: 7px; padding: 3px; }
+  #mode-tabs button {
+    flex: 1; border: none; background: transparent; border-radius: 6px; padding: 6px 4px;
+    font-size: 11.5px; font-weight: 600; color: #52514e; cursor: pointer;
+  }
+  #mode-tabs button.actif { background: #fff; color: #0b0b0b; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+
+  #jour-complet-config label.champ-date { font-size: 11.5px; color: #52514e; display: block; margin-bottom: 4px; }
+  #jour-complet-config input[type="date"] {
+    width: 100%; font-size: 12.5px; padding: 6px 7px; border-radius: 6px; border: 1px solid #c3c2b7;
+  }
+  #jour-complet-note { font-size: 10.5px; color: #898781; margin-top: 4px; line-height: 1.4; }
+  .ligne-toggle-scenario {
+    display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #52514e;
+    margin: 10px 0 2px;
+  }
+
   #calendrier-entete { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
   #calendrier-entete button {
     border: none; background: #eef0f3; border-radius: 6px; width: 26px; height: 26px; cursor: pointer;
@@ -89,24 +106,48 @@
   <h1>Volet prédiction — scénario Bison Futé</h1>
   <a class="lien-retour" href="/">← Retour à la carte</a>
 
-  <div class="avertissement">
-    Simule une couleur Bison Futé hypothétique sur un jour <b>déjà survenu</b>. Le trafic et
-    l'occupation passée restent les vraies valeurs observées ce jour-là ; seule l'entrée Bison
-    Futé change. Impossible de prédire un jour futur (ex. 1ᵉʳ novembre) : il manque l'historique
-    réel (débit, occupation) dont le modèle a besoin.
+  <div id="mode-tabs">
+    <button type="button" id="tab-historique" class="actif">Jour observé</button>
+    <button type="button" id="tab-complet">Jour futur (prédiction complète)</button>
   </div>
 
-  <h2>Date (historique, avec assez d'historique)</h2>
-  <div id="calendrier-entete">
-    <button id="mois-precedent" type="button">‹</button>
-    <span id="calendrier-mois"></span>
-    <button id="mois-suivant" type="button">›</button>
+  <div id="panneau-historique">
+    <div class="avertissement">
+      Simule une couleur Bison Futé hypothétique sur un jour <b>déjà survenu</b>. Le trafic et
+      l'occupation passée restent les vraies valeurs observées ce jour-là ; seule l'entrée Bison
+      Futé change.
+    </div>
+
+    <h2>Date (historique, avec assez d'historique)</h2>
+    <div id="calendrier-entete">
+      <button id="mois-precedent" type="button">‹</button>
+      <span id="calendrier-mois"></span>
+      <button id="mois-suivant" type="button">›</button>
+    </div>
+    <div class="cal-grille" id="cal-entete-jours"></div>
+    <div class="cal-grille" id="calendrier"></div>
   </div>
-  <div class="cal-grille" id="cal-entete-jours"></div>
-  <div class="cal-grille" id="calendrier"></div>
+
+  <div id="panneau-complet" style="display:none;">
+    <div class="avertissement">
+      Jour <b>au-delà des données réelles</b> (ex. 1ᵉʳ novembre) : trafic et occupation sont aussi
+      prévus, en cascade depuis la fin des données réelles, avec le Bison Futé officiel déjà
+      publié. Vous pouvez en plus forcer un scénario hypothétique sur ce jour précis.
+    </div>
+    <div id="jour-complet-config">
+      <label class="champ-date" for="date-complete-input">Date à prédire</label>
+      <input type="date" id="date-complete-input">
+      <div id="jour-complet-note"></div>
+    </div>
+  </div>
 
   <div class="config-scenario">
     <h2>Scénario Bison Futé</h2>
+    <label class="ligne-toggle-scenario" id="ligne-scenario-hypothetique" style="display:none;">
+      <input type="checkbox" id="scenario-hypothetique-toggle">
+      Forcer un scénario hypothétique (sinon Bison Futé officiel)
+    </label>
+    <div id="scenario-niveaux-wrap">
     <label style="display:flex; align-items:center; gap:6px; font-size:11.5px; color:#52514e; margin-bottom:8px;">
       <input type="checkbox" id="differencier-toggle">
       Différencier par zone
@@ -118,6 +159,7 @@
     </div>
 
     <div id="niveaux-zones" style="display:none"></div>
+    </div>
 
     <div class="ligne-niveau" style="margin-top:8px;">
       <label>Pénétration VE</label>
@@ -166,7 +208,8 @@ let selectedStationId = null;
 let selectedDate = null;
 let zonesGeoData = null;
 let chart = null;
-let dernierResultat = null; // {heures, par_station}
+let mode = "historique"; // "historique" ou "complet"
+let dernierResultat = null; // {heures, modeComplet, par_station: {sid: {base_pdc, scenario_pdc, nb_pdc}}}
 
 const map = new maplibregl.Map({
   container: "map",
@@ -200,6 +243,37 @@ document.getElementById("differencier-toggle").addEventListener("change", (e) =>
   document.getElementById("niveaux-zones").style.display = e.target.checked ? "block" : "none";
 });
 
+document.getElementById("scenario-hypothetique-toggle").addEventListener("change", (e) => {
+  document.getElementById("scenario-niveaux-wrap").style.display = e.target.checked ? "block" : "none";
+});
+
+function setMode(m) {
+  mode = m;
+  document.getElementById("tab-historique").classList.toggle("actif", m === "historique");
+  document.getElementById("tab-complet").classList.toggle("actif", m === "complet");
+  document.getElementById("panneau-historique").style.display = m === "historique" ? "block" : "none";
+  document.getElementById("panneau-complet").style.display = m === "complet" ? "block" : "none";
+  document.getElementById("ligne-scenario-hypothetique").style.display = m === "complet" ? "flex" : "none";
+  const hypothetique = document.getElementById("scenario-hypothetique-toggle").checked;
+  document.getElementById("scenario-niveaux-wrap").style.display = (m === "historique" || hypothetique) ? "block" : "none";
+  majBoutonCalculer();
+}
+
+document.getElementById("tab-historique").addEventListener("click", () => setMode("historique"));
+document.getElementById("tab-complet").addEventListener("click", () => setMode("complet"));
+
+function majBoutonCalculer() {
+  const btn = document.getElementById("bouton-calculer");
+  if (mode === "historique") {
+    btn.disabled = !selectedDate;
+    btn.textContent = selectedDate ? "Calculer le scénario" : "Choisissez une date";
+  } else {
+    const v = document.getElementById("date-complete-input").value;
+    btn.disabled = !v;
+    btn.textContent = v ? "Calculer" : "Choisissez une date";
+  }
+}
+
 let penetrationRef = 0.03;
 
 map.on("load", async () => {
@@ -216,6 +290,15 @@ map.on("load", async () => {
   penInput.value = (penetrationRef * 100).toFixed(1);
   document.getElementById("penetration-note").textContent =
     `Référence historique (quasi constante) : ${(penetrationRef * 100).toFixed(1)} %. Au-delà, l'occupation est redérivée par la théorie des files d'attente (Erlang B), pas par le GNN.`;
+
+  const dateCompleteInput = document.getElementById("date-complete-input");
+  dateCompleteInput.min = config.premier_jour_complet;
+  dateCompleteInput.max = config.dernier_jour_complet;
+  dateCompleteInput.value = config.premier_jour_complet;
+  dateCompleteInput.addEventListener("change", majBoutonCalculer);
+  document.getElementById("jour-complet-note").textContent =
+    `Données réelles jusqu'à la veille du ${config.premier_jour_complet}. Prédictible jusqu'au ` +
+    `${config.dernier_jour_complet} (Bison Futé officiel connu jusque là).`;
 
   map.addSource("zones", { type: "geojson", data: zonesGeo, promoteId: "code_region" });
   map.addLayer({
@@ -277,7 +360,9 @@ map.on("load", async () => {
 
   document.getElementById("mois-precedent").addEventListener("click", () => changerMois(-1));
   document.getElementById("mois-suivant").addEventListener("click", () => changerMois(1));
-  document.getElementById("bouton-calculer").addEventListener("click", calculerScenario);
+  document.getElementById("bouton-calculer").addEventListener("click", () => {
+    if (mode === "historique") calculerScenario(); else calculerJourComplet();
+  });
 
   buildEnteteJours();
   renderMonth();
@@ -342,8 +427,7 @@ function renderMonth() {
         selectedDate = dateStr;
         renderMonth();
         preremplirNiveauxReels(jour);
-        document.getElementById("bouton-calculer").disabled = false;
-        document.getElementById("bouton-calculer").textContent = "Calculer le scénario";
+        majBoutonCalculer();
       });
     }
     grid.appendChild(cell);
@@ -387,17 +471,71 @@ async function calculerScenario() {
     etat.textContent = "Erreur : " + (await r.text());
     return;
   }
-  dernierResultat = await r.json();
+  const resultat = await r.json();
+  dernierResultat = {
+    heures: resultat.heures,
+    modeComplet: false,
+    par_station: Object.fromEntries(Object.entries(resultat.par_station).map(([sid, v]) =>
+      [sid, { base_pdc: v.reel_pdc, scenario_pdc: v.scenario_pdc, nb_pdc: v.nb_pdc }])),
+  };
   etat.textContent = `Scénario calculé pour le ${selectedDate} (pénétration VE ${(penetration * 100).toFixed(1)} %).`;
 
+  afficherSurCarte();
+  if (selectedStationId) afficherCourbeStation();
+}
+
+async function calculerJourComplet() {
+  const date = document.getElementById("date-complete-input").value;
+  if (!date) return;
+  const hypothetique = document.getElementById("scenario-hypothetique-toggle").checked;
+  let niveaux = null;
+  if (hypothetique) {
+    const differencier = document.getElementById("differencier-toggle").checked;
+    niveaux = {};
+    if (differencier) {
+      for (let z = 1; z <= 6; z++) niveaux[z] = parseInt(document.querySelector(`.select-niveau[data-zone="${z}"]`).value, 10);
+    } else {
+      const n = parseInt(document.querySelector('.select-niveau[data-zone="national"]').value, 10);
+      for (let z = 1; z <= 6; z++) niveaux[z] = n;
+    }
+  }
+  const penetration = hypothetique ? parseFloat(document.getElementById("penetration-input").value) / 100 : null;
+
+  const etat = document.getElementById("etat-calcul");
+  etat.textContent = "Calcul en cours (cascade depuis la fin des données réelles)...";
+  document.getElementById("bouton-calculer").disabled = true;
+
+  const r = await fetch("/api/jour_complet", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ date, niveaux, penetration }),
+  });
+  document.getElementById("bouton-calculer").disabled = false;
+  if (!r.ok) {
+    etat.textContent = "Erreur : " + (await r.text());
+    return;
+  }
+  const resultat = await r.json();
+  dernierResultat = {
+    heures: resultat.heures,
+    modeComplet: true,
+    par_station: Object.fromEntries(Object.entries(resultat.par_station).map(([sid, v]) =>
+      [sid, { base_pdc: v.prevu_pdc, scenario_pdc: v.scenario_pdc, nb_pdc: v.nb_pdc }])),
+  };
+  etat.textContent = `Prévision calculée pour le ${date} (cascade sur ${resultat.dates_cascade.length} ` +
+    `jour(s) depuis le ${resultat.dates_cascade[0]}).`;
+
+  afficherSurCarte();
+  if (selectedStationId) afficherCourbeStation();
+}
+
+function afficherSurCarte() {
   map.removeFeatureState({ source: "stations" }, "taux_scenario");
   for (const [sid, v] of Object.entries(dernierResultat.par_station)) {
-    const moy = moyenneNonNulle(v.scenario_pdc.map((pdc, h) => pdc === null ? null : pdc / v.nb_pdc));
+    const courbe = v.scenario_pdc ?? v.base_pdc;
+    const moy = moyenneNonNulle(courbe.map(pdc => (pdc === null || pdc === undefined) ? null : pdc / v.nb_pdc));
     if (moy !== null) map.setFeatureState({ source: "stations", id: sid }, { taux_scenario: moy });
   }
   document.getElementById("legende-carte").style.display = "block";
-
-  if (selectedStationId) afficherCourbeStation();
 }
 
 function moyenneNonNulle(arr) {
@@ -425,16 +563,21 @@ function afficherCourbeStation() {
   canvas.style.display = "block";
   if (chart) chart.destroy();
 
+  const labelBase = dernierResultat.modeComplet ? "Prévu (Bison Futé officiel)" : "Réel (ce jour-là)";
+  const datasets = [
+    { label: labelBase, data: data.base_pdc, borderColor: "#2a78d6", backgroundColor: "#2a78d6",
+      borderWidth: 2, pointRadius: 3, spanGaps: false, tension: 0.2 },
+  ];
+  if (data.scenario_pdc) {
+    datasets.push({ label: "Scénario", data: data.scenario_pdc, borderColor: "#e87ba4", backgroundColor: "#e87ba4",
+      borderWidth: 2, pointRadius: 3, spanGaps: false, tension: 0.2, borderDash: [5, 3] });
+  }
+
   chart = new Chart(canvas, {
     type: "line",
     data: {
       labels: dernierResultat.heures.map(h => h + "h"),
-      datasets: [
-        { label: "Réel (ce jour-là)", data: data.reel_pdc, borderColor: "#2a78d6", backgroundColor: "#2a78d6",
-          borderWidth: 2, pointRadius: 3, spanGaps: false, tension: 0.2 },
-        { label: "Scénario", data: data.scenario_pdc, borderColor: "#e87ba4", backgroundColor: "#e87ba4",
-          borderWidth: 2, pointRadius: 3, spanGaps: false, tension: 0.2, borderDash: [5, 3] },
-      ],
+      datasets,
     },
     options: {
       responsive: true, maintainAspectRatio: false, animation: false,

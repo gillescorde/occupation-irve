@@ -16,6 +16,7 @@ modèle GNN chargé) et renvoie un dict réutilisé pour :
 """
 import json
 import sys
+import warnings
 from pathlib import Path
 
 import joblib
@@ -37,6 +38,7 @@ PENETRATION_REF = 0.03  # part de VE dans le trafic de l'historique (scenarios.p
 DONNEES_DIR = ROOT / "donnees_reelles"
 AVATAR_DIR = ROOT.parent / "inputs" / "avatar"
 COMPTEURS_FILE = DONNEES_DIR / "rattachement_interurbains" / "compteurs_retenus.csv"
+CALENDRIER_FILE = DONNEES_DIR / "calendrier" / "calendrier.csv"
 RESULTATS_DIR = ROOT / "resultats_reels"
 CACHE_FILE = RESULTATS_DIR / "calcule_complet.csv.xz"
 
@@ -142,7 +144,8 @@ def preparer_contexte():
     return {
         "d": d, "T": T, "S": S, "lags": lags, "H": H, "T_in": T_in, "debut": debut,
         "noms_cal_sel": noms_cal_sel, "normaliseur": normaliseur, "cal_g": cal_g,
-        "G_obs": G_obs, "modele": modele, "occ": occ,
+        "G_obs": G_obs, "modele": modele, "occ": occ, "pas_par_jour": pas_par_jour,
+        "etape1": etape1, "stat1": stat1, "trafic_obs_n": trafic_obs_n,
     }
 
 
@@ -251,3 +254,185 @@ def calculer_scenario(ctx, date, niveaux_zone, penetration=None):
             "nb_pdc": nb_pdc,
         }
     return out
+
+
+def bornes_jour_complet(ctx):
+    """(premier jour simulable, dernier jour simulable) pour le volet « jour complet » : juste
+    après la fin de l'historique réel, jusqu'à la fin du calendrier connu (Bison Futé officiel
+    publié à l'avance)."""
+    dernier_reel = ctx["d"].index[-1].normalize()
+    cal_brut = pd.read_csv(CALENDRIER_FILE, parse_dates=["date"])
+    return dernier_reel + pd.Timedelta(days=1), cal_brut["date"].max().normalize()
+
+
+def _simuler_jour(ctx, t0, trafic_hist, occ_hist, G_hist, cal_g_complet, Xcal_jour, id_to_idx):
+    """Calcule un jour (pas_par_jour pas) à l'indice global t0 : prévision du trafic (étape 1,
+    HGB) puis de l'occupation (étape 2, GNN), à partir de l'historique déjà connu avant t0 (réel ou
+    déjà simulé dans la cascade). `trafic_hist`/`occ_hist`/`G_hist` couvrent les indices [0, t0) et
+    s'indexent donc directement comme les indices globaux (pas de décalage à appliquer).
+    `Xcal_jour` : calendrier brut (non normalisé) de ce jour, pour l'étape 1 ; `cal_g_complet` :
+    calendrier GNN normalisé sur [0, t0 + pas_par_jour), ce jour compris (officiel ou scénario).
+    Renvoie (trafic_jour [pas_par_jour, C, V] normalisé, occupation_jour [pas_par_jour, S])."""
+    d, S, lags, H, T_in = ctx["d"], ctx["S"], ctx["lags"], ctx["H"], ctx["T_in"]
+    pas_par_jour = ctx["pas_par_jour"]
+    idx = np.arange(t0, t0 + pas_par_jour)
+    n = len(idx)
+    C, V = trafic_hist.shape[1], trafic_hist.shape[2]
+
+    trafic_jour = np.zeros((n, C, V), dtype=np.float32)
+    for k, v in enumerate(d.variables_trafic):
+        info = ctx["etape1"][v]
+        mdl, noms1 = info["modele"], info["noms"]
+        cols = np.array([id_to_idx[cid] for cid in info["noeuds"]])
+        x_cols = trafic_hist[:, cols, k]
+        lags_v = [x_cols[idx - L] for L in lags]
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", RuntimeWarning)  # colonnes jamais mesurées -> NaN partout
+            moy24 = np.nanmean(np.stack([x_cols[idx - H - i] for i in range(pas_par_jour)], 0), axis=0)
+        table = np.concatenate([
+            np.repeat(Xcal_jour[:, None, :], len(cols), 1),
+            np.repeat(ctx["stat1"][None, cols], n, 0),
+            *[l[:, :, None] for l in lags_v], moy24[:, :, None],
+        ], -1).astype(np.float32)
+        trafic_jour[:, cols, k] = mdl.predict(table.reshape(-1, len(noms1))).reshape(n, len(cols))
+
+    G_jour = _tenseur_jour(ctx, trafic_jour, occ_hist, idx)
+    G_complet = np.concatenate([G_hist, G_jour])
+    p = predire_gnn(ctx["modele"], G_complet, idx, T_in, S, cal=cal_g_complet)
+    return trafic_jour, p
+
+
+def _tenseur_jour(ctx, trafic_jour, occ_hist, idx):
+    """Même format que le tenseur GNN construit dans `preparer_contexte`, mais pour un seul jour
+    (idx : indices globaux de ce jour). `occ_hist` couvre [0, idx[0]) (indexation directe)."""
+    d, S, lags, H = ctx["d"], ctx["S"], ctx["lags"], ctx["H"]
+    pas_par_jour = ctx["pas_par_jour"]
+    C, V, N = len(d.compteurs), trafic_jour.shape[-1], ctx["S"] + len(d.compteurs)
+    n = len(idx)
+
+    f_tr = np.zeros((n, N, V), dtype=np.float32)
+    f_tr[:, S:] = np.nan_to_num(trafic_jour)
+
+    types = d.compteurs.get("source", pd.Series("avatar", index=d.compteurs.index)).values
+    f_type = np.zeros((n, N, 3), dtype=np.float32)
+    f_type[:, :S, 0] = 1; f_type[:, S:, 1] = types == "avatar"; f_type[:, S:, 2] = types == "here"
+
+    f_occ = np.zeros((n, N, len(lags) + 1), dtype=np.float32)
+    m_occ = np.zeros((n, N), dtype=np.float32)
+    for j, k in enumerate(lags):
+        f_occ[:, :S, j] = np.nan_to_num(occ_hist[idx - k], nan=0)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)  # stations sans aucune mesure sur la fenêtre -> NaN
+        moy_jour = np.nanmean(np.stack([occ_hist[idx - H - i] for i in range(pas_par_jour)], 0), axis=0)
+    f_occ[:, :S, -1] = np.nan_to_num(moy_jour, nan=0)
+    m_occ[:, :S] = ~np.isnan(occ_hist[idx - H])
+
+    cap = np.zeros((n, N), dtype=np.float32)
+    cap[:, :S] = d.stations["nb_pdc"].values / 10
+
+    return np.concatenate([f_tr, f_type, f_occ, m_occ[..., None], cap[..., None]], -1)
+
+
+def calculer_jour_complet(ctx, date_cible, niveaux_zone=None, penetration=None):
+    """Prédiction complète d'un jour au-delà de l'historique réel (ex. 1ᵉʳ novembre à venir) :
+    pas de trafic ni d'occupation mesurés ce jour-là, donc on les prévoit aussi, en cascade jour
+    par jour depuis la fin des données réelles jusqu'à `date_cible`, en réinjectant à chaque étape
+    les sorties du modèle (trafic prévu, occupation prévue) comme nouvel historique pour le jour
+    suivant. Le calendrier des jours intermédiaires est le Bison Futé officiel (déjà publié dans
+    calendrier.csv). Seul le dernier jour (`date_cible`) peut en plus recevoir un scénario Bison
+    Futé hypothétique (`niveaux_zone`, comme `calculer_scenario`) et une pénétration VE différente
+    de la référence historique : dans ce cas ce dernier jour est rejoué une seconde fois avec le
+    calendrier modifié, sans toucher au reste de la cascade (identique dans les deux cas).
+
+    Renvoie None si `date_cible` est déjà couverte par l'historique réel (-> `calculer_scenario`)
+    ou hors de la plage du calendrier connu, sinon :
+      {"heures": [...], "date_cible": "YYYY-MM-DD", "dates_cascade": [...],
+       "par_station": {station_id: {"prevu_pdc": [...24...], "scenario_pdc": [...24...] ou None,
+       "nb_pdc": int}}}
+    """
+    d, S, H, T_in = ctx["d"], ctx["S"], ctx["H"], ctx["T_in"]
+    pas_par_jour = ctx["pas_par_jour"]
+    T0 = ctx["T"]
+    dernier_jour = d.index[-1].normalize()
+    cible = pd.Timestamp(date_cible).normalize()
+    if cible <= dernier_jour:
+        return None
+
+    cal_brut = pd.read_csv(CALENDRIER_FILE, parse_dates=["date"]).set_index("date")
+    if cible not in cal_brut.index:
+        return None
+
+    jours = pd.date_range(dernier_jour + pd.Timedelta(days=1), cible, freq="D")
+    n_jours = len(jours)
+    pas = d.index[1] - d.index[0]
+    index_h = pd.date_range(jours[0], jours[-1] + pd.Timedelta(days=1) - pas, freq=pas)
+    calj = cal_brut.reindex(index_h.normalize()).fillna(0)
+    calj.index = index_h
+    calj["heure"] = index_h.hour + index_h.minute / 60
+    calj["jour_semaine"] = index_h.dayofweek
+    calj["mois"] = index_h.month
+    Xcal_c, noms_cal_c = E.variables_calendaires(calj)
+    idx_sel = [noms_cal_c.index(nn) for nn in ctx["noms_cal_sel"]]
+    cal_g_c = (Xcal_c[:, idx_sel] / ctx["normaliseur"]).astype(np.float32)
+
+    C, V = len(d.compteurs), len(d.variables_trafic)
+    N = S + C
+    pas_total = n_jours * pas_par_jour
+    trafic_n_ext = np.concatenate([ctx["trafic_obs_n"], np.zeros((pas_total, C, V), dtype=np.float32)])
+    occ_ext = np.concatenate([ctx["occ"], np.zeros((pas_total, S), dtype=np.float32)])
+    G_ext = np.concatenate([ctx["G_obs"], np.zeros((pas_total, N, ctx["G_obs"].shape[2]), dtype=np.float32)])
+    cal_g_ext = np.concatenate([ctx["cal_g"], cal_g_c])
+
+    id_to_idx = {cid: i for i, cid in enumerate(d.compteurs["compteur_id"])}
+    t0 = T0
+    for j in range(n_jours - 1):  # tous les jours de la cascade SAUF le jour cible (calendrier officiel)
+        i0, i1 = j * pas_par_jour, (j + 1) * pas_par_jour
+        trafic_jour, occ_jour = _simuler_jour(
+            ctx, t0, trafic_n_ext[:t0], occ_ext[:t0], G_ext[:t0],
+            cal_g_ext[:t0 + pas_par_jour], Xcal_c[i0:i1], id_to_idx)
+        trafic_n_ext[t0:t0 + pas_par_jour] = trafic_jour
+        occ_ext[t0:t0 + pas_par_jour] = occ_jour
+        G_ext[t0:t0 + pas_par_jour] = _tenseur_jour(ctx, trafic_jour, occ_ext[:t0], np.arange(t0, t0 + pas_par_jour))
+        t0 += pas_par_jour
+
+    i0 = (n_jours - 1) * pas_par_jour
+    _, occ_officiel = _simuler_jour(
+        ctx, t0, trafic_n_ext[:t0], occ_ext[:t0], G_ext[:t0],
+        cal_g_ext[:t0 + pas_par_jour], Xcal_c[i0:i0 + pas_par_jour], id_to_idx)
+
+    nb_pdc_tous = np.maximum(np.round(d.stations["nb_pdc"].values).astype(int), 1)
+    occ_scenario = None
+    scenario_demande = bool(niveaux_zone) or (penetration is not None and abs(penetration - PENETRATION_REF) > 1e-9)
+    if scenario_demande:
+        calj_scenario = calj.iloc[i0:i0 + pas_par_jour].copy()
+        if niveaux_zone:
+            national = max(niveaux_zone.values())
+            for z, niveau in niveaux_zone.items():
+                calj_scenario[f"bf_depart_z{z}"] = niveau
+                calj_scenario[f"bf_retour_z{z}"] = niveau
+            calj_scenario["bf_depart"] = national
+            calj_scenario["bf_retour"] = national
+        Xcal_cible_sc, _ = E.variables_calendaires(calj_scenario)
+        cal_g_cible_sc = (Xcal_cible_sc[:, idx_sel] / ctx["normaliseur"]).astype(np.float32)
+        cal_g_avec_scenario = np.concatenate([cal_g_ext[:t0], cal_g_cible_sc])
+        _, occ_scenario = _simuler_jour(
+            ctx, t0, trafic_n_ext[:t0], occ_ext[:t0], G_ext[:t0],
+            cal_g_avec_scenario, Xcal_cible_sc, id_to_idx)
+        if penetration and abs(penetration - PENETRATION_REF) > 1e-9:
+            charge = charge_depuis_occupation(np.clip(occ_scenario, 0, 1), nb_pdc_tous[None, :])
+            occ_scenario = occupation_depuis_charge(charge * penetration / PENETRATION_REF, nb_pdc_tous[None, :])
+
+    out = {}
+    for c, sid in enumerate(d.stations["station_id"]):
+        nb_pdc = int(nb_pdc_tous[c])
+        out[sid] = {
+            "prevu_pdc": [round(float(v) * nb_pdc, 1) for v in occ_officiel[:, c]],
+            "scenario_pdc": ([round(float(v) * nb_pdc, 1) for v in occ_scenario[:, c]] if occ_scenario is not None else None),
+            "nb_pdc": nb_pdc,
+        }
+    return {
+        "heures": list(range(pas_par_jour)),
+        "date_cible": str(cible.date()),
+        "dates_cascade": [str(x.date()) for x in jours],
+        "par_station": out,
+    }

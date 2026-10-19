@@ -13,7 +13,10 @@ import numpy as np
 import pandas as pd
 from flask import Flask, abort, jsonify, render_template, request
 
-from calcul import PENETRATION_REF, calculer_scenario, dates_calculables, obtenir_calcule_complet, preparer_contexte
+from calcul import (
+    PENETRATION_REF, bornes_jour_complet, calculer_jour_complet, calculer_scenario,
+    dates_calculables, obtenir_calcule_complet, preparer_contexte,
+)
 
 app = Flask(__name__)
 
@@ -128,6 +131,7 @@ print("Préparation du contexte GNN (chargement + inférence préparatoire)...",
 CONTEXTE = preparer_contexte()  # gardé en mémoire : réutilisé par /api/scenario (volet prédiction)
 CALCULE = obtenir_calcule_complet(CONTEXTE)
 DATES_CALCULABLES = dates_calculables(CONTEXTE)
+PREMIER_JOUR_COMPLET, DERNIER_JOUR_COMPLET = bornes_jour_complet(CONTEXTE)
 
 STATIONS_AVEC_DONNEES = set(OCCUPATION.index.get_level_values(0))
 NB_PDC = STATIONS.set_index("station_id")["nb_pdc"]
@@ -199,7 +203,11 @@ def api_zones():
 
 @app.route("/api/config")
 def api_config():
-    return jsonify({"penetration_ref": PENETRATION_REF})
+    return jsonify({
+        "penetration_ref": PENETRATION_REF,
+        "premier_jour_complet": PREMIER_JOUR_COMPLET.strftime("%Y-%m-%d"),
+        "dernier_jour_complet": DERNIER_JOUR_COMPLET.strftime("%Y-%m-%d"),
+    })
 
 
 @app.route("/api/calendrier")
@@ -298,6 +306,44 @@ def api_scenario():
 
     resultat = calculer_scenario(CONTEXTE, date, niveaux_zone, penetration)
     return jsonify({"heures": list(range(24)), "par_station": resultat})
+
+
+@app.route("/api/jour_complet", methods=["POST"])
+def api_jour_complet():
+    """Volet prédiction complète : jour au-delà de l'historique réel (ex. jour férié à venir),
+    sans trafic ni occupation mesurés ce jour-là — prévus en cascade depuis la fin des données
+    réelles. Scénario Bison Futé et pénétration VE optionnels (sinon Bison Futé officiel publié).
+    Body JSON : {"date": "YYYY-MM-DD", "niveaux": {"1": 0..3, ..., "6": 0..3} (optionnel),
+    "penetration": 0.10 (optionnel)}."""
+    body = request.get_json(silent=True) or {}
+    date = body.get("date", "")
+    if len(date) != 10:
+        abort(400, "paramètre date (YYYY-MM-DD) requis")
+
+    niveaux = body.get("niveaux")
+    niveaux_zone = None
+    if niveaux is not None:
+        if set(map(str, range(1, 7))) != set(niveaux.keys()):
+            abort(400, "niveaux doit couvrir les zones 1..6")
+        try:
+            niveaux_zone = {int(z): int(n) for z, n in niveaux.items()}
+        except (TypeError, ValueError):
+            abort(400, "niveaux doit être un entier 0..3 par zone")
+
+    penetration = body.get("penetration")
+    if penetration is not None:
+        try:
+            penetration = float(penetration)
+        except (TypeError, ValueError):
+            abort(400, "penetration doit être un nombre (ex. 0.10 pour 10 %)")
+        if not 0 < penetration <= 1:
+            abort(400, "penetration doit être entre 0 et 1")
+
+    resultat = calculer_jour_complet(CONTEXTE, date, niveaux_zone, penetration)
+    if resultat is None:
+        abort(400, "date hors de la plage prédictible (déjà couverte par l'historique réel, ou "
+                    "au-delà du calendrier Bison Futé connu)")
+    return jsonify(resultat)
 
 
 # ============================================================

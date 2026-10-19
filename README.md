@@ -11,6 +11,7 @@ suffira de remplacer le dossier de données par le vrai.
 ```
 generer_donnees_synthetiques.py   fabrique un jeu de test au bon format
 donnees.py                        chargement, conversion de l'export Qualicharge, agrégation par PDC
+preparer_qualicharge.py           exports Qualicharge mensuels : compression .xz, filtrage des stations, pas horaire
 preparer_stations.py              place les stations sur les axes (axe, sens, pk) à partir d'un vrai tracé
 reperer_stations_autoroute.py     repère les stations d'autoroute dans ton référentiel (tracé approché)
 scenarios.py                      scénarios de pénétration VE (charge offerte + Erlang B), voir note_technique.md §7
@@ -219,6 +220,7 @@ Points de méthode :
 ## 4. Lancer
 
 ```bash
+# Python 3.11.9 : py -3.11 -m venv .venv puis activer .venv
 pip install -r requirements.txt
 python generer_donnees_synthetiques.py --sortie donnees_synthetiques
 python entrainer.py --donnees donnees_synthetiques --horizon-h 24 --sortie resultats

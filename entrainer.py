@@ -22,6 +22,7 @@ Source du trafic (--trafic) :
   - here+avatar  : tronçons HERE et compteurs Avatar, pour mesurer ce qu'Avatar ajoute ;
   - avatar       : compteurs Avatar seuls ;
   - auto (défaut): here si le fichier HERE existe, sinon avatar.
+Tous les fichiers d'entrée peuvent être compressés en .xz (lus tels quels).
 
 Usage :
     python entrainer.py --donnees donnees_synthetiques --horizon-h 24 --sortie resultats
@@ -100,6 +101,8 @@ def main():
     ap.add_argument("--trafic", default="auto", choices=["auto", "here", "here+avatar", "avatar"])
     ap.add_argument("--here", help="here_troncons.csv (défaut : <donnees>/here/here_troncons.csv)")
     ap.add_argument("--compteurs", help="liste des compteurs Avatar à garder, ex. rattachement_interurbains/compteurs_retenus.csv")
+    ap.add_argument("--avatar", help="dossier des comptages Avatar s'il n'est pas dans --donnees (ex. data_IRVE/avatar)")
+    ap.add_argument("--occupation", help="occupation_bornes.csv[.xz] s'il n'est pas dans --donnees")
     ap.add_argument("--pas", default="1h")
     ap.add_argument("--horizon-h", type=float, default=24, help="horizon de prévision en heures")
     ap.add_argument("--fenetre-gnn-h", type=float, default=6, help="historique vu par le GNN")
@@ -113,10 +116,12 @@ def main():
     out = Path(args.sortie)
     out.mkdir(parents=True, exist_ok=True)
 
-    here = Path(args.here) if args.here else Path(args.donnees) / "here" / "here_troncons.csv"
-    trafic = args.trafic if args.trafic != "auto" else ("here" if here.exists() else "avatar")
+    here = Path(args.here) if args.here else next((p for p in (Path(args.donnees) / "here" / n for n in
+                                                    ("here_troncons.csv", "here_troncons.csv.xz")) if p.exists()), None)
+    trafic = args.trafic if args.trafic != "auto" else ("here" if here else "avatar")
     print(f"Trafic : {trafic}")
-    d = charger(args.donnees, args.pas, trafic=trafic, here=here, fichier_compteurs=args.compteurs)
+    d = charger(args.donnees, args.pas, trafic=trafic, here=here, fichier_compteurs=args.compteurs,
+                avatar=args.avatar, occupation=args.occupation)
     T, S, C = len(d.index), len(d.stations), len(d.compteurs)
     V = len(d.variables_trafic)
     pas_min = pd.Timedelta(args.pas) / pd.Timedelta(minutes=1)

@@ -12,34 +12,32 @@ Tout ce qui ne dépend ni de Qualicharge ni de HERE est prêt dans le dépôt
 
 ## 1. Qualicharge (le matin)
 
-1. **Récupérer l'export complet** `charging_station_availability_snapshots`, de mars 2026 à aujourd'hui, au même
-   format que le sample (17 colonnes, une ligne par changement d'état). Toutes les stations, ou au
-   moins les 514 de `stations.csv`.
-2. **Récupérer le référentiel à jour** `charging_stations.csv`. Relancer la sélection si des stations ont ouvert depuis
-   juillet :
+1. ~~**Récupérer l'export complet**~~ : reçu, trois exports mensuels de **juillet à septembre** (pas de mars),
+   rangés dans `data_IRVE/Qualicharge` (1,2 à 1,6 Go chacun). L'apprentissage portera donc sur l'été :
+   l'hiver et le printemps manqueront, et la validation par blocs de semaines devient indispensable.
+2. **Référentiel** : `charging_stations.csv` (9,8 Mo) est aussi dans `data_IRVE/Qualicharge`. Relancer la
+   sélection si des stations ont ouvert depuis juillet :
    ```bash
-   python reperer_stations_autoroute.py --referentiel charging_stations.csv \
+   python reperer_stations_autoroute.py --referentiel "$DATA/Qualicharge/charging_stations.csv" `
        --sortie donnees_reelles/stations.csv --sortie-axes donnees_reelles/axes_approx.csv
    ```
-3. **Convertir l'historique** au pas horaire :
-   ```python
-   import pandas as pd
-   from donnees import convertir_snapshots_qualicharge
-   snap = pd.read_csv("charging_station_availability_snapshots.csv")
-   st = pd.read_csv("donnees_reelles/stations.csv")
-   snap = snap[snap["station_key"].isin(st["station_id"])]
-   convertir_snapshots_qualicharge(snap).to_csv("donnees_reelles/occupation_bornes.csv", index=False)
+   avec, en PowerShell, `$DATA = "C:/Users/corde/OneDrive - ifpen.fr/Documents/TECHNIQUES/data_IRVE"`
+   (dépendances : `pip install -r requirements.txt` dans l'environnement Anaconda).
+3. **Compresser puis convertir** avec `preparer_qualicharge.py`, qui lit les exports par morceaux, ne garde
+   que les stations retenues, met les mois bout à bout et passe au pas horaire :
+   ```bash
+   python preparer_qualicharge.py --compresser --snapshots "$DATA/Qualicharge/charging_station_availability_snapshots_*.csv"
+   python preparer_qualicharge.py --snapshots "$DATA/Qualicharge/charging_station_availability_snapshots_*.csv.xz" `
+       --stations donnees_reelles/stations.csv --sortie donnees_reelles/occupation_bornes.csv.xz
    ```
-4. **Contrôler** :
-   - les trous de collecte (jours sans données) ;
-   - la part d'heures où le statut est inconnu ;
-   - les stations dont le nombre de PDC a changé depuis mars, car une extension fait baisser le taux
-     sans que le trafic bouge.
-
-   Les deux premiers contrôles se notent dans `.notes/inputs.md`.
+   La compression divise la taille par 10 environ (essai sur l'échantillon). Une fois les .xz vérifiés,
+   les .csv peuvent être supprimés (`--supprimer-csv`). Tous les scripts lisent les .xz tels quels.
+4. **Contrôler** : la conversion affiche les trous de collecte, la part de PDC au statut connu et les
+   stations dont le nombre de PDC a changé (une extension fait baisser le taux sans que le trafic
+   bouge). Les noter dans `.notes/inputs.md`.
 5. **Refaire le rattachement** des compteurs, cette fois sur toute la période :
    ```bash
-   python rattacher_compteurs.py --donnees donnees_reelles --interurbains-seulement \
+   python rattacher_compteurs.py --donnees donnees_reelles --avatar "$DATA/avatar" --interurbains-seulement `
        --sortie donnees_reelles/rattachement_interurbains
    ```
    Il faut regarder la corrélation **hors cycle**. Si elle reste autour de 0,1 à 0,2, Avatar n'apportera

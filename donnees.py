@@ -122,19 +122,38 @@ def convertir_snapshots_qualicharge(snap: pd.DataFrame, pas="1h", periode_collec
 
 
 def _trouver(d: Path, *candidats):
-    """Premier fichier existant : la disposition du jeu synthétique (tout à la racine) ou celle de
-    donnees_reelles/ (debits/, calendrier/)."""
+    """Premier fichier existant, en clair ou compressé (.xz, lu tel quel par pandas) : la disposition du
+    jeu synthétique (tout à la racine) ou celle de donnees_reelles/ (debits/, calendrier/)."""
     for c in candidats:
-        if (d / c).exists():
-            return d / c
-    raise FileNotFoundError(f"aucun de {candidats} dans {d}")
+        for nom in (c, c + ".xz"):
+            if (Path(d) / nom).exists():
+                return Path(d) / nom
+    raise FileNotFoundError(f"aucun de {candidats} (ni .xz) dans {d}")
+
+
+def lire_comptages(dossier, **kw) -> pd.DataFrame:
+    """Comptages Avatar : comptages.csv s'il existe, sinon les morceaux compressés comptages_*.csv.xz
+    (découpés par période pour tenir sous les limites de transfert), lus et mis bout à bout."""
+    dossier = Path(dossier)
+    if (dossier / "comptages.csv").exists():
+        return pd.read_csv(dossier / "comptages.csv", **kw)
+    if (dossier / "comptages.csv.xz").exists():
+        return pd.read_csv(dossier / "comptages.csv.xz", **kw)
+    morceaux = sorted(dossier.glob("comptages_*.csv*"))
+    if not morceaux:
+        raise FileNotFoundError(f"ni comptages.csv ni comptages_*.csv.xz dans {dossier}")
+    return pd.concat([pd.read_csv(f, **kw) for f in morceaux], ignore_index=True)
 
 
 def charger_avatar(d: Path, pas, fichier_compteurs=None):
-    """Compteurs Avatar : une variable `debit` (véh/h)."""
-    compteurs = pd.read_csv(fichier_compteurs or _trouver(d, "compteurs.csv", "debits/compteurs.csv"))
-    cpt = pd.read_csv(_trouver(d, "comptages.csv", "debits/comptages.csv"),
-                      usecols=["horodatage", "compteur_id", "debit_vh"], parse_dates=["horodatage"])
+    """Compteurs Avatar : une variable `debit` (véh/h). d : dossier qui contient compteurs.csv et les
+    comptages, ou son parent (donnees_reelles/, avec debits/)."""
+    d = Path(d)
+    if not list(d.glob("comptages*.csv*")) and (d / "debits").exists():
+        d = d / "debits"
+    compteurs = pd.read_csv(fichier_compteurs or _trouver(d, "compteurs.csv"))
+    cpt = lire_comptages(d,
+                         usecols=["horodatage", "compteur_id", "debit_vh"], parse_dates=["horodatage"])
     cpt = cpt[cpt["compteur_id"].isin(compteurs["compteur_id"])]
     cpt["horodatage"] = cpt["horodatage"].dt.floor(pas)
     m = cpt.pivot_table(index="horodatage", columns="compteur_id", values="debit_vh", aggfunc="mean")
@@ -170,21 +189,24 @@ def charger_here(chemin, pas, longueur_troncon_km=10.0):
     return noeuds, {v: m[noeuds["compteur_id"]] for v, m in mats.items()}
 
 
-def charger(dossier: str | Path, pas="1h", trafic="avatar", here=None, fichier_compteurs=None) -> Donnees:
+def charger(dossier: str | Path, pas="1h", trafic="avatar", here=None, fichier_compteurs=None,
+            avatar=None, occupation=None) -> Donnees:
     """trafic : "avatar", "here" ou "here+avatar" ; here : chemin de here_troncons.csv
     (par défaut <dossier>/here/here_troncons.csv) ; fichier_compteurs : liste de compteurs à garder
-    (par ex. rattachement_interurbains/compteurs_retenus.csv)."""
+    (par ex. rattachement_interurbains/compteurs_retenus.csv) ; avatar : dossier des comptages Avatar
+    s'il n'est pas dans <dossier> (ex. data_IRVE/avatar) ; occupation : fichier d'occupation s'il n'est
+    pas <dossier>/occupation_bornes.csv[.xz]. Tous les CSV peuvent être compressés en .xz."""
     d = Path(dossier)
-    stations = pd.read_csv(d / "stations.csv")
-    occ = pd.read_csv(d / "occupation_bornes.csv", parse_dates=["horodatage"])
+    stations = pd.read_csv(_trouver(d, "stations.csv"))
+    occ = pd.read_csv(occupation or _trouver(d, "occupation_bornes.csv"), parse_dates=["horodatage"])
     cal = pd.read_csv(_trouver(d, "calendrier.csv", "calendrier/calendrier.csv"), parse_dates=["date"])
-    aretes = pd.read_csv(d / "aretes.csv") if (d / "aretes.csv").exists() else None
+    aretes = pd.read_csv(d / "aretes.csv") if (d / "aretes.csv").exists() else None  # graphe fourni
 
     sources = []
     if "here" in trafic:
-        sources.append(charger_here(here or d / "here" / "here_troncons.csv", pas))
+        sources.append(charger_here(here or _trouver(d / "here", "here_troncons.csv"), pas))
     if "avatar" in trafic:
-        sources.append(charger_avatar(d, pas, fichier_compteurs))
+        sources.append(charger_avatar(avatar or d, pas, fichier_compteurs))
     if not sources:
         raise ValueError(f"trafic inconnu : {trafic}")
     noeuds = pd.concat([n for n, _ in sources], ignore_index=True)

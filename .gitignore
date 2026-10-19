@@ -10,3 +10,5 @@ here/
 *.joblib
 *.pt
 donnees_reelles/calendrier/brut/bison_fute/*.pdf
+# environnement Python local
+.venv/

@@ -1,6 +1,10 @@
-numpy
-pandas
-scipy
-scikit-learn
-joblib
-torch
+﻿# Python 3.11.9 (même version partout dans l'équipe)
+# Créer l'environnement :  py -3.11 -m venv .venv  puis  .venv\Scripts\pip install -r requirements.txt
+numpy==2.4.6
+pandas==3.0.6
+scipy==1.17.1
+scikit-learn==1.9.1
+joblib==1.6.0
+torch==2.14.1
+matplotlib==3.11.2
+requests==2.34.2

@@ -16,7 +16,10 @@ import matplotlib.ticker
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
 from matplotlib.colors import ListedColormap
+
+from donnees import _trouver, lire_comptages
 
 BLEU, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
 TEXTE, TEXTE2, GRILLE = "#0b0b0b", "#52514e", "#e4e3df"
@@ -35,7 +38,7 @@ plt.rcParams.update({
 
 
 def occupation(d, out):
-    occ = pd.read_csv(d / "occupation_bornes.csv", parse_dates=["horodatage"])
+    occ = pd.read_csv(_trouver(d, "occupation_bornes.csv"), parse_dates=["horodatage"])
     st = pd.read_csv(d / "stations.csv")
     occ = occ[occ["nb_pdc_statut_connu"] > 0]
     occ["taux"] = (occ["nb_pdc_occupes"] / occ["nb_pdc_statut_connu"]).clip(0, 1) * 100
@@ -71,7 +74,7 @@ def occupation(d, out):
 def debits(d, out):
     cpt = pd.read_csv(d / "debits" / "compteurs.csv")
     inter = set(cpt.loc[cpt["hors_agglo_extremites"], "compteur_id"])
-    q = pd.read_csv(d / "debits" / "comptages.csv", usecols=["horodatage", "compteur_id", "debit_vh", "part_estimee_pct"],
+    q = lire_comptages(d / "debits", usecols=["horodatage", "compteur_id", "debit_vh", "part_estimee_pct"],
                     parse_dates=["horodatage"])
     q = q[q["compteur_id"].isin(inter) & (q["part_estimee_pct"] <= 50)]
     q["jour"] = q["horodatage"].dt.floor("D")
@@ -138,7 +141,7 @@ def bison_fute(d, out):
 
 
 def croisement(d, out):
-    occ = pd.read_csv(d / "occupation_bornes.csv", parse_dates=["horodatage"])
+    occ = pd.read_csv(_trouver(d, "occupation_bornes.csv"), parse_dates=["horodatage"])
     occ = occ[occ["nb_pdc_statut_connu"] > 0]
     occ["taux"] = (occ["nb_pdc_occupes"] / occ["nb_pdc_statut_connu"]).clip(0, 1) * 100
     st = pd.read_csv(d / "stations.csv").set_index("station_id")
@@ -146,7 +149,7 @@ def croisement(d, out):
     liens = liens[liens["station_id"].isin(occ["station_id"].unique())]
     meilleurs = liens.sort_values("r_brut", ascending=False).drop_duplicates("station_id").head(3)
     cpt = pd.read_csv(d / "debits" / "compteurs.csv").set_index("compteur_id")
-    q = pd.read_csv(d / "debits" / "comptages.csv", usecols=["horodatage", "compteur_id", "debit_vh"],
+    q = lire_comptages(d / "debits", usecols=["horodatage", "compteur_id", "debit_vh"],
                     parse_dates=["horodatage"])
     q = q[q["compteur_id"].isin(meilleurs["compteur_id"]) & (q["horodatage"] >= "2026-07-09")
           & (q["horodatage"] < "2026-07-15 12:00")]

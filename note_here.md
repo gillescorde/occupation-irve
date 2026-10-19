@@ -162,14 +162,17 @@ de météo dégradée, ou une fermeture longue).
 ### 5.1 Requête
 
 ```
-GET https://data.traffic.hereapi.com/v7/flow
+GET https://mobicloud.ifpen.com/geoservices/api/here/data.traffic.hereapi.com/v7/flow
     ?in=bbox:{ouest},{sud},{est},{nord}
     &locationReferencing=shape
-    &apiKey={HERE_API_KEY}
+Authorization: Bearer {token}
 ```
 
-- **Authentification** : clé d'API en paramètre `apiKey`, ou jeton OAuth 2.0 dans l'en-tête
-  `Authorization: Bearer ...` pour un usage serveur.
+- **Authentification** : pas de clé HERE directe. Le script passe par le proxy Mobicloud de l'IFPEN
+  (`~/.mobicloud/login.json`, comme `here_functions.py`), qui expose l'API HERE sous
+  `mobicloud.ifpen.com/geoservices/api/here/{hôte HERE}/{chemin}` avec un jeton Bearer obtenu via
+  `get_token()`. Vérifié en appelant réellement l'API le 19 octobre 2026 (axe A10) : la réponse a la
+  même structure que l'API publique.
 - **Zone** : `in=bbox:...` ou `in=circle:{lat},{lon};r={mètres}`. La taille maximale d'une bbox est
   limitée **(à vérifier)** : le script découpe chaque axe en boîtes de 60 km.
 - **Référencement** : `shape` renvoie les coordonnées de chaque segment, ce qui permet de les
@@ -213,9 +216,8 @@ Pour chaque axe demandé, le script :
    `here_troncons.csv`.
 
 ```bash
-# Windows
-set HERE_API_KEY=votre_cle
-python here_flux.py --axes donnees_reelles/axes_approx.csv --axe A10 --axe A6 --axe A7 --sortie donnees_reelles/here
+# Windows, avec le venv du projet et ~/.mobicloud/login.json déjà renseigné
+.\.venv\Scripts\python.exe here_flux.py --axes donnees_reelles\axes_approx.csv --axe A10 --axe A6 --axe A7 --sortie donnees_reelles\here
 ```
 
 Colonnes de `here_troncons.csv` :
@@ -225,14 +227,13 @@ horodatage, axe, sens, troncon_pk, longueur_couverte_km, nb_segments,
 vitesse_kmh, vitesse_fluide_kmh, congestion, temps_parcours_min, jam_factor, confiance
 ```
 
-**État du script.** Il a été testé sur une réponse simulée au format ci-dessus (A10 avec un bouchon
-entre les pk 100 et 130), mais **pas sur l'API réelle**, faute de clé et d'accès réseau. Sur cette
-réponse, il retrouve bien le bouchon (congestion 0,67) et sépare les deux sens. Une route parallèle
-plus lente est écartée par le seuil de vitesse fluide. En revanche, une route perpendiculaire
-rapide passe le filtre d'orientation quand l'axe est lui-même oblique : sur le vrai réseau, le
-filtre par classe fonctionnelle (si l'API le permet) ou un tracé exact des autoroutes réglera ce
-cas. Le premier lancement avec votre clé est à faire sur un axe, en vérifiant les segments retenus
-avec `--garder-brut`.
+**État du script.** D'abord testé sur une réponse simulée (A10 avec un bouchon entre les pk 100 et
+130 : congestion retrouvée à 0,67, deux sens bien séparés), puis **sur l'API réelle le 19 octobre
+2026** via le proxy Mobicloud, sur l'axe A10 : 6345 segments reçus, 138 retenus sur l'autoroute,
+76 tronçons, congestion moyenne cohérente avec un trafic fluide à l'heure de l'appel. Le filtre
+d'orientation reste à surveiller sur les axes obliques (une route perpendiculaire rapide peut le
+passer) : vérifier les segments retenus avec `--garder-brut` avant de planifier un axe pour la
+première fois.
 
 ### 5.4 Fréquence et volume d'appels
 

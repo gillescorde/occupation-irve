@@ -10,23 +10,23 @@ Ce qu'il faut vérifier dans la documentation HERE de votre contrat avant la mis
 taille maximale d'une bbox, quotas d'appels, et unité des vitesses (m/s dans la v7 publique).
 
 Usage :
-    set HERE_API_KEY=...            (Windows)   |   export HERE_API_KEY=...   (Linux)
+    Authentification via Mobicloud (~/.mobicloud/login.json), comme here_functions.py.
     python here_flux.py --axes donnees_reelles/axes_approx.csv --axe A10 --axe A7 --sortie donnees_reelles/here
     # sans réseau, pour tester l'analyse sur une réponse enregistrée :
     python here_flux.py --axes donnees_reelles/axes_approx.csv --axe A10 --reponse-json reponse.json --sortie test_here
 """
 import argparse
 import json
-import os
 import time
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
+from here_functions import get_token
 from reperer_stations_autoroute import haversine, projeter_sur_axe, trace
 
-URL = "https://data.traffic.hereapi.com/v7/flow"
+URL = "https://mobicloud.ifpen.com/geoservices/api/here/data.traffic.hereapi.com/v7/flow"
 
 
 def bboxes_axe(tr: pd.DataFrame, pas_km=60.0, marge_deg=0.05):
@@ -40,11 +40,12 @@ def bboxes_axe(tr: pd.DataFrame, pas_km=60.0, marge_deg=0.05):
     return boites
 
 
-def appeler(bbox, cle, essais=4):
+def appeler(bbox, token, essais=4):
     import requests
-    params = {"in": "bbox:{:.5f},{:.5f},{:.5f},{:.5f}".format(*bbox), "locationReferencing": "shape", "apiKey": cle}
+    params = {"in": "bbox:{:.5f},{:.5f},{:.5f},{:.5f}".format(*bbox), "locationReferencing": "shape"}
+    headers = {"Authorization": f"Bearer {token}"}
     for i in range(essais):
-        r = requests.get(URL, params=params, timeout=30)
+        r = requests.get(URL, params=params, headers=headers, timeout=30)
         if r.status_code == 429:  # quota par seconde dépassé : on attend et on réessaie
             time.sleep(2 ** i)
             continue
@@ -131,9 +132,7 @@ def main():
     out = Path(args.sortie)
     out.mkdir(parents=True, exist_ok=True)
     axes = pd.read_csv(args.axes)
-    cle = os.environ.get("HERE_API_KEY")
-    if not args.reponse_json and not cle:
-        raise SystemExit("Clé absente : définir la variable d'environnement HERE_API_KEY")
+    token = None if args.reponse_json else get_token()
 
     horodatage = pd.Timestamp.now(tz="Europe/Paris").tz_localize(None).floor("min")
     for axe in args.axe:
@@ -143,7 +142,7 @@ def main():
         if args.reponse_json:
             reponses = [json.load(open(args.reponse_json, encoding="utf-8"))]
         else:
-            reponses = [appeler(b, cle) for b in bboxes_axe(tr)]
+            reponses = [appeler(b, token) for b in bboxes_axe(tr)]
         seg = pd.concat([segments(r) for r in reponses], ignore_index=True)
         if seg.empty:
             print(f"{axe} : aucun segment renvoyé")

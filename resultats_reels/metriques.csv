@@ -1,0 +1,7 @@
+,MAE_points,RMSE_points,couleur_exacte,rappel_alertes_rouge_noir,precision_alertes
+profil_moyen,,,0.898,0.251,0.101
+hgb_sans_trafic,6.51,9.79,0.953,0.06,0.512
+hgb_trafic_observe,6.65,9.84,0.954,0.064,0.56
+hgb_trafic_prevu,6.65,9.84,0.954,0.063,0.548
+gnn_trafic_observe,6.36,10.29,0.951,0.102,0.457
+gnn_trafic_prevu,6.36,10.3,0.951,0.104,0.458
